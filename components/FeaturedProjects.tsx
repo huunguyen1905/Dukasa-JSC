@@ -38,14 +38,15 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
                         </div>
                     </FadeIn>
                     
-                    <FadeIn direction="left" delay={200}>
-                        <div className="flex flex-wrap gap-2">
+                    <FadeIn direction="left" delay={200} className="w-full lg:w-auto overflow-hidden">
+                        {/* Scrollable Filters for Mobile */}
+                        <div className="flex flex-nowrap md:flex-wrap gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar -mx-6 px-6 md:mx-0 md:px-0">
                             {categories.map((cat) => (
                                 <button
                                     key={cat}
                                     onClick={() => setActiveCategory(cat)}
                                     className={`
-                                        px-5 py-2 rounded-full text-sm font-bold uppercase tracking-wide transition-all duration-300 border
+                                        whitespace-nowrap px-5 py-2 rounded-full text-sm font-bold uppercase tracking-wide transition-all duration-300 border
                                         ${activeCategory === cat 
                                             ? 'bg-brand-yellow text-black border-brand-yellow shadow-[0_0_15px_rgba(250,204,21,0.4)]' 
                                             : 'bg-transparent text-gray-400 border-gray-800 hover:border-gray-600 hover:text-white'

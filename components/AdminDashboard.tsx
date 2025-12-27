@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Service, Lead, Project, NewsItem, AdminView, LeadStatus, TeamMember, ClientPartner, ComparisonItem, Persona } from '../types';
+import { Service, Lead, Project, NewsItem, AdminView, LeadStatus, TeamMember, ComparisonItem, Persona } from '../types';
 import { 
     fetchServices, upsertService, deleteService,
     fetchProjects, upsertProject, deleteProject,
     fetchNews, upsertNews, deleteNews,
     fetchLeads, updateLeadStatus,
     fetchTeamMembers, upsertTeamMember, deleteTeamMember,
-    fetchPartners, upsertPartner, deletePartner,
     fetchComparisons, upsertComparison, deleteComparison,
     fetchPersonas, upsertPersona, deletePersona,
     uploadImage
 } from '../services/supabaseService';
 import { generateServiceDescription } from '../services/geminiService';
-import { Trash2, Plus, X, Sparkles, LogOut, Loader2, Home, Users, Briefcase, FileText, RefreshCw, Database, UserCheck, Handshake, Columns, Target, Upload, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Trash2, Plus, X, Sparkles, LogOut, Loader2, Home, Users, Briefcase, FileText, RefreshCw, Database, UserCheck, Columns, Target, Upload, CheckCircle, AlertTriangle } from 'lucide-react';
 import { MOCK_SERVICES, MOCK_PROJECTS, MOCK_NEWS, MOCK_TEAM } from '../data/mockData';
 
 interface AdminDashboardProps {
@@ -53,7 +52,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [partners, setPartners] = useState<ClientPartner[]>([]);
   const [comparisons, setComparisons] = useState<ComparisonItem[]>([]);
   const [personas, setPersonas] = useState<Persona[]>([]);
   
@@ -77,13 +75,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const refreshData = async () => {
       setIsLoading(true);
       try {
-          const [s, p, n, l, t, part, comp, per] = await Promise.all([
+          const [s, p, n, l, t, comp, per] = await Promise.all([
               fetchServices(),
               fetchProjects(),
               fetchNews(),
               fetchLeads(),
               fetchTeamMembers(),
-              fetchPartners(),
               fetchComparisons(),
               fetchPersonas()
           ]);
@@ -92,7 +89,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           setNews(n);
           setLeads(l);
           setTeamMembers(t);
-          setPartners(part);
           setComparisons(comp);
           setPersonas(per);
       } catch (e) {
@@ -150,9 +146,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
         } else if (type === 'TEAM') {
             await deleteTeamMember(id);
             setTeamMembers(prev => prev.filter(item => item.id !== id));
-        } else if (type === 'PARTNERS') {
-            await deletePartner(id);
-            setPartners(prev => prev.filter(item => item.id !== id));
         } else if (type === 'COMPARISON') {
             await deleteComparison(id);
             setComparisons(prev => prev.filter(item => item.id !== id));
@@ -184,10 +177,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           const publicUrl = await uploadImage(file);
           if (publicUrl) {
               setFormData({ ...formData, imageUrl: publicUrl });
-              // Also update logoUrl for partners
-              if (editingType === 'PARTNERS') {
-                  setFormData({ ...formData, logoUrl: publicUrl });
-              }
               showToast("Upload ảnh thành công", 'success');
           } else {
               showToast("Upload thất bại. Vui lòng tạo Bucket 'content' public.", 'error');
@@ -247,15 +236,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
             };
             if (formData.id) newMember.id = formData.id;
             await upsertTeamMember(newMember);
-
-        } else if (editingType === 'PARTNERS') {
-            const newPartner: Partial<ClientPartner> = {
-                name: formData.name,
-                logoUrl: formData.logoUrl || formData.imageUrl, // Handle both keys
-                sortOrder: parseInt(formData.sortOrder) || 0
-            };
-            if (formData.id) newPartner.id = formData.id;
-            await upsertPartner(newPartner);
 
         } else if (editingType === 'COMPARISON') {
             const newComp: Partial<ComparisonItem> = {
@@ -384,9 +364,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
 
              <div className="px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider hidden md:block mt-6">Cấu Hình</div>
             
-            <button onClick={() => setView(AdminView.PARTNERS)} className={`w-full text-left px-4 py-3 rounded font-bold shrink-0 flex items-center gap-3 ${view === AdminView.PARTNERS ? 'bg-brand-yellow text-black' : 'text-gray-400 hover:bg-gray-800'}`}>
-              <Handshake size={18} /> Đối Tác
-            </button>
              <button onClick={() => setView(AdminView.COMPARISON)} className={`w-full text-left px-4 py-3 rounded font-bold shrink-0 flex items-center gap-3 ${view === AdminView.COMPARISON ? 'bg-brand-yellow text-black' : 'text-gray-400 hover:bg-gray-800'}`}>
               <Columns size={18} /> So Sánh
             </button>
@@ -525,32 +502,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
             </div>
           )}
           
-          {/* --- PARTNERS VIEW --- */}
-           {view === AdminView.PARTNERS && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-black text-white">Quản Lý Đối Tác</h1>
-                <button onClick={() => openModal('PARTNERS')} className="bg-brand-yellow text-black px-4 py-2 rounded font-bold flex items-center gap-2"><Plus size={18}/> Thêm Mới</button>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                {isLoading ? Array(5).fill(0).map((_,i) => <SkeletonRow key={i}/>) : partners.map(p => (
-                    <div key={p.id} className="bg-gray-800/50 p-4 rounded-xl border border-gray-700 hover:border-brand-yellow/50 transition-all text-center relative group">
-                        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button onClick={() => openModal('PARTNERS', p)} className="p-1 bg-blue-600 rounded text-white"><Sparkles size={12}/></button>
-                            <button onClick={() => handleDelete('PARTNERS', p.id)} className="p-1 bg-red-600 rounded text-white"><Trash2 size={12}/></button>
-                        </div>
-                        {p.logoUrl ? (
-                            <img src={p.logoUrl} className="h-12 w-auto mx-auto object-contain mb-2" alt={p.name} />
-                        ) : (
-                            <h3 className="text-lg font-black text-white uppercase tracking-tighter">{p.name}</h3>
-                        )}
-                        <div className="text-xs text-gray-500 mt-2">Order: {p.sortOrder}</div>
-                    </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* --- COMPARISON VIEW --- */}
            {view === AdminView.COMPARISON && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -689,18 +640,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
 
                 <div className="space-y-4">
                     {/* Common: Title/Name */}
-                    {(editingType === 'SERVICES' || editingType === 'PROJECTS' || editingType === 'NEWS' || editingType === 'TEAM' || editingType === 'PARTNERS' || editingType === 'PERSONAS') && (
+                    {(editingType === 'SERVICES' || editingType === 'PROJECTS' || editingType === 'NEWS' || editingType === 'TEAM' || editingType === 'PERSONAS') && (
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{editingType === 'TEAM' || editingType === 'PARTNERS' ? 'Tên (Name)' : 'Tiêu Đề (Title)'}</label>
+                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{editingType === 'TEAM' ? 'Tên (Name)' : 'Tiêu Đề (Title)'}</label>
                             <input className="w-full bg-black border border-gray-700 rounded p-3 text-white focus:border-brand-yellow outline-none"
-                                value={editingType === 'TEAM' || editingType === 'PARTNERS' ? (formData.name || '') : (formData.title || '')}
-                                onChange={e => (editingType === 'TEAM' || editingType === 'PARTNERS') ? setFormData({...formData, name: e.target.value}) : setFormData({...formData, title: e.target.value})}
+                                value={editingType === 'TEAM' ? (formData.name || '') : (formData.title || '')}
+                                onChange={e => (editingType === 'TEAM') ? setFormData({...formData, name: e.target.value}) : setFormData({...formData, title: e.target.value})}
                             />
                         </div>
                     )}
 
                     {/* Image URL logic */}
-                    {(editingType === 'SERVICES' || editingType === 'PROJECTS' || editingType === 'NEWS' || editingType === 'TEAM' || editingType === 'PARTNERS') && (
+                    {(editingType === 'SERVICES' || editingType === 'PROJECTS' || editingType === 'NEWS' || editingType === 'TEAM') && (
                         <div>
                             <label className="block text-xs font-bold text-gray-500 uppercase mb-1 flex justify-between items-center">
                                 <span>Hình Ảnh / Logo</span>
@@ -738,8 +689,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                                         value={formData.imageUrl || formData.logoUrl || ''}
                                         onChange={e => {
                                             const val = e.target.value;
-                                            if (editingType === 'PARTNERS') setFormData({...formData, logoUrl: val, imageUrl: val});
-                                            else setFormData({...formData, imageUrl: val});
+                                            setFormData({...formData, imageUrl: val});
                                         }}
                                         placeholder="Hoặc dán link ảnh..."
                                     />
@@ -748,19 +698,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                         </div>
                     )}
                     
-                    {/* PARTNERS Specific */}
-                    {editingType === 'PARTNERS' && (
-                         <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Thứ Tự (Sort Order)</label>
-                                <input type="number" className="w-full bg-black border border-gray-700 rounded p-3 text-white focus:border-brand-yellow outline-none"
-                                    value={formData.sortOrder || 0}
-                                    onChange={e => setFormData({...formData, sortOrder: e.target.value})}
-                                />
-                            </div>
-                        </div>
-                    )}
-
                     {/* COMPARISON Specific */}
                     {editingType === 'COMPARISON' && (
                         <>

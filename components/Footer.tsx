@@ -1,5 +1,5 @@
 import React from 'react';
-import { Facebook, Instagram, Linkedin, Twitter, ArrowRight, Lock } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Twitter, ArrowRight, Lock, Users } from 'lucide-react';
 
 interface FooterProps {
   onOpenAdmin: () => void;
@@ -28,7 +28,10 @@ const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
               Chúng tôi không chỉ làm marketing. Chúng tôi kiến tạo vị thế dẫn đầu cho thương hiệu của bạn trong kỷ nguyên số.
             </p>
             <div className="flex gap-4">
-                {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
+                <a href="https://www.facebook.com/groups/1342038416404962" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center text-gray-400 hover:bg-brand-yellow hover:text-brand-black hover:border-brand-yellow transition-all duration-300" title="Cộng Đồng AI 300K+ Member">
+                    <Users size={18} />
+                </a>
+                {[Instagram, Linkedin, Twitter].map((Icon, i) => (
                     <a key={i} href="#" className="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center text-gray-400 hover:bg-brand-yellow hover:text-brand-black hover:border-brand-yellow transition-all duration-300">
                         <Icon size={18} />
                     </a>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, X, Minus } from 'lucide-react';
+import { Check, X, Minus, ChevronRight } from 'lucide-react';
 import FadeIn from './FadeIn';
 
 const ComparisonTable: React.FC = () => {
@@ -11,8 +11,13 @@ const ComparisonTable: React.FC = () => {
             <p className="text-gray-400">Sự khác biệt giữa Đầu tư Chiến lược và Chi phí lãng phí.</p>
         </div>
 
-        <div className="overflow-x-auto">
-            <div className="min-w-[800px] bg-gray-900/50 rounded-2xl border border-gray-800 p-6 md:p-8">
+        {/* Scroll Hint (Mobile) */}
+        <div className="flex md:hidden justify-end px-6 mb-2 text-xs text-brand-yellow font-bold items-center gap-1 animate-pulse">
+            Vuốt sang trái <ChevronRight size={12}/>
+        </div>
+
+        <div className="overflow-x-auto pb-4">
+            <div className="min-w-[800px] bg-gray-900/50 rounded-2xl border border-gray-800 p-6 md:p-8 mx-6 md:mx-auto">
                 <div className="grid grid-cols-4 gap-4 mb-6 border-b border-gray-700 pb-6">
                     <div className="text-gray-500 font-bold uppercase text-xs pt-4">Tiêu Chí So Sánh</div>
                     <div className="text-brand-yellow font-black text-xl text-center bg-brand-yellow/10 rounded-t-xl pt-4 -mt-4 pb-2 border-t border-x border-brand-yellow/30">DUHAVA AGENCY</div>

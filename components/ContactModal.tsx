@@ -76,7 +76,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
 
     try {
         const newLead: Lead = {
-            id: Date.now().toString(),
+            // id is removed so DB generates it
             name: formData.name,
             email: formData.email,
             phone: formData.phone,
@@ -92,9 +92,9 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
              setIsSuccess(false);
              setStep(1);
         }, 3000);
-    } catch (error) {
+    } catch (error: any) {
         console.error("Lỗi gửi form:", error);
-        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+        alert(`Có lỗi xảy ra: ${error.message || 'Vui lòng thử lại sau.'}`);
     } finally {
         setIsSubmitting(false);
     }

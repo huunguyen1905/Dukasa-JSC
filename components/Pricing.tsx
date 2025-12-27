@@ -96,9 +96,9 @@ const Pricing: React.FC<PricingProps> = ({ onCtaClick }) => {
                 <FadeIn key={index} delay={index * 100} className={`h-full ${tier.highlight ? 'md:-mt-8 md:-mb-8 z-10' : ''}`}>
                     <div 
                         className={`
-                            relative h-full flex flex-col p-8 rounded-2xl border transition-all duration-500 group
+                            relative h-full flex flex-col p-6 md:p-8 rounded-2xl border transition-all duration-500 group
                             ${tier.highlight 
-                                ? 'bg-gray-900 border-brand-yellow shadow-[0_0_50px_rgba(250,204,21,0.15)] scale-105' 
+                                ? 'bg-gray-900 border-brand-yellow shadow-[0_0_50px_rgba(250,204,21,0.15)] scale-100 md:scale-105' 
                                 : 'bg-brand-dark/50 border-gray-800 hover:border-gray-600 hover:bg-gray-900'
                             }
                         `}
@@ -109,15 +109,15 @@ const Pricing: React.FC<PricingProps> = ({ onCtaClick }) => {
                             </div>
                         )}
 
-                        <div className="mb-8">
-                            <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-6 ${tier.highlight ? 'bg-brand-yellow text-black' : 'bg-gray-800 text-white'}`}>
+                        <div className="mb-6 md:mb-8">
+                            <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 md:mb-6 ${tier.highlight ? 'bg-brand-yellow text-black' : 'bg-gray-800 text-white'}`}>
                                 {tier.icon}
                             </div>
                             <h4 className="text-xl font-bold text-white uppercase mb-2">{tier.name}</h4>
                             <p className="text-gray-400 text-sm h-10">{tier.description}</p>
                         </div>
 
-                        <div className="mb-8 pb-8 border-b border-gray-800">
+                        <div className="mb-6 md:mb-8 pb-6 md:pb-8 border-b border-gray-800">
                              <div className="flex items-baseline gap-1">
                                 <span className={`text-3xl lg:text-4xl font-black tracking-tight ${tier.highlight ? 'text-brand-yellow' : 'text-white'}`}>
                                     {tier.price}
@@ -155,9 +155,9 @@ const Pricing: React.FC<PricingProps> = ({ onCtaClick }) => {
 
         {/* Enterprise Banner */}
         <FadeIn delay={400}>
-            <div className="mt-20 max-w-4xl mx-auto bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border border-gray-700 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+            <div className="mt-20 max-w-4xl mx-auto bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border border-gray-700 rounded-2xl p-6 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                <div className="relative z-10">
+                <div className="relative z-10 text-center md:text-left">
                     <h4 className="text-2xl font-black text-white uppercase mb-2">Bạn cần giải pháp "May Đo" riêng biệt?</h4>
                     <p className="text-gray-400">Chúng tôi sẵn sàng ký NDA và tư vấn giải pháp bảo mật cho các dự án đặc thù.</p>
                 </div>

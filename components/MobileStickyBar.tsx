@@ -25,7 +25,7 @@ const MobileStickyBar: React.FC<MobileStickyBarProps> = ({ onCtaClick }) => {
     `}>
         <div className="flex gap-3">
             <a 
-                href="tel:0901234567"
+                href="tel:0906291941"
                 className="flex-1 bg-gray-800 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-transform"
             >
                 <Phone size={18} /> Gọi Ngay

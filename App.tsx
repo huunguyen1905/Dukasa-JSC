@@ -35,6 +35,7 @@ const Contact = lazy(() => import('./components/Contact'));
 const About = lazy(() => import('./components/About'));
 const ROICalculator = lazy(() => import('./components/ROICalculator'));
 const StrategyQuiz = lazy(() => import('./components/StrategyQuiz'));
+const PressSection = lazy(() => import('./components/PressSection'));
 
 // Admin Login Component
 const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
@@ -169,6 +170,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
             </Suspense>
         </ErrorBoundary>
         
+        {/* PRESS SECTION ADDED HERE */}
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <PressSection />
+            </Suspense>
+        </ErrorBoundary>
+
         <ErrorBoundary>
             <Suspense fallback={<SectionLoader />}>
                 <TechStack />

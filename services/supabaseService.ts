@@ -227,9 +227,12 @@ export const createLead = async (lead: Partial<Lead>) => {
         status: 'NEW',
         created_at: new Date().toISOString()
     };
-    // Note: Leads are INSERT only usually, but generic upsert works if ID provided
+    // Ensure no ID is sent for creation, allowing UUID default
     const { error } = await supabase.from('leads').insert(payload);
-    if (error) throw error;
+    if (error) {
+        console.error("Supabase Error creating lead:", error.message, error.details);
+        throw error;
+    }
 };
 
 export const updateLeadStatus = async (id: string, status: string) => {

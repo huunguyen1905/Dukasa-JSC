@@ -135,9 +135,9 @@ const About: React.FC = () => {
                         <p className="text-gray-500 text-sm">Mỗi 1 đồng bạn bỏ ra, chúng tôi nỗ lực mang về ít nhất 3 đồng doanh thu.</p>
                     </div>
                     <div>
-                        <div className="text-5xl font-black text-white mb-2">24h</div>
-                        <div className="text-brand-yellow font-bold uppercase text-sm mb-4">Tốc độ phản hồi</div>
-                        <p className="text-gray-500 text-sm">Đội ngũ support luôn sẵn sàng. Chúng tôi không ngủ để Brand của bạn tỏa sáng.</p>
+                        <div className="text-5xl font-black text-white mb-2">300K+</div>
+                        <div className="text-brand-yellow font-bold uppercase text-sm mb-4">Cộng Đồng AI Lớn Nhất</div>
+                        <p className="text-gray-500 text-sm">Sở hữu cộng đồng 300.000+ thành viên, dẫn đầu xu hướng công nghệ.</p>
                     </div>
                 </div>
 

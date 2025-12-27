@@ -39,13 +39,13 @@ const steps = [
 
 const Process: React.FC = () => {
   return (
-    <section className="bg-brand-black py-24 relative overflow-hidden">
+    <section className="bg-brand-black py-16 md:py-24 relative overflow-hidden">
       {/* Background Grid Line */}
       <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-gray-800 transform -translate-x-1/2 z-0 hidden md:block"></div>
 
       <div className="container mx-auto px-6 relative z-10">
         <FadeIn>
-            <div className="text-center mb-24">
+            <div className="text-center mb-16 md:mb-24">
                 <h2 className="text-brand-yellow font-bold tracking-widest uppercase mb-2">Quy Trình Làm Việc</h2>
                 <h3 className="text-3xl md:text-6xl font-black text-white uppercase tracking-tighter mb-6">
                 Lộ Trình <span className="text-gray-600">Thành Công</span>
@@ -56,11 +56,11 @@ const Process: React.FC = () => {
             </div>
         </FadeIn>
 
-        <div className="flex flex-col gap-12 md:gap-24 relative">
+        <div className="flex flex-col gap-8 md:gap-24 relative">
           {steps.map((step, index) => (
             <div 
                 key={index} 
-                className="sticky top-28 md:top-32 group"
+                className="sticky top-24 md:top-32 group"
                 style={{ zIndex: index + 1 }}
             >
                 <FadeIn delay={index * 0}>
@@ -74,8 +74,8 @@ const Process: React.FC = () => {
                             flex flex-col md:flex-row
                         `}>
                             {/* Mobile Header: Step Number & Icon */}
-                            <div className="flex items-center justify-between p-6 border-b border-gray-800 md:hidden">
-                                <span className="text-4xl font-black text-white/10">{step.id}</span>
+                            <div className="flex items-center justify-between p-5 border-b border-gray-800 md:hidden">
+                                <span className="text-3xl font-black text-white/10">{step.id}</span>
                                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${step.id === '01' ? 'bg-brand-yellow text-black' : 'bg-gray-800 text-white'}`}>
                                     {React.cloneElement(step.icon as React.ReactElement<any>, { size: 20 })}
                                 </div>
@@ -95,23 +95,23 @@ const Process: React.FC = () => {
                             </div>
 
                             {/* Right Side: Content */}
-                            <div className="flex-1 p-6 md:p-10 flex flex-col justify-center relative">
-                                {/* Hover Effect: Duration Reveal */}
-                                <div className="absolute top-6 right-6 md:right-10 flex items-center gap-2 overflow-hidden">
+                            <div className="flex-1 p-5 md:p-10 flex flex-col justify-center relative">
+                                {/* Hover Effect: Duration Reveal (Desktop) */}
+                                <div className="absolute top-6 right-6 md:right-10 flex items-center gap-2 overflow-hidden hidden md:flex">
                                     <div className="flex items-center gap-2 translate-x-full opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 bg-brand-yellow/10 border border-brand-yellow/30 px-3 py-1 rounded-full">
                                         <Clock size={14} className="text-brand-yellow"/>
                                         <span className="text-brand-yellow text-xs font-bold uppercase whitespace-nowrap">{step.duration}</span>
                                     </div>
                                 </div>
 
-                                <h4 className="text-2xl md:text-3xl font-black text-white uppercase mb-4 group-hover:text-brand-yellow transition-colors duration-300">
+                                <h4 className="text-xl md:text-3xl font-black text-white uppercase mb-3 md:mb-4 group-hover:text-brand-yellow transition-colors duration-300">
                                     {step.title}
                                 </h4>
-                                <p className="text-gray-400 text-base md:text-lg leading-relaxed border-l-2 border-gray-800 pl-4 group-hover:border-brand-yellow transition-colors duration-300">
+                                <p className="text-gray-400 text-sm md:text-lg leading-relaxed border-l-2 border-gray-800 pl-4 group-hover:border-brand-yellow transition-colors duration-300">
                                     {step.description}
                                 </p>
                                 
-                                <div className="mt-6 md:hidden flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-widest">
+                                <div className="mt-4 md:hidden flex items-center gap-2 text-[10px] font-bold text-gray-500 uppercase tracking-widest bg-gray-900/50 w-fit px-2 py-1 rounded">
                                     <Clock size={12} /> {step.duration}
                                 </div>
                             </div>

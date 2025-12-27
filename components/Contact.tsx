@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Phone, Mail, Send, Clock, CheckCircle } from 'lucide-react';
+import { MapPin, Phone, Mail, Send, Clock, CheckCircle, Users, ExternalLink } from 'lucide-react';
 import FadeIn from './FadeIn';
 import { createLead } from '../services/supabaseService';
 import { Lead } from '../types';
@@ -41,7 +41,7 @@ const Contact: React.FC = () => {
 
     try {
         const newLead: Lead = {
-            id: Date.now().toString(),
+            // id is removed to let Supabase generate UUID
             name: formData.name,
             email: formData.email,
             phone: formData.phone,
@@ -55,9 +55,9 @@ const Contact: React.FC = () => {
         setFormData({ name: '', email: '', phone: '', service: [], budget: '', message: '' });
         
         setTimeout(() => setIsSuccess(false), 5000);
-    } catch (error) {
+    } catch (error: any) {
         console.error("Lỗi gửi form:", error);
-        alert("Có lỗi xảy ra. Vui lòng thử lại hoặc gọi hotline.");
+        alert(`Có lỗi xảy ra: ${error.message || 'Vui lòng thử lại sau.'}`);
     } finally {
         setIsSubmitting(false);
     }
@@ -117,7 +117,7 @@ const Contact: React.FC = () => {
                                         value={formData.phone}
                                         onChange={e => setFormData({...formData, phone: e.target.value})}
                                         className="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-brand-yellow focus:outline-none transition-colors text-lg placeholder-gray-800"
-                                        placeholder="090 xxx xxxx"
+                                        placeholder="090..."
                                     />
                                 </div>
                             </div>
@@ -131,6 +131,8 @@ const Contact: React.FC = () => {
                                     onChange={e => setFormData({...formData, email: e.target.value})}
                                     className="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-brand-yellow focus:outline-none transition-colors text-lg placeholder-gray-800"
                                     placeholder="name@company.com"
+                                    name="email_field_duhava"
+                                    autoComplete="email"
                                 />
                             </div>
 
@@ -227,7 +229,7 @@ const Contact: React.FC = () => {
                                 </div>
                                 <div>
                                     <div className="text-gray-500 text-xs font-bold uppercase mb-1">Hotline (24/7)</div>
-                                    <p className="text-white font-black text-xl">090 123 4567</p>
+                                    <p className="text-white font-black text-xl">0906 291 941</p>
                                 </div>
                             </div>
 
@@ -237,9 +239,21 @@ const Contact: React.FC = () => {
                                 </div>
                                 <div>
                                     <div className="text-gray-500 text-xs font-bold uppercase mb-1">Email Hợp Tác</div>
-                                    <p className="text-gray-300 font-medium">partner@duhava.agency</p>
+                                    <p className="text-gray-300 font-medium">duhavajsc@gmail.com</p>
                                 </div>
                             </div>
+
+                            <a href="https://www.facebook.com/groups/1342038416404962" target="_blank" rel="noopener noreferrer" className="flex items-start gap-4 group bg-brand-yellow/5 p-4 rounded-xl border border-brand-yellow/10 hover:bg-brand-yellow/10 transition-colors">
+                                <div className="w-10 h-10 bg-brand-yellow/20 rounded flex items-center justify-center text-brand-yellow">
+                                    <Users size={20} />
+                                </div>
+                                <div>
+                                    <div className="text-brand-yellow text-xs font-bold uppercase mb-1 flex items-center gap-1">
+                                        Cộng Đồng AI Việt Nam <ExternalLink size={10}/>
+                                    </div>
+                                    <p className="text-white font-black text-lg">300.000+ <span className="text-sm font-medium text-gray-400">Thành viên</span></p>
+                                </div>
+                            </a>
 
                              <div className="flex items-start gap-4 group">
                                 <div className="w-10 h-10 bg-gray-800 rounded flex items-center justify-center text-brand-yellow group-hover:bg-brand-yellow group-hover:text-black transition-colors">
