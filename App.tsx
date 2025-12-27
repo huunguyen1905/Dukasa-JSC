@@ -14,6 +14,7 @@ import MobileStickyBar from './components/MobileStickyBar';
 import ExitIntent from './components/ExitIntent'; 
 import ClientLogos from './components/ClientLogos';
 import PersonaTabs from './components/PersonaTabs';
+import WorldClassBackground from './components/WorldClassBackground'; // Import new background
 import { fetchServices, fetchProjects, fetchNews, fetchTeamMembers } from './services/supabaseService';
 import { Service, Project, NewsItem, TeamMember } from './types';
 import { ArrowLeft, Sparkles } from 'lucide-react';
@@ -113,9 +114,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
   };
 
   return (
-    <div className="bg-brand-black min-h-screen text-white font-sans selection:bg-brand-yellow selection:text-black md:cursor-none">
+    <div className="bg-brand-black min-h-screen text-white font-sans selection:bg-brand-yellow selection:text-black md:cursor-none relative">
       <CustomCursor />
-      <NoiseOverlay /> 
+      <NoiseOverlay />
+      
+      {/* THE NEW WORLD CLASS BACKGROUND */}
+      <WorldClassBackground />
       
       <Navbar onOpenContact={() => setIsContactOpen(true)} />
       <ScrollProgress /> 
@@ -207,7 +211,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
             </Suspense>
         </ErrorBoundary>
         
-        <section id="results" className="py-20 bg-brand-dark border-y border-gray-800 relative z-10">
+        <section id="results" className="py-20 bg-brand-dark/80 backdrop-blur-sm border-y border-gray-800 relative z-10">
             <div className="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-0">
                     <div className="text-4xl md:text-6xl font-black text-white mb-2">500+</div>
