@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -37,6 +38,7 @@ const About = lazy(() => import('./components/About'));
 const ROICalculator = lazy(() => import('./components/ROICalculator'));
 const StrategyQuiz = lazy(() => import('./components/StrategyQuiz'));
 const PressSection = lazy(() => import('./components/PressSection'));
+const GrowthSection = lazy(() => import('./components/GrowthSection')); // Import new component
 
 // Admin Login Component
 const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
@@ -211,26 +213,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
             </Suspense>
         </ErrorBoundary>
         
-        <section id="results" className="py-20 bg-brand-dark/80 backdrop-blur-sm border-y border-gray-800 relative z-10">
-            <div className="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-0">
-                    <div className="text-4xl md:text-6xl font-black text-white mb-2">500+</div>
-                    <div className="text-brand-yellow font-bold uppercase text-sm">Dự Án Thành Công</div>
-                </div>
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
-                    <div className="text-4xl md:text-6xl font-black text-white mb-2">200%</div>
-                    <div className="text-brand-yellow font-bold uppercase text-sm">Tăng Trưởng TB</div>
-                </div>
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
-                    <div className="text-4xl md:text-6xl font-black text-white mb-2">10+</div>
-                    <div className="text-brand-yellow font-bold uppercase text-sm">Năm Kinh Nghiệm</div>
-                </div>
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-                    <div className="text-4xl md:text-6xl font-black text-white mb-2">24/7</div>
-                    <div className="text-brand-yellow font-bold uppercase text-sm">Hỗ Trợ Tận Tâm</div>
-                </div>
-            </div>
-        </section>
+        {/* NEW GROWTH SECTION REPLACING STATIC STATS */}
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <GrowthSection />
+            </Suspense>
+        </ErrorBoundary>
 
         <ErrorBoundary>
             <Suspense fallback={<SectionLoader />}>

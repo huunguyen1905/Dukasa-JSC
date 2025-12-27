@@ -2,101 +2,155 @@ import { Service, Project, NewsItem, TeamMember } from '../types';
 
 export const MOCK_SERVICES: Service[] = [
   {
+    id: 'svc-ai-automation',
+    title: 'AI Agent & Automation',
+    description: 'Tự động hóa quy trình doanh nghiệp bằng trí tuệ nhân tạo. Xây dựng trợ lý AI (AI Agents) chuyên biệt cho CSKH, Marketing, HR và Chấm thi tự động.',
+    icon: 'Cpu',
+    imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1000'
+  },
+  {
     id: 'svc-branding',
-    title: 'Định Vị Thương Hiệu Độc Bản',
-    description: 'Không chỉ là Logo. Chúng tôi xây dựng "linh hồn" cho doanh nghiệp. Từ chiến lược Brand Key, Key Visual đến Tone of Voice, biến thương hiệu của bạn thành biểu tượng không thể thay thế.',
-    icon: 'Sparkles',
+    title: 'Tư Vấn Chiến Lược Số',
+    description: 'Đồng hành cùng doanh nghiệp từ A-Z: Audit hiện trạng, lên kế hoạch Marketing tổng thể (Social, Website, Ads) và đào tạo đội ngũ In-house.',
+    icon: 'Target',
     imageUrl: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=1000'
   },
   {
-    id: 'svc-web',
-    title: 'Thiết Kế Web High-End',
-    description: 'Website là bộ mặt số của doanh nghiệp. Chúng tôi thiết kế giao diện chuẩn quốc tế, tích hợp hiệu ứng 3D/WebGL mượt mà, tối ưu trải nghiệm người dùng để tối đa hóa tỷ lệ chuyển đổi.',
-    icon: 'Monitor',
-    imageUrl: 'https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&q=80&w=1000'
+    id: 'svc-training',
+    title: 'Đào Tạo AI & Digital',
+    description: 'Các khóa huấn luyện thực chiến "Mastering AI for Work" dành cho doanh nghiệp, tập đoàn và các trường đại học hàng đầu (UEF, FPT, NTTU).',
+    icon: 'BookOpen',
+    imageUrl: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1000'
   },
   {
-    id: 'svc-ads',
-    title: 'Performance Marketing',
-    description: 'Chúng tôi không đốt tiền quảng cáo. Chúng tôi đầu tư để sinh lời. Chiến lược đa kênh (Facebook, TikTok, Google) nhắm đúng đối tượng, tối ưu chi phí (CPA) thấp nhất với ROI cao nhất.',
-    icon: 'TrendingUp',
-    imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1000'
-  },
-  {
-    id: 'svc-seo',
-    title: 'SEO Tổng Thể',
-    description: 'Thống trị Google bền vững. Đưa từ khóa thương hiệu lên Top 1, phủ sóng mọi điểm chạm khách hàng, tăng trưởng Traffic tự nhiên (Organic) và uy tín doanh nghiệp dài hạn.',
-    icon: 'Search',
-    imageUrl: 'https://images.unsplash.com/photo-1572021335469-31706a17aaef?auto=format&fit=crop&q=80&w=1000'
+    id: 'svc-media',
+    title: 'Sản Xuất Media AI',
+    description: 'Ứng dụng AI sáng tạo Video, TVC, hình ảnh, Mascot và thiết kế ấn phẩm truyền thông với tốc độ nhanh gấp 10 lần phương pháp truyền thống.',
+    icon: 'Video',
+    imageUrl: 'https://images.unsplash.com/photo-1626544827763-d516dce335ca?auto=format&fit=crop&q=80&w=1000'
   }
 ];
 
 export const MOCK_PROJECTS: Project[] = [
   {
-    id: 'prj-luxury-estate',
-    title: 'The Empire City',
-    client: 'Masterise Homes',
-    category: 'Real Estate 3D',
-    result: 'Bán 500 căn trong 2h',
-    imageUrl: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=1000',
-    description: 'Triển khai chiến dịch ra mắt dự án hạng sang. Ứng dụng công nghệ VR 360 Tour trên Landing Page giúp khách hàng trải nghiệm căn hộ tại gia. Kết hợp chạy Ads tiếp cận giới siêu giàu (High Net Worth Individuals).'
+    id: 'prj-trung-son',
+    title: 'Trung Sơn Pharma',
+    client: 'Trung Sơn & Asia Business Builders',
+    category: 'Strategy & CRM',
+    result: 'Đồng hành 1.5 Năm',
+    imageUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=1000', // Placeholder
+    description: 'Lễ ký kết hợp tác chiến lược. Triển khai tổng thể và đào tạo Marketing Online: Social, Website, Ads, CRM giúp tối ưu hóa vận hành chuỗi dược phẩm.'
   },
   {
-    id: 'prj-tech-fintech',
-    title: 'NeoBank Rebranding',
-    client: 'TPBank Digital',
-    category: 'Branding & App UI',
-    result: '+1 Triệu User mới',
-    imageUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1000',
-    description: 'Tái định vị ngân hàng số dành cho Gen Z. Thiết kế lại UI/UX App ngân hàng theo phong cách Cyberpunk, tối giản quy trình eKYC chỉ còn 30 giây. Chiến dịch Viral "Bank không ngủ" phủ sóng TikTok.'
+    id: 'prj-prudential',
+    title: 'Prudential AI Agents',
+    client: 'Prudential Vietnam',
+    category: 'AI Solution',
+    result: 'Train toàn quốc',
+    imageUrl: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=1000', // Placeholder
+    description: 'Chương trình chia sẻ trực tuyến cho toàn bộ tư vấn viên Prudential trên cả nước. Ứng dụng tạo AI Agents (Trợ lý ảo) hỗ trợ tư vấn và chăm sóc khách hàng tự động.'
   },
   {
-    id: 'prj-fashion',
-    title: 'Streetwear Revolution',
-    client: 'DirtyCoins Studio',
-    category: 'Social Media Viral',
-    result: '10M Views TikTok',
-    imageUrl: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&q=80&w=1000',
-    description: 'Booking 50 KOCs thời trang/lifestyle hàng đầu để tạo trend "Biến hình". Video đạt Top Trending TikTok sau 24h. Doanh số E-commerce tăng trưởng 400% trong tháng ra mắt bộ sưu tập mới.'
+    id: 'prj-droppii',
+    title: 'Sàn TMĐT Droppii',
+    client: 'Droppii Việt Nam/Cambodia',
+    category: 'E-commerce',
+    result: 'Tăng doanh số',
+    imageUrl: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=1000', // Placeholder
+    description: 'Đồng hành tăng doanh số cùng các nhà cung cấp lớn: Kuchen, Nông Lâm Foods, VLive, Satyca... Triển khai các chiến dịch Livestream và đào tạo kỹ năng số.'
   },
   {
-    id: 'prj-fnb',
-    title: 'Coffee Chain Loyalty',
-    client: 'The Coffee House',
-    category: 'Web App & CRM',
-    result: '+45% Khách quay lại',
-    imageUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&q=80&w=1000',
-    description: 'Tư vấn và triển khai hệ thống Loyalty App. Cá nhân hóa ưu đãi (Personalized Offer) dựa trên thói quen uống cafe. Tự động gửi thông báo đẩy (Push Noti) vào đúng giờ khách thường mua hàng.'
+    id: 'prj-big-family',
+    title: 'Chuỗi Nhà Thuốc Big Family',
+    client: 'Big Family',
+    category: 'Automation',
+    result: 'Đồng hành 6 tháng',
+    imageUrl: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?auto=format&fit=crop&q=80&w=1000', // Placeholder
+    description: 'Xây dựng hệ thống Social, sản xuất AI Video hàng loạt, tích hợp Chatbot AI và Zalo OA để tự động hóa quy trình chăm sóc khách hàng dược phẩm.'
+  },
+  {
+    id: 'prj-fptu',
+    title: 'FPT University Tech Fest',
+    client: 'Đại Học FPT',
+    category: 'Event & Creative',
+    result: '10.000+ SV tham gia',
+    imageUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1000', // Placeholder
+    description: 'Thiết kế Mascot, Video AI, Banner, Backdrop cho sự kiện Tech Fest & Job Fair. Thu hút hơn 60 doanh nghiệp và 10.000 sinh viên tham gia.'
+  },
+  {
+    id: 'prj-htv',
+    title: 'Đài Truyền Hình HTV',
+    client: 'HTV',
+    category: 'Training AI',
+    result: '100+ BTV/Kỹ Sư',
+    imageUrl: 'https://images.unsplash.com/photo-1586899028174-e7098604235b?auto=format&fit=crop&q=80&w=1000', // Placeholder
+    description: 'Ứng dụng AI vào sáng tạo Video và Đồ họa. Tập huấn cho hơn 100 anh chị biên tập viên, kỹ sư, họa sĩ, quay phim và đạo diễn của đài.'
+  },
+  {
+    id: 'prj-vnpt',
+    title: 'VNPT AI Automation',
+    client: 'VNPT',
+    category: 'AI HR',
+    result: 'Tối ưu nhân sự',
+    imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1000', // Placeholder
+    description: 'Chia sẻ chuyển đổi số và ứng dụng AI Automation cho bộ phận nhân sự & lãnh đạo VNPT. Chương trình chia sẻ trực tiếp tại doanh nghiệp.'
+  },
+  {
+    id: 'prj-smartlands',
+    title: 'Smartlands Agentics',
+    client: 'Smartlands',
+    category: 'AI Automation',
+    result: '6 Phòng ban',
+    imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1000', // Placeholder
+    description: 'Triển khai hệ thống AI Automations tại 6 phòng ban. AI tự động hóa làm nội dung đa kênh, thống kê/cảnh báo quảng cáo, báo cáo Dashboard và gửi email tự động.'
   }
 ];
 
 export const MOCK_NEWS: NewsItem[] = [
   {
-    id: 'news-ai-2024',
-    title: 'Tương lai của AI trong Digital Marketing 2024',
-    category: 'Xu Hướng',
+    id: 'news-tayninh-gov',
+    title: 'Tây Ninh: Tập huấn AI trong công tác truyền thông',
+    category: 'Chính Phủ',
+    date: '2024-03-20',
+    imageUrl: 'https://images.unsplash.com/photo-1555848962-6e79363ec58f?auto=format&fit=crop&q=80&w=1000', // Placeholder
+    summary: 'Hơn 400 cán bộ thuộc lực lượng vũ trang, Khối Mặt trận Tổ quốc và các tổ chức chính trị - xã hội tham gia khóa tập huấn ứng dụng AI.',
+    content: 'Chương trình nhằm nâng cao năng lực truyền thông số, ứng dụng trí tuệ nhân tạo vào việc sáng tạo nội dung tuyên truyền...'
+  },
+  {
+    id: 'news-uef',
+    title: 'Chia sẻ cho Giảng viên & Đồng hành cùng UEF',
+    category: 'Giáo Dục',
     date: '2024-03-15',
-    imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1000',
-    summary: 'AI không thay thế Marketer, nhưng Marketer biết dùng AI sẽ thay thế người không biết. Phân tích cách ChatGPT, Midjourney đang thay đổi cuộc chơi sáng tạo nội dung.',
-    content: 'Nội dung chi tiết về cách ChatGPT, Midjourney và Gemini đang thay đổi cách sản xuất nội dung...'
+    imageUrl: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1000', // Placeholder
+    summary: 'Đào tạo AI ứng dụng trong giảng dạy, phản biện nội dung bài giảng và chuẩn hóa thông tin cho đội ngũ giảng viên trường Đại học UEF (Đã ký MOU).',
+    content: 'Nội dung xoay quanh việc sử dụng AI để soạn giáo án, tích hợp công cụ thực tiễn vào lớp học...'
   },
   {
-    id: 'news-award',
-    title: 'DUHAVA đạt giải "Agency Sáng Tạo Của Năm"',
-    category: 'Thông Cáo',
+    id: 'news-hiephoi-hcm',
+    title: 'Chia sẻ tại Hiệp hội Doanh nghiệp TP.HCM (HUBA)',
+    category: 'Doanh Nghiệp',
     date: '2024-03-10',
-    imageUrl: 'https://images.unsplash.com/photo-1531545514256-b1400bc00f31?auto=format&fit=crop&q=80&w=1000',
-    summary: 'Cột mốc quan trọng ghi nhận nỗ lực của đội ngũ. Giải thưởng danh giá từ Hiệp hội Marketing Châu Á (MMA Smarties) cho chiến dịch Bất động sản xuất sắc nhất.',
-    content: 'Lễ trao giải diễn ra tại Singapore với sự tham gia của 500 chuyên gia đầu ngành...'
+    imageUrl: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=1000', // Placeholder
+    summary: 'Chủ đề: ChatGPT, Website & Ứng dụng AI cho sản xuất, xuất khẩu. Chương trình kết hợp 1 ngày offline và hỗ trợ online.',
+    content: 'Gặp gỡ và chia sẻ giải pháp công nghệ cho các doanh nghiệp thành viên hiệp hội...'
   },
   {
-    id: 'news-uiux',
-    title: '5 Quy luật tâm lý học trong thiết kế UX/UI',
-    category: 'Chuyên Môn',
-    date: '2024-03-01',
-    imageUrl: 'https://images.unsplash.com/photo-1586717791821-3f44a5638d48?auto=format&fit=crop&q=80&w=1000',
-    summary: 'Tại sao khách hàng bấm nút "Mua ngay"? Khám phá Luật Fitts, Hiệu ứng Von Restorff và cách ứng dụng màu sắc để điều hướng mắt nhìn, tăng tỷ lệ chuyển đổi cho Website.',
-    content: 'Phân tích sâu về hành vi người dùng và cách điều hướng mắt nhìn...'
+    id: 'news-ai-hero',
+    title: 'Cộng đồng AI Hero - Kết nối đam mê công nghệ',
+    category: 'Cộng Đồng',
+    date: '2024-03-05',
+    imageUrl: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=1000', // Placeholder
+    summary: 'Hỗ trợ xây dựng cộng đồng AI Hero trên nền tảng Skool, nơi quy tụ các chuyên gia và người yêu thích trí tuệ nhân tạo.',
+    content: 'Tổ chức các buổi Webinar chia sẻ kiến thức, cập nhật xu hướng công nghệ mới nhất...'
+  },
+  {
+    id: 'news-tayninh-biz',
+    title: 'Tọa đàm Doanh nghiệp tỉnh Tây Ninh',
+    category: 'Sự Kiện',
+    date: '2024-02-28',
+    imageUrl: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&q=80&w=1000', // Placeholder
+    summary: 'Đồng hành chia sẻ & triển khai chuyên sâu với các doanh nghiệp thực tế về Chuyển đổi số & Trí tuệ nhân tạo.',
+    content: 'Sự kiện thu hút hơn 200 doanh nghiệp tỉnh Tây Ninh tham gia...'
   }
 ];
 

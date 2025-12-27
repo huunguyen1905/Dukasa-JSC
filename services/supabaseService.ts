@@ -1,6 +1,7 @@
+
 import { supabase } from './supabaseClient';
 import { Service, Project, NewsItem, Lead, LeadStatus, TeamMember, ClientPartner, ComparisonItem, Persona } from '../types';
-import { MOCK_TEAM } from '../data/mockData';
+import { MOCK_TEAM, MOCK_SERVICES, MOCK_PROJECTS, MOCK_NEWS } from '../data/mockData';
 
 // --- Helpers ---
 
@@ -117,7 +118,10 @@ export const uploadImage = async (file: File): Promise<string | null> => {
 
 export const fetchServices = async (): Promise<Service[]> => {
     const { data, error } = await supabase.from('services').select('*').order('created_at', { ascending: true });
-    if (error) { console.error('Error fetching services:', error); return []; }
+    if (error) { 
+        console.warn('⚠️ Could not fetch services from Supabase. Falling back to MOCK data.', error.message); 
+        return MOCK_SERVICES; 
+    }
     return data.map(mapService);
 };
 
@@ -143,7 +147,10 @@ export const deleteService = async (id: string) => {
 
 export const fetchProjects = async (): Promise<Project[]> => {
     const { data, error } = await supabase.from('projects').select('*').order('created_at', { ascending: true });
-    if (error) { console.error('Error fetching projects:', error); return []; }
+    if (error) { 
+        console.warn('⚠️ Could not fetch projects from Supabase. Falling back to MOCK data.', error.message); 
+        return MOCK_PROJECTS; 
+    }
     return data.map(mapProject);
 };
 
@@ -171,7 +178,10 @@ export const deleteProject = async (id: string) => {
 
 export const fetchNews = async (): Promise<NewsItem[]> => {
     const { data, error } = await supabase.from('news').select('*').order('date', { ascending: false });
-    if (error) { console.error('Error fetching news:', error); return []; }
+    if (error) { 
+        console.warn('⚠️ Could not fetch news from Supabase. Falling back to MOCK data.', error.message); 
+        return MOCK_NEWS; 
+    }
     return data.map(mapNews);
 };
 
@@ -228,7 +238,7 @@ export const deleteTeamMember = async (id: string) => {
 
 export const fetchLeads = async (): Promise<Lead[]> => {
     const { data, error } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
-    if (error) { console.error('Error fetching leads:', error); return []; }
+    if (error) { console.error('Error fetching leads:', error.message); return []; }
     return data.map(mapLead);
 };
 
