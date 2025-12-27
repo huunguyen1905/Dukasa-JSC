@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Send, Clock, CheckCircle, Users, ExternalLink } from 'lucide-react';
 import FadeIn from './FadeIn';
@@ -195,7 +196,7 @@ const Contact: React.FC = () => {
                                 type="submit"
                                 disabled={isSubmitting}
                                 className={`
-                                    w-full bg-brand-yellow text-black font-black uppercase py-5 rounded hover:bg-white transition-all shadow-lg flex items-center justify-center gap-2
+                                    w-full bg-brand-yellow text-black font-black uppercase py-3 md:py-5 rounded hover:bg-white transition-all shadow-lg flex items-center justify-center gap-2
                                     ${isSubmitting ? 'opacity-70 cursor-wait' : 'hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(250,204,21,0.4)]'}
                                 `}
                             >

@@ -343,7 +343,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
             <div className="p-8 border-t border-white/5 space-y-4">
                 <button 
                     onClick={() => { onOpenContact(); setIsMobileMenuOpen(false); }}
-                    className="w-full bg-brand-yellow text-brand-black text-sm font-black py-4 rounded-xl uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
+                    className="w-full bg-brand-yellow text-brand-black text-xs md:text-sm font-black py-3 md:py-4 rounded-xl uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
                 >
                     Nhận Tư Vấn <ArrowRight size={16} />
                 </button>

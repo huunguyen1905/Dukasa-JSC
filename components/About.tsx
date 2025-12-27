@@ -199,8 +199,11 @@ const About: React.FC = () => {
                 </div>
 
                 <div className="mt-12 pt-12 border-t border-gray-800">
-                    <button onClick={() => document.getElementById('contact-trigger')?.click()} className="inline-flex items-center gap-2 bg-white text-black font-bold uppercase py-4 px-10 rounded-full hover:bg-brand-yellow transition-all duration-300 shadow-lg hover:shadow-brand-yellow/50">
-                        Làm Việc Cùng Chúng Tôi <Rocket size={20} />
+                    <button 
+                        onClick={() => document.getElementById('contact-trigger')?.click()} 
+                        className="inline-flex items-center gap-2 bg-white text-black font-bold uppercase py-3 px-6 text-xs md:text-base md:py-4 md:px-10 rounded-full hover:bg-brand-yellow transition-all duration-300 shadow-lg hover:shadow-brand-yellow/50 whitespace-nowrap"
+                    >
+                        Làm Việc Cùng Chúng Tôi <Rocket size={16} />
                     </button>
                 </div>
              </div>

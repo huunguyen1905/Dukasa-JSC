@@ -156,8 +156,7 @@ const GrowthSection: React.FC = () => {
                                     <path d="M0,80 L100,80" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" strokeDasharray="2 2" />
 
                                     {/* The Exponential Curve */}
-                                    {/* M 0,90: Start bottom left */}
-                                    {/* C 40,90 60,80 100,10: Curve up aggressively */}
+                                    {/* M 0,100 L 0,90 C 30,90 60,80 100,10 L 100,100 Z */}
                                     <path 
                                         d="M0,100 L0,90 C30,90 60,80 100,10 L100,100 Z" 
                                         fill="url(#chartFill)" 
@@ -185,16 +184,17 @@ const GrowthSection: React.FC = () => {
                                     )}
                                 </svg>
 
-                                {/* Floating Tooltip (Dynamic) */}
-                                <div className={`absolute top-[10%] right-[0%] transform translate-x-1/2 -translate-y-1/2 transition-all duration-700 delay-1000 ${animate ? 'opacity-100' : 'opacity-0'}`}>
-                                     <div className="bg-gray-900/90 border border-brand-yellow/50 backdrop-blur-md px-4 py-2 rounded-xl shadow-[0_0_30px_rgba(250,204,21,0.3)]">
-                                        <div className="text-[10px] text-gray-400 font-bold uppercase">ROI Index</div>
-                                        <div className="text-xl font-black text-white tabular-nums">
+                                {/* Floating Tooltip (Fixed Layout) */}
+                                <div className={`absolute top-[18%] right-2 md:right-8 transform -translate-y-1/2 transition-all duration-700 delay-1000 z-30 ${animate ? 'opacity-100' : 'opacity-0'}`}>
+                                     <div className="bg-gray-900/90 border border-brand-yellow/50 backdrop-blur-md px-3 py-2 md:px-4 md:py-3 rounded-xl shadow-[0_0_30px_rgba(250,204,21,0.3)] flex flex-col items-center">
+                                        <div className="text-[10px] text-gray-400 font-bold uppercase whitespace-nowrap">ROI Index</div>
+                                        <div className="text-xl md:text-2xl font-black text-white tabular-nums leading-none mt-1">
                                             +{Math.floor(revenue / 20000)}%
                                         </div>
                                      </div>
-                                     {/* Connector Line */}
-                                     <div className="w-px h-8 bg-brand-yellow/50 mx-auto"></div>
+                                     {/* Connector Line pointing to the curve */}
+                                     <div className="w-px h-4 md:h-6 bg-gradient-to-b from-brand-yellow/50 to-transparent mx-auto"></div>
+                                     <div className="w-1.5 h-1.5 bg-brand-yellow rounded-full mx-auto shadow-[0_0_10px_#FACC15]"></div>
                                 </div>
                             </div>
                         </div>

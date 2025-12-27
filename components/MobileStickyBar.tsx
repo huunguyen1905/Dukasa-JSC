@@ -27,15 +27,15 @@ const MobileStickyBar: React.FC<MobileStickyBarProps> = ({ onCtaClick }) => {
         <div className="flex gap-3">
             <a 
                 href="tel:0906291941"
-                className="flex-1 bg-gray-800 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-transform whitespace-nowrap text-xs sm:text-sm"
+                className="flex-1 bg-gray-800 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-transform whitespace-nowrap text-[10px] sm:text-xs"
             >
-                <Phone size={16} /> Gọi Ngay
+                <Phone size={14} /> Gọi Ngay
             </a>
             <button 
                 onClick={onCtaClick}
-                className="flex-[2] bg-brand-yellow text-black font-black uppercase py-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-[0_0_15px_rgba(250,204,21,0.3)] whitespace-nowrap text-xs sm:text-sm"
+                className="flex-[2] bg-brand-yellow text-black font-black uppercase py-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-[0_0_15px_rgba(250,204,21,0.3)] whitespace-nowrap text-[10px] sm:text-xs"
             >
-                <Zap size={16} fill="currentColor" /> Nhận Báo Giá
+                <Zap size={14} fill="currentColor" /> Nhận Báo Giá
             </button>
         </div>
     </div>

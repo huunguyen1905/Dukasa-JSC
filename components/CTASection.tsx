@@ -25,9 +25,9 @@ const CTASection: React.FC<CTASectionProps> = ({ onCtaClick }) => {
             
             <button 
                 onClick={onCtaClick}
-                className="bg-brand-black text-white text-xl font-bold py-6 px-16 rounded-full hover:scale-105 hover:shadow-2xl transition-all duration-300 flex items-center gap-3 mx-auto whitespace-nowrap"
+                className="bg-brand-black text-white text-sm md:text-xl font-bold py-4 px-8 md:py-6 md:px-16 rounded-full hover:scale-105 hover:shadow-2xl transition-all duration-300 flex items-center gap-3 mx-auto whitespace-nowrap"
             >
-                BẮT ĐẦU DỰ ÁN NGAY <ArrowRight />
+                BẮT ĐẦU DỰ ÁN NGAY <ArrowRight size={18} />
             </button>
        </div>
     </section>

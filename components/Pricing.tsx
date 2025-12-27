@@ -140,7 +140,7 @@ const Pricing: React.FC<PricingProps> = ({ onCtaClick }) => {
                         <button 
                             onClick={onCtaClick}
                             className={`
-                                w-full py-4 rounded font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap text-xs md:text-sm
+                                w-full py-3 md:py-4 rounded font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap text-xs md:text-sm
                                 ${tier.highlight 
                                     ? 'bg-brand-yellow text-black hover:bg-white hover:shadow-lg' 
                                     : 'bg-transparent border border-gray-700 text-white hover:border-brand-yellow hover:text-brand-yellow'

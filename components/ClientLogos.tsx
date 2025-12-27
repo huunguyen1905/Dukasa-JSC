@@ -36,7 +36,7 @@ const STATIC_PARTNERS = [
 const LogoItem: React.FC<{ partner: { name: string, url: string } }> = ({ partner }) => {
   return (
     // Adjusted: Tighter width (w-44/w-72), reduced padding, increased container height (h-40)
-    <div className="group relative h-40 w-44 md:w-72 flex items-center justify-center px-4 md:px-8 transition-all duration-500">
+    <div className="group relative h-32 w-44 md:w-72 flex items-center justify-center px-4 md:px-8 transition-all duration-500">
         {/* Hover Glow Effect Behind */}
         <div className="absolute inset-0 bg-brand-yellow/0 group-hover:bg-brand-yellow/5 rounded-xl transition-colors duration-500 filter blur-xl"></div>
         
@@ -45,7 +45,7 @@ const LogoItem: React.FC<{ partner: { name: string, url: string } }> = ({ partne
             alt={partner.name} 
             referrerPolicy="no-referrer"
             className="
-                max-h-20 md:max-h-28 w-auto object-contain transition-all duration-500 ease-out
+                max-h-16 md:max-h-24 w-auto object-contain transition-all duration-500 ease-out
                 filter grayscale brightness-[0.6] opacity-70 contrast-125
                 group-hover:grayscale-0 group-hover:brightness-100 group-hover:opacity-100 group-hover:scale-110 group-hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]
             "
@@ -61,7 +61,7 @@ const ClientLogos: React.FC = () => {
   const row2 = partners.slice(half);
 
   return (
-    <section className="bg-brand-black border-y border-gray-900 py-24 overflow-hidden relative z-20 group/section">
+    <section className="bg-brand-black border-b border-gray-900 py-10 overflow-hidden relative z-20 group/section">
       {/* Background Texture */}
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>
       
@@ -69,14 +69,14 @@ const ClientLogos: React.FC = () => {
       <div className="absolute left-0 top-0 bottom-0 w-32 md:w-64 bg-gradient-to-r from-brand-black via-brand-black/80 to-transparent z-10 pointer-events-none"></div>
       <div className="absolute right-0 top-0 bottom-0 w-32 md:w-64 bg-gradient-to-l from-brand-black via-brand-black/80 to-transparent z-10 pointer-events-none"></div>
 
-      <div className="container mx-auto px-6 mb-16 text-center relative z-10">
+      <div className="container mx-auto px-6 mb-8 text-center relative z-10">
           <span className="text-brand-yellow font-bold tracking-[0.3em] uppercase text-xs md:text-sm mb-2 block animate-pulse">Ecosystem</span>
-          <h3 className="text-2xl md:text-4xl font-black text-white uppercase tracking-tight opacity-90">
+          <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight opacity-90">
              Mạng Lưới <span className="text-gray-600">Đối Tác Chiến Lược</span>
           </h3>
       </div>
 
-      <div className="flex flex-col gap-6 md:gap-8 relative">
+      <div className="flex flex-col gap-4 relative">
         {/* ROW 1: Scrolling Left (Normal) */}
         <div className="flex w-full relative">
             <div className="flex animate-scroll-right items-center whitespace-nowrap" style={{ animationDirection: 'normal', animationDuration: '60s' }}>

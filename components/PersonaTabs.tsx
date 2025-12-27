@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Rocket, TrendingUp, Crown, ArrowRight } from 'lucide-react';
 import FadeIn from './FadeIn';
@@ -93,9 +94,9 @@ const PersonaTabs: React.FC<{ onCtaClick: () => void }> = ({ onCtaClick }) => {
 
                         <button 
                             onClick={onCtaClick}
-                            className="inline-flex items-center gap-2 bg-white text-black font-black uppercase py-4 px-8 rounded-full hover:bg-brand-yellow transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-brand-yellow/40"
+                            className="inline-flex items-center gap-2 bg-white text-black font-black uppercase py-3 px-6 text-xs md:text-base md:py-4 md:px-8 rounded-full hover:bg-brand-yellow transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-brand-yellow/40 whitespace-nowrap"
                         >
-                            {content[activeTab].cta} <ArrowRight size={18} />
+                            {content[activeTab].cta} <ArrowRight size={16} />
                         </button>
                     </div>
                 </div>

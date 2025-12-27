@@ -124,13 +124,13 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
   }, []);
 
   return (
-    <div id="hero" className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
+    <div id="hero" className="relative min-h-[85vh] w-full flex items-center justify-center overflow-hidden">
       {/* Canvas for Particles (Foreground Interaction) */}
       <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0 opacity-60 pointer-events-none" />
       
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-black/20 to-brand-black z-10 pointer-events-none"></div>
 
-      <div className="relative z-20 text-center px-4 max-w-7xl mx-auto pt-24 md:pt-38 pb-20 flex flex-col justify-center h-full">
+      <div className="relative z-20 text-center px-4 max-w-7xl mx-auto pt-24 pb-12 flex flex-col justify-center h-full">
         
         <div className="inline-block mb-6 md:mb-10 animate-in fade-in slide-in-from-top-8 duration-1000">
             <span className="py-2 px-6 md:py-3 md:px-8 rounded-full border border-brand-yellow/30 bg-white/5 text-brand-yellow font-bold tracking-[0.2em] text-[10px] md:text-xs uppercase backdrop-blur-md shadow-[0_0_20px_rgba(250,204,21,0.2)]">
@@ -139,7 +139,7 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
         </div>
         
         {/* Adjusted Typography with Glow */}
-        <h1 className="text-4xl md:text-7xl lg:text-8xl xl:text-9xl font-black text-white uppercase leading-tight md:leading-normal tracking-tight mb-8 md:mb-16 drop-shadow-2xl animate-in zoom-in-90 duration-1000">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black text-white uppercase leading-tight md:leading-normal tracking-tight mb-8 md:mb-16 drop-shadow-2xl animate-in zoom-in-90 duration-1000">
           Định Hình <br className="hidden md:block" />
           <span className="relative inline-block mt-2">
             <span className="absolute -inset-8 bg-brand-yellow/10 blur-3xl rounded-full"></span>
@@ -154,16 +154,16 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
           <span className="text-white font-semibold border-b border-brand-yellow mx-1">độc bản</span>, giúp thương hiệu của bạn thống trị thị trường.
         </p>
         
-        <div className="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-center animate-in slide-in-from-bottom-8 duration-1000 delay-300 pb-10 w-full max-w-sm md:max-w-none mx-auto">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-center animate-in slide-in-from-bottom-8 duration-1000 delay-300 pb-4 w-full max-w-sm md:max-w-none mx-auto">
           {/* Magnetic Primary Button */}
           <MagneticButton>
             <button 
                 onClick={onCtaClick}
-                className="w-full md:w-auto group relative bg-brand-yellow text-brand-black text-base md:text-xl font-black py-4 md:py-5 px-8 md:px-12 rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_50px_rgba(250,204,21,0.6)] whitespace-nowrap"
+                className="w-full md:w-auto group relative bg-brand-yellow text-brand-black text-sm md:text-xl font-black py-3 px-6 md:py-5 md:px-12 rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_50px_rgba(250,204,21,0.6)] whitespace-nowrap"
             >
                 <div className="absolute inset-0 bg-white/40 translate-y-full group-hover:translate-y-0 transition-transform duration-300 skew-y-12"></div>
                 <span className="relative flex items-center justify-center gap-2">
-                    NHẬN TƯ VẤN <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    NHẬN TƯ VẤN <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
             </button>
           </MagneticButton>
@@ -180,17 +180,12 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
                     });
                 }
                 }}
-                className="w-full md:w-auto group text-white text-base md:text-xl font-bold py-4 md:py-5 px-8 md:px-10 rounded-full border border-white/20 hover:bg-white/10 hover:text-white transition-all duration-300 backdrop-blur-md whitespace-nowrap"
+                className="w-full md:w-auto group text-white text-sm md:text-xl font-bold py-3 px-6 md:py-5 md:px-10 rounded-full border border-white/20 hover:bg-white/10 hover:text-white transition-all duration-300 backdrop-blur-md whitespace-nowrap"
             >
                 Khám Phá Dịch Vụ
             </button>
           </MagneticButton>
         </div>
-      </div>
-      
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center gap-2 opacity-60 hidden md:flex">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-brand-yellow animate-pulse">Cuộn xuống</span>
-        <div className="w-[1px] h-16 bg-gradient-to-b from-brand-yellow to-transparent"></div>
       </div>
     </div>
   );

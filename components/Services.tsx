@@ -180,7 +180,7 @@ const Services: React.FC<ServicesProps> = ({ services, onCtaClick }) => {
                              <div className="flex items-center gap-6">
                                 <button 
                                     onClick={onCtaClick}
-                                    className="group relative px-8 py-4 bg-white text-black font-black uppercase tracking-wide overflow-hidden rounded-lg hover:scale-105 transition-transform duration-300"
+                                    className="group relative px-6 py-3 md:px-8 md:py-4 bg-white text-black font-black uppercase tracking-wide overflow-hidden rounded-lg hover:scale-105 transition-transform duration-300 text-sm md:text-base"
                                 >
                                     <div className="absolute inset-0 bg-brand-yellow translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                                     <span className="relative flex items-center gap-2">
