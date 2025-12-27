@@ -1,125 +1,151 @@
 import React from 'react';
-import { Search, Map, Zap, TrendingUp, Clock, ArrowDown } from 'lucide-react';
+import { Search, Map, Zap, TrendingUp, Clock, ArrowDown, ChevronRight } from 'lucide-react';
 import FadeIn from './FadeIn';
 
 const steps = [
   {
     id: '01',
     title: 'Khám Phá & Thấu Hiểu',
-    icon: <Search className="w-8 h-8 text-brand-black" />,
+    subtitle: 'Data Mining & Insight',
+    icon: <Search className="w-6 h-6" />,
     description: 'Chúng tôi đào sâu vào dữ liệu (Data Mining), nghiên cứu đối thủ và vẽ chân dung khách hàng mục tiêu để tìm ra "Long Mạch" cho thương hiệu.',
     duration: '1 - 2 Tuần',
-    color: 'bg-brand-yellow'
+    tags: ['Audit', 'Research', 'Persona']
   },
   {
     id: '02',
     title: 'Chiến Lược May Đo',
-    icon: <Map className="w-8 h-8 text-white" />,
-    description: 'Thiết kế lộ trình tăng trưởng riêng biệt (Tailored Roadmap). Kết hợp đa kênh (Omnichannel) từ SEO, Ads đến Social để tối ưu hóa điểm chạm.',
+    subtitle: 'Tailored Roadmap',
+    icon: <Map className="w-6 h-6" />,
+    description: 'Thiết kế lộ trình tăng trưởng riêng biệt. Kết hợp đa kênh (Omnichannel) từ SEO, Ads đến Social để tối ưu hóa điểm chạm khách hàng.',
     duration: '1 Tuần',
-    color: 'bg-blue-600'
+    tags: ['Planning', 'KPIs', 'Media Mix']
   },
   {
     id: '03',
     title: 'Thực Thi Thần Tốc',
-    icon: <Zap className="w-8 h-8 text-white" />,
+    subtitle: 'Execution Excellence',
+    icon: <Zap className="w-6 h-6" />,
     description: 'Triển khai chiến dịch với tốc độ và sự chính xác tuyệt đối. Hệ thống báo cáo Real-time giúp bạn nắm bắt hiệu quả từng đồng chi phí.',
     duration: '2 - 4 Tuần / Liên tục',
-    color: 'bg-purple-600'
+    tags: ['Setup', 'Optimization', 'Tracking']
   },
   {
     id: '04',
     title: 'Tăng Trưởng & Mở Rộng',
-    icon: <TrendingUp className="w-8 h-8 text-white" />,
+    subtitle: 'Scale-up & Sustain',
+    icon: <TrendingUp className="w-6 h-6" />,
     description: 'Liên tục A/B Testing, tối ưu hóa tỷ lệ chuyển đổi (CRO) và mở rộng quy mô (Scale-up) để nhân bản doanh thu bền vững.',
     duration: 'Dài hạn (Ongoing)',
-    color: 'bg-green-600'
+    tags: ['A/B Test', 'CRO', 'Scale']
   }
 ];
 
 const Process: React.FC = () => {
   return (
-    <section className="bg-brand-black py-16 md:py-24 relative overflow-hidden">
-      {/* Background Grid Line */}
-      <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-gray-800 transform -translate-x-1/2 z-0 hidden md:block"></div>
+    <section className="bg-brand-black py-24 md:py-32 relative overflow-hidden">
+      {/* Background Atmosphere */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-brand-yellow/5 rounded-full blur-[120px] pointer-events-none opacity-50"></div>
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none"></div>
 
       <div className="container mx-auto px-6 relative z-10">
+        
+        {/* HEADER SECTION */}
         <FadeIn>
-            <div className="text-center mb-16 md:mb-24">
-                <h2 className="text-brand-yellow font-bold tracking-widest uppercase mb-2">Quy Trình Làm Việc</h2>
-                <h3 className="text-3xl md:text-6xl font-black text-white uppercase tracking-tighter mb-6">
-                Lộ Trình <span className="text-gray-600">Thành Công</span>
-                </h3>
-                <div className="flex items-center justify-center gap-2 text-gray-500 text-sm animate-bounce">
-                    <ArrowDown size={14}/> Cuộn để khám phá
+            <div className="text-center mb-24 max-w-4xl mx-auto">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                    <div className="h-px w-12 bg-brand-yellow/50"></div>
+                    <span className="text-brand-yellow font-bold tracking-[0.2em] uppercase text-xs">Quy Trình Chuẩn Quốc Tế</span>
+                    <div className="h-px w-12 bg-brand-yellow/50"></div>
                 </div>
+                <h3 className="text-4xl md:text-7xl font-black text-white uppercase tracking-tighter mb-8 leading-tight">
+                    Lộ Trình <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-b from-brand-yellow to-yellow-700">Thành Công</span>
+                </h3>
+                <p className="text-gray-400 text-lg font-light leading-relaxed">
+                    Không có phép màu nào cả. Chỉ có Chiến lược đúng đắn, Thực thi xuất sắc và Tối ưu liên tục.
+                </p>
             </div>
         </FadeIn>
 
-        <div className="flex flex-col gap-8 md:gap-24 relative">
-          {steps.map((step, index) => (
-            <div 
-                key={index} 
-                className="sticky top-24 md:top-32 group"
-                style={{ zIndex: index + 1 }}
-            >
-                <FadeIn delay={index * 0}>
-                    <div className="max-w-4xl mx-auto">
-                        <div className={`
-                            relative overflow-hidden rounded-2xl border border-gray-800 
-                            bg-[#0a0a0a] backdrop-blur-xl
-                            shadow-[0_-5px_30px_rgba(0,0,0,0.8)]
-                            transition-all duration-500 ease-out 
-                            hover:border-brand-yellow/50 hover:shadow-[0_0_30px_rgba(250,204,21,0.15)] hover:-translate-y-1
-                            flex flex-col md:flex-row
-                        `}>
-                            {/* Mobile Header: Step Number & Icon */}
-                            <div className="flex items-center justify-between p-5 border-b border-gray-800 md:hidden">
-                                <span className="text-3xl font-black text-white/10">{step.id}</span>
-                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${step.id === '01' ? 'bg-brand-yellow text-black' : 'bg-gray-800 text-white'}`}>
-                                    {React.cloneElement(step.icon as React.ReactElement<any>, { size: 20 })}
-                                </div>
-                            </div>
+        {/* TIMELINE CONTAINER */}
+        <div className="relative">
+            {/* The Central Golden Line (Desktop) */}
+            <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-yellow/30 to-transparent transform -translate-x-1/2 hidden md:block z-0"></div>
 
-                            {/* Left Side: Visual & Number (Desktop) */}
-                            <div className="hidden md:flex w-48 flex-col justify-between p-8 border-r border-gray-800 bg-gray-900/20 relative overflow-hidden">
-                                <span className="text-8xl font-black text-white/5 absolute -top-4 -left-4 select-none">{step.id}</span>
-                                <div className={`
-                                    w-14 h-14 rounded-xl flex items-center justify-center shadow-lg relative z-10
-                                    transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3
-                                    ${step.id === '01' ? 'bg-brand-yellow' : 'bg-gray-800 border border-gray-700'}
-                                `}>
-                                    {step.icon}
-                                </div>
-                                <div className="h-full w-px bg-gray-800 absolute right-0 top-0 hidden"></div>
-                            </div>
+            <div className="flex flex-col gap-12 md:gap-0">
+                {steps.map((step, index) => (
+                    <div key={index} className={`flex flex-col md:flex-row items-center relative ${index % 2 !== 0 ? 'md:flex-row-reverse' : ''} group`}>
+                        
+                        {/* CENTER NODE (Desktop) */}
+                        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden md:flex flex-col items-center justify-center z-20">
+                            <div className="w-4 h-4 bg-black border-2 border-brand-yellow rounded-full shadow-[0_0_15px_rgba(250,204,21,0.8)] group-hover:scale-150 transition-transform duration-500"></div>
+                        </div>
 
-                            {/* Right Side: Content */}
-                            <div className="flex-1 p-5 md:p-10 flex flex-col justify-center relative">
-                                {/* Hover Effect: Duration Reveal (Desktop) */}
-                                <div className="absolute top-6 right-6 md:right-10 flex items-center gap-2 overflow-hidden hidden md:flex">
-                                    <div className="flex items-center gap-2 translate-x-full opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 bg-brand-yellow/10 border border-brand-yellow/30 px-3 py-1 rounded-full">
-                                        <Clock size={14} className="text-brand-yellow"/>
-                                        <span className="text-brand-yellow text-xs font-bold uppercase whitespace-nowrap">{step.duration}</span>
+                        {/* EMPTY SPACER for alignment */}
+                        <div className="flex-1 hidden md:block"></div>
+
+                        {/* CONTENT CARD */}
+                        <div className="flex-1 w-full md:w-auto p-4 md:p-12">
+                            <FadeIn direction={index % 2 === 0 ? 'right' : 'left'} delay={index * 100}>
+                                <div className="relative bg-[#0A0A0A] border border-gray-800 p-8 md:p-10 rounded-2xl group-hover:border-brand-yellow/50 transition-all duration-500 group-hover:shadow-[0_0_40px_rgba(250,204,21,0.05)] overflow-hidden">
+                                    
+                                    {/* Giant Outline Number Background */}
+                                    <div className="absolute -top-6 -right-6 text-9xl font-black text-transparent opacity-10 select-none z-0" 
+                                         style={{ WebkitTextStroke: '2px #333' }}>
+                                        {step.id}
                                     </div>
-                                </div>
 
-                                <h4 className="text-xl md:text-3xl font-black text-white uppercase mb-3 md:mb-4 group-hover:text-brand-yellow transition-colors duration-300">
-                                    {step.title}
-                                </h4>
-                                <p className="text-gray-400 text-sm md:text-lg leading-relaxed border-l-2 border-gray-800 pl-4 group-hover:border-brand-yellow transition-colors duration-300">
-                                    {step.description}
-                                </p>
-                                
-                                <div className="mt-4 md:hidden flex items-center gap-2 text-[10px] font-bold text-gray-500 uppercase tracking-widest bg-gray-900/50 w-fit px-2 py-1 rounded">
-                                    <Clock size={12} /> {step.duration}
+                                    <div className="relative z-10">
+                                        {/* Header: Icon & Duration */}
+                                        <div className="flex justify-between items-start mb-6">
+                                            <div className="w-14 h-14 bg-gray-900 rounded-xl flex items-center justify-center text-brand-yellow border border-gray-800 group-hover:bg-brand-yellow group-hover:text-black transition-all duration-300 shadow-lg">
+                                                {step.icon}
+                                            </div>
+                                            <div className="flex items-center gap-2 bg-gray-900/80 px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider text-gray-400 border border-gray-800">
+                                                <Clock size={12} className="text-brand-yellow" />
+                                                {step.duration}
+                                            </div>
+                                        </div>
+
+                                        {/* Titles */}
+                                        <div className="mb-4">
+                                            <div className="text-brand-yellow text-xs font-bold uppercase tracking-widest mb-1 opacity-80">{step.subtitle}</div>
+                                            <h4 className="text-2xl md:text-3xl font-black text-white uppercase leading-none group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">
+                                                {step.title}
+                                            </h4>
+                                        </div>
+
+                                        {/* Description */}
+                                        <p className="text-gray-400 text-sm leading-relaxed mb-6 border-l border-gray-800 pl-4 group-hover:border-brand-yellow transition-colors duration-500">
+                                            {step.description}
+                                        </p>
+
+                                        {/* Tags */}
+                                        <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-800/50">
+                                            {step.tags.map((tag, i) => (
+                                                <span key={i} className="text-[10px] font-bold text-gray-500 bg-gray-900 px-2 py-1 rounded hover:text-white hover:bg-gray-800 transition-colors cursor-default">
+                                                    #{tag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Hover Corner Accent */}
+                                    <div className="absolute bottom-0 right-0 w-12 h-12 bg-brand-yellow/10 rounded-tl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                 </div>
-                            </div>
+                            </FadeIn>
                         </div>
                     </div>
-                </FadeIn>
+                ))}
             </div>
-          ))}
+
+            {/* Bottom Connector */}
+            <div className="flex justify-center mt-12">
+                 <div className="flex flex-col items-center gap-2 animate-bounce">
+                    <div className="w-px h-12 bg-gradient-to-b from-brand-yellow/50 to-transparent"></div>
+                    <ArrowDown size={20} className="text-brand-yellow opacity-50" />
+                 </div>
+            </div>
         </div>
       </div>
     </section>

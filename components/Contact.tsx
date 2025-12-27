@@ -81,8 +81,8 @@ const Contact: React.FC = () => {
             <div className="lg:col-span-7">
                 <FadeIn delay={100}>
                     {isSuccess ? (
-                        <div className="bg-gray-900 border border-brand-yellow/30 rounded-2xl p-12 text-center animate-in zoom-in duration-300">
-                            <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 text-green-500">
+                        <div className="bg-gray-900 border border-brand-yellow/30 rounded-2xl p-12 text-center animate-in zoom-in duration-300 shadow-[0_0_50px_rgba(250,204,21,0.1)]">
+                            <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 text-green-500 ring-1 ring-green-500/30">
                                 <CheckCircle size={40} />
                             </div>
                             <h4 className="text-2xl font-bold text-white mb-2">Đã Gửi Thành Công!</h4>
@@ -98,38 +98,38 @@ const Contact: React.FC = () => {
                         <form onSubmit={handleSubmit} className="space-y-10">
                             {/* Personal Info Group */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="group">
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-2 group-focus-within:text-brand-yellow transition-colors">Họ và Tên *</label>
+                                <div className="group relative">
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-2 group-focus-within:text-brand-yellow transition-colors duration-300">Họ và Tên *</label>
                                     <input 
                                         required
                                         type="text" 
                                         value={formData.name}
                                         onChange={e => setFormData({...formData, name: e.target.value})}
-                                        className="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-brand-yellow focus:outline-none transition-colors text-lg placeholder-gray-800"
+                                        className="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-brand-yellow focus:bg-white/5 focus:px-2 focus:outline-none transition-all duration-300 text-lg placeholder-gray-800 rounded-t"
                                         placeholder="Nhập tên của bạn"
                                     />
                                 </div>
-                                <div className="group">
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-2 group-focus-within:text-brand-yellow transition-colors">Số Điện Thoại *</label>
+                                <div className="group relative">
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-2 group-focus-within:text-brand-yellow transition-colors duration-300">Số Điện Thoại *</label>
                                     <input 
                                         required
                                         type="tel" 
                                         value={formData.phone}
                                         onChange={e => setFormData({...formData, phone: e.target.value})}
-                                        className="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-brand-yellow focus:outline-none transition-colors text-lg placeholder-gray-800"
+                                        className="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-brand-yellow focus:bg-white/5 focus:px-2 focus:outline-none transition-all duration-300 text-lg placeholder-gray-800 rounded-t"
                                         placeholder="090..."
                                     />
                                 </div>
                             </div>
                             
-                            <div className="group">
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2 group-focus-within:text-brand-yellow transition-colors">Email Doanh Nghiệp *</label>
+                            <div className="group relative">
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2 group-focus-within:text-brand-yellow transition-colors duration-300">Email Doanh Nghiệp *</label>
                                 <input 
                                     required
                                     type="email" 
                                     value={formData.email}
                                     onChange={e => setFormData({...formData, email: e.target.value})}
-                                    className="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-brand-yellow focus:outline-none transition-colors text-lg placeholder-gray-800"
+                                    className="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-brand-yellow focus:bg-white/5 focus:px-2 focus:outline-none transition-all duration-300 text-lg placeholder-gray-800 rounded-t"
                                     placeholder="name@company.com"
                                     name="email_field_duhava"
                                     autoComplete="email"
@@ -147,8 +147,8 @@ const Contact: React.FC = () => {
                                             onClick={() => toggleService(item)}
                                             className={`px-4 py-2 rounded-full border text-sm font-bold transition-all duration-300
                                                 ${formData.service.includes(item) 
-                                                    ? 'bg-brand-yellow text-black border-brand-yellow' 
-                                                    : 'bg-transparent text-gray-400 border-gray-700 hover:border-gray-500'
+                                                    ? 'bg-brand-yellow text-black border-brand-yellow shadow-[0_0_15px_rgba(250,204,21,0.2)]' 
+                                                    : 'bg-transparent text-gray-400 border-gray-700 hover:border-gray-500 hover:text-white'
                                                 }
                                             `}
                                         >
@@ -169,8 +169,8 @@ const Contact: React.FC = () => {
                                             onClick={() => setFormData({...formData, budget: item})}
                                             className={`px-2 py-2 rounded border text-xs font-bold transition-all duration-300
                                                 ${formData.budget === item
-                                                    ? 'bg-white text-black border-white' 
-                                                    : 'bg-transparent text-gray-500 border-gray-800 hover:border-gray-600'
+                                                    ? 'bg-white text-black border-white shadow-[0_0_15px_rgba(255,255,255,0.2)]' 
+                                                    : 'bg-transparent text-gray-500 border-gray-800 hover:border-gray-600 hover:text-gray-300'
                                                 }
                                             `}
                                         >
@@ -180,13 +180,13 @@ const Contact: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="group">
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2 group-focus-within:text-brand-yellow transition-colors">Lời Nhắn / Yêu Cầu Cụ Thể</label>
+                            <div className="group relative">
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2 group-focus-within:text-brand-yellow transition-colors duration-300">Lời Nhắn / Yêu Cầu Cụ Thể</label>
                                 <textarea 
                                     rows={3}
                                     value={formData.message}
                                     onChange={e => setFormData({...formData, message: e.target.value})}
-                                    className="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-brand-yellow focus:outline-none transition-colors text-lg placeholder-gray-800 resize-none"
+                                    className="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-brand-yellow focus:bg-white/5 focus:px-2 focus:outline-none transition-all duration-300 text-lg placeholder-gray-800 resize-none rounded-t"
                                     placeholder="Chia sẻ thêm về mục tiêu của bạn..."
                                 />
                             </div>
@@ -196,7 +196,7 @@ const Contact: React.FC = () => {
                                 disabled={isSubmitting}
                                 className={`
                                     w-full bg-brand-yellow text-black font-black uppercase py-5 rounded hover:bg-white transition-all shadow-lg flex items-center justify-center gap-2
-                                    ${isSubmitting ? 'opacity-70 cursor-wait' : 'hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(250,204,21,0.3)]'}
+                                    ${isSubmitting ? 'opacity-70 cursor-wait' : 'hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(250,204,21,0.4)]'}
                                 `}
                             >
                                 {isSubmitting ? 'Đang Xử Lý...' : 'Gửi Yêu Cầu Tư Vấn'} <Send size={18} />

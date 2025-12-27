@@ -20,7 +20,7 @@ const MobileStickyBar: React.FC<MobileStickyBarProps> = ({ onCtaClick }) => {
 
   return (
     <div className={`
-        fixed bottom-0 left-0 w-full z-[9990] bg-black/90 backdrop-blur-lg border-t border-gray-800 p-3 md:hidden transition-transform duration-300
+        fixed bottom-0 left-0 w-full z-[9990] bg-black/90 backdrop-blur-xl border-t border-gray-800 px-3 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] md:hidden transition-transform duration-300 shadow-[0_-5px_20px_rgba(0,0,0,0.5)]
         ${isVisible ? 'translate-y-0' : 'translate-y-full'}
     `}>
         <div className="flex gap-3">

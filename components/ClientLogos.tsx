@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Danh sách logo từ người dùng cung cấp
 const STATIC_PARTNERS = [
   "https://i.imgur.com/RyKqFvm.png",
   "https://i.imgur.com/778zJUh.png",
@@ -34,62 +33,66 @@ const STATIC_PARTNERS = [
 }));
 
 const LogoItem: React.FC<{ partner: { name: string, url: string } }> = ({ partner }) => {
-  // Container chung: Xóa grayscale để hiện màu, giữ opacity
-  const containerClass = "group relative h-24 w-40 md:w-56 flex items-center justify-center opacity-80 hover:opacity-100 transition-all duration-500 cursor-pointer mx-6 md:mx-10";
-
   return (
-    <div className={containerClass}>
+    // Increased height to h-32 and width to w-56/w-80 to accommodate larger logos
+    <div className="group relative h-32 w-56 md:w-80 flex items-center justify-center px-6 md:px-10 transition-all duration-500">
+        {/* Hover Glow Effect Behind */}
+        <div className="absolute inset-0 bg-brand-yellow/0 group-hover:bg-brand-yellow/5 rounded-xl transition-colors duration-500 filter blur-xl"></div>
+        
         <img 
             src={partner.url} 
             alt={partner.name} 
             referrerPolicy="no-referrer"
-            // Xóa brightness-0 invert để logo hiện đúng màu gốc
-            className="max-h-16 md:max-h-20 max-w-full object-contain transition-all duration-500"
+            className="
+                max-h-16 md:max-h-24 w-auto object-contain transition-all duration-500 ease-out
+                filter grayscale brightness-[0.6] opacity-60 contrast-125
+                group-hover:grayscale-0 group-hover:brightness-100 group-hover:opacity-100 group-hover:scale-110 group-hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]
+            "
         />
     </div>
   );
 };
 
 const ClientLogos: React.FC = () => {
-  // Sử dụng trực tiếp danh sách tĩnh, không cần fetch DB
   const partners = STATIC_PARTNERS;
-
-  // Chia đôi danh sách để chạy 2 hàng marquee
   const half = Math.ceil(partners.length / 2);
   const row1 = partners.slice(0, half);
   const row2 = partners.slice(half);
 
   return (
-    <section className="bg-brand-black border-y border-gray-900 py-16 md:py-20 overflow-hidden relative z-20">
-      <div className="absolute left-0 top-0 bottom-0 w-20 md:w-40 bg-gradient-to-r from-brand-black to-transparent z-10 pointer-events-none"></div>
-      <div className="absolute right-0 top-0 bottom-0 w-20 md:w-40 bg-gradient-to-l from-brand-black to-transparent z-10 pointer-events-none"></div>
+    <section className="bg-brand-black border-y border-gray-900 py-24 overflow-hidden relative z-20 group/section">
+      {/* Background Texture */}
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>
+      
+      {/* Vignette Fade Edges (Smooth Transition) */}
+      <div className="absolute left-0 top-0 bottom-0 w-32 md:w-64 bg-gradient-to-r from-brand-black via-brand-black/80 to-transparent z-10 pointer-events-none"></div>
+      <div className="absolute right-0 top-0 bottom-0 w-32 md:w-64 bg-gradient-to-l from-brand-black via-brand-black/80 to-transparent z-10 pointer-events-none"></div>
 
-      <div className="flex flex-col gap-10 md:gap-12">
-        {/* ROW 1: Scroll Left */}
-        <div className="flex w-full">
-            <div className="flex animate-scroll-right items-center whitespace-nowrap">
-                {/* Lặp lại 3 lần để đảm bảo hiệu ứng vô tận mượt mà */}
+      <div className="container mx-auto px-6 mb-16 text-center relative z-10">
+          <span className="text-brand-yellow font-bold tracking-[0.3em] uppercase text-xs md:text-sm mb-2 block animate-pulse">Ecosystem</span>
+          <h3 className="text-2xl md:text-4xl font-black text-white uppercase tracking-tight opacity-90">
+             Mạng Lưới <span className="text-gray-600">Đối Tác Chiến Lược</span>
+          </h3>
+      </div>
+
+      <div className="flex flex-col gap-8 md:gap-12 relative">
+        {/* ROW 1: Scrolling Left (Normal) */}
+        <div className="flex w-full relative">
+            <div className="flex animate-scroll-right items-center whitespace-nowrap" style={{ animationDirection: 'normal', animationDuration: '60s' }}>
                 {[...row1, ...row1, ...row1].map((partner, index) => (
                     <LogoItem key={`r1-${index}`} partner={partner} />
                 ))}
             </div>
         </div>
 
-        {/* ROW 2: Scroll Right (Simulated via reversed content order in generic marquee logic or distinct setup) */}
-        {/* Để đơn giản nhưng hiệu quả, ta dùng cùng chiều nhưng nội dung khác và duration khác */}
-        <div className="flex w-full">
-            <div className="flex animate-scroll-right items-center whitespace-nowrap" style={{ animationDuration: '45s' }}>
+        {/* ROW 2: Scrolling Right (Reverse) */}
+        <div className="flex w-full relative">
+            <div className="flex animate-scroll-right items-center whitespace-nowrap" style={{ animationDirection: 'reverse', animationDuration: '70s' }}>
                 {[...row2, ...row2, ...row2].map((partner, index) => (
                     <LogoItem key={`r2-${index}`} partner={partner} />
                 ))}
             </div>
         </div>
-      </div>
-      
-      <div className="text-center mt-12 md:mt-16">
-          <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-gray-600 font-bold px-4">
-            Vinh dự đồng hành cùng <span className="text-brand-yellow">100+ Doanh nghiệp</span> hàng đầu
-          </p>
       </div>
     </section>
   );

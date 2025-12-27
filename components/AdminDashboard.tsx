@@ -12,7 +12,8 @@ import {
     uploadImage
 } from '../services/supabaseService';
 import { generateServiceDescription } from '../services/geminiService';
-import { Trash2, Plus, X, Sparkles, LogOut, Loader2, Home, Users, Briefcase, FileText, RefreshCw, Database, UserCheck, Columns, Target, Upload, CheckCircle, AlertTriangle } from 'lucide-react';
+import { GoogleGenAI } from "@google/genai"; // Import Gemini SDK
+import { Trash2, Plus, X, Sparkles, LogOut, Loader2, Home, Users, Briefcase, FileText, RefreshCw, Database, UserCheck, Columns, Target, Upload, CheckCircle, AlertTriangle, Image as ImageIcon, Wand2 } from 'lucide-react';
 import { MOCK_SERVICES, MOCK_PROJECTS, MOCK_NEWS, MOCK_TEAM } from '../data/mockData';
 
 interface AdminDashboardProps {
@@ -58,6 +59,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   // UI States
   const [isEditing, setIsEditing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false); // State for Image Gen
   const [isLoading, setIsLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -187,6 +189,85 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
       } finally {
           setIsUploading(false);
       }
+  };
+
+  // --- AI IMAGE GENERATION (Nano Banana Pro) ---
+  const handleGenerateImageAI = async () => {
+    const context = formData.title || formData.name || "Abstract Digital Art";
+    if (!context) {
+        showToast("Vui lòng nhập tiêu đề trước để AI vẽ đúng chủ đề.", 'error');
+        return;
+    }
+
+    setIsGeneratingImage(true);
+    try {
+        const apiKey = process.env.API_KEY || '';
+        if (!apiKey) throw new Error("API Key not found");
+
+        const ai = new GoogleGenAI({ apiKey });
+        
+        // Aesthetic Prompt Engineering for Black & Gold Theme
+        const prompt = `
+            High-end professional photography or 3D render of ${context}.
+            Style: Luxury, Cyberpunk, Futuristic, Black and Gold color palette.
+            Atmosphere: Dramatic lighting, depth of field, cinematic, premium digital agency vibe.
+            Quality: 8k resolution, highly detailed, photorealistic.
+            No text, no watermarks.
+        `;
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-3-pro-image-preview', // The "Nano Banana Pro" model
+            contents: {
+                parts: [{ text: prompt }]
+            },
+            config: {
+                imageConfig: {
+                    aspectRatio: "16:9", // Cinematic ratio
+                    imageSize: "1K"
+                }
+            }
+        });
+
+        // Find the image part
+        let base64Image = null;
+        if (response.candidates?.[0]?.content?.parts) {
+            for (const part of response.candidates[0].content.parts) {
+                if (part.inlineData) {
+                    base64Image = part.inlineData.data;
+                    break;
+                }
+            }
+        }
+
+        if (base64Image) {
+            // Convert Base64 to Blob/File to reuse upload logic
+            const byteCharacters = atob(base64Image);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'image/png' });
+            const file = new File([blob], `ai-gen-${Date.now()}.png`, { type: 'image/png' });
+
+            // Upload to Supabase
+            const publicUrl = await uploadImage(file);
+            if (publicUrl) {
+                setFormData({ ...formData, imageUrl: publicUrl });
+                showToast("Đã thiết kế và upload ảnh thành công!", 'success');
+            } else {
+                showToast("Lỗi upload ảnh AI lên server.", 'error');
+            }
+        } else {
+            showToast("AI không trả về hình ảnh. Thử lại sau.", 'error');
+        }
+
+    } catch (error) {
+        console.error("AI Image Gen Error:", error);
+        showToast("Lỗi khi tạo ảnh AI.", 'error');
+    } finally {
+        setIsGeneratingImage(false);
+    }
   };
 
   const handleSave = async () => {
@@ -656,44 +737,62 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                             <label className="block text-xs font-bold text-gray-500 uppercase mb-1 flex justify-between items-center">
                                 <span>Hình Ảnh / Logo</span>
                                 {isUploading && <span className="text-brand-yellow animate-pulse flex items-center gap-1"><Loader2 size={12} className="animate-spin"/> Uploading...</span>}
+                                {isGeneratingImage && <span className="text-brand-yellow animate-pulse flex items-center gap-1"><Wand2 size={12} className="animate-spin"/> AI Designing...</span>}
                             </label>
                             
-                            <div className="flex gap-4 items-start">
-                                {/* Preview */}
-                                <div className="w-24 h-24 bg-gray-800 rounded border border-gray-700 flex items-center justify-center overflow-hidden shrink-0 relative group">
-                                    {(formData.imageUrl || formData.logoUrl) ? (
-                                        <img src={formData.imageUrl || formData.logoUrl} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <span className="text-xs text-gray-500">No Image</span>
-                                    )}
-                                </div>
-
-                                <div className="flex-1 space-y-2">
-                                    {/* File Input */}
-                                    <div className="relative">
-                                        <input 
-                                            type="file" 
-                                            accept="image/*"
-                                            onChange={handleImageUpload}
-                                            className="hidden" 
-                                            id="file-upload"
-                                            disabled={isUploading}
-                                        />
-                                        <label htmlFor="file-upload" className="cursor-pointer flex items-center justify-center gap-2 w-full bg-gray-800 hover:bg-gray-700 text-white py-2 rounded border border-gray-600 transition-colors text-sm font-bold">
-                                            <Upload size={16} /> Tải Ảnh Lên
-                                        </label>
+                            <div className="flex flex-col gap-3">
+                                <div className="flex gap-4 items-start">
+                                    {/* Preview */}
+                                    <div className="w-24 h-24 bg-gray-800 rounded border border-gray-700 flex items-center justify-center overflow-hidden shrink-0 relative group">
+                                        {(formData.imageUrl || formData.logoUrl) ? (
+                                            <img src={formData.imageUrl || formData.logoUrl} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <span className="text-xs text-gray-500 flex flex-col items-center gap-1"><ImageIcon size={16}/> No Image</span>
+                                        )}
                                     </div>
 
-                                    {/* Manual URL Input (Fallback) */}
-                                    <input className="w-full bg-black border border-gray-700 rounded p-2 text-white text-xs focus:border-brand-yellow outline-none"
-                                        value={formData.imageUrl || formData.logoUrl || ''}
-                                        onChange={e => {
-                                            const val = e.target.value;
-                                            setFormData({...formData, imageUrl: val});
-                                        }}
-                                        placeholder="Hoặc dán link ảnh..."
-                                    />
+                                    <div className="flex-1 space-y-2">
+                                        {/* Button Group */}
+                                        <div className="flex gap-2">
+                                            {/* File Input */}
+                                            <div className="relative flex-1">
+                                                <input 
+                                                    type="file" 
+                                                    accept="image/*"
+                                                    onChange={handleImageUpload}
+                                                    className="hidden" 
+                                                    id="file-upload"
+                                                    disabled={isUploading || isGeneratingImage}
+                                                />
+                                                <label htmlFor="file-upload" className="cursor-pointer flex items-center justify-center gap-2 w-full bg-gray-800 hover:bg-gray-700 text-white py-2 rounded border border-gray-600 transition-colors text-sm font-bold">
+                                                    <Upload size={16} /> Tải Ảnh Lên
+                                                </label>
+                                            </div>
+
+                                            {/* AI Generate Button */}
+                                            <button 
+                                                onClick={handleGenerateImageAI}
+                                                disabled={isUploading || isGeneratingImage}
+                                                className="flex-1 bg-gradient-to-r from-brand-yellow via-yellow-400 to-brand-yellow text-black font-bold py-2 rounded border border-brand-yellow hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 text-sm shadow-[0_0_15px_rgba(250,204,21,0.2)]"
+                                                title="Sử dụng Gemini Nano Banana Pro để tạo ảnh độc bản"
+                                            >
+                                                {isGeneratingImage ? <Loader2 size={16} className="animate-spin"/> : <Wand2 size={16} />} 
+                                                AI Design
+                                            </button>
+                                        </div>
+
+                                        {/* Manual URL Input (Fallback) */}
+                                        <input className="w-full bg-black border border-gray-700 rounded p-2 text-white text-xs focus:border-brand-yellow outline-none"
+                                            value={formData.imageUrl || formData.logoUrl || ''}
+                                            onChange={e => {
+                                                const val = e.target.value;
+                                                setFormData({...formData, imageUrl: val});
+                                            }}
+                                            placeholder="Hoặc dán link ảnh..."
+                                        />
+                                    </div>
                                 </div>
+                                <p className="text-[10px] text-gray-500 italic">*Mẹo: Nhập Tiêu Đề trước, sau đó bấm "AI Design". Hệ thống sẽ tự động thiết kế ảnh chuẩn phong cách Black & Gold Luxury.</p>
                             </div>
                         </div>
                     )}

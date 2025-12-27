@@ -2,6 +2,20 @@ import { supabase } from './supabaseClient';
 import { Service, Project, NewsItem, Lead, LeadStatus, TeamMember, ClientPartner, ComparisonItem, Persona } from '../types';
 import { MOCK_TEAM } from '../data/mockData';
 
+// --- Helpers ---
+
+// Tạo UUID an toàn để fix lỗi "null value in column id" khi DB không tự sinh ID
+const generateUUID = () => {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+        return crypto.randomUUID();
+    }
+    // Fallback cho trình duyệt cũ
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+};
+
 // --- Mappers (Snake_case DB -> CamelCase App) ---
 
 const mapService = (data: any): Service => ({
@@ -112,9 +126,9 @@ export const upsertService = async (service: Partial<Service>) => {
         title: service.title,
         description: service.description,
         icon: service.icon,
-        image_url: service.imageUrl
+        image_url: service.imageUrl,
+        id: service.id || generateUUID() // FIX: Generate ID if missing
     };
-    if (service.id) payload.id = service.id;
     
     const { error } = await supabase.from('services').upsert(payload);
     if (error) throw error;
@@ -140,9 +154,9 @@ export const upsertProject = async (project: Partial<Project>) => {
         category: project.category,
         image_url: project.imageUrl,
         result: project.result,
-        description: project.description
+        description: project.description,
+        id: project.id || generateUUID() // FIX: Generate ID if missing
     };
-    if (project.id) payload.id = project.id;
 
     const { error } = await supabase.from('projects').upsert(payload);
     if (error) throw error;
@@ -168,9 +182,9 @@ export const upsertNews = async (news: Partial<NewsItem>) => {
         summary: news.summary,
         content: news.content,
         image_url: news.imageUrl,
-        date: news.date
+        date: news.date,
+        id: news.id || generateUUID() // FIX: Generate ID if missing
     };
-    if (news.id) payload.id = news.id;
 
     const { error } = await supabase.from('news').upsert(payload);
     if (error) throw error;
@@ -197,9 +211,9 @@ export const upsertTeamMember = async (member: Partial<TeamMember>) => {
         name: member.name,
         role: member.role,
         image_url: member.imageUrl,
-        bio: member.bio
+        bio: member.bio,
+        id: member.id || generateUUID() // FIX: Generate ID if missing
     };
-    if (member.id) payload.id = member.id;
 
     const { error } = await supabase.from('team_members').upsert(payload);
     if (error) throw error;
@@ -220,6 +234,7 @@ export const fetchLeads = async (): Promise<Lead[]> => {
 
 export const createLead = async (lead: Partial<Lead>) => {
     const payload = {
+        id: lead.id || generateUUID(), // FIX: Ensure Lead ID exists
         name: lead.name,
         email: lead.email,
         phone: lead.phone,
@@ -227,7 +242,7 @@ export const createLead = async (lead: Partial<Lead>) => {
         status: 'NEW',
         created_at: new Date().toISOString()
     };
-    // Ensure no ID is sent for creation, allowing UUID default
+    
     const { error } = await supabase.from('leads').insert(payload);
     if (error) {
         console.error("Supabase Error creating lead:", error.message, error.details);
@@ -250,9 +265,9 @@ export const upsertPartner = async (item: Partial<ClientPartner>) => {
     const payload: any = {
         name: item.name,
         logo_url: item.logoUrl,
-        sort_order: item.sortOrder
+        sort_order: item.sortOrder,
+        id: item.id || generateUUID() // FIX: Generate ID if missing
     };
-    if (item.id) payload.id = item.id;
     
     const { error } = await supabase.from('client_partners').upsert(payload);
     if (error) throw error;
@@ -274,9 +289,9 @@ export const upsertComparison = async (item: Partial<ComparisonItem>) => {
         duhava_value: item.duhavaValue,
         agency_value: item.agencyValue,
         freelance_value: item.freelanceValue,
-        sort_order: item.sortOrder
+        sort_order: item.sortOrder,
+        id: item.id || generateUUID() // FIX: Generate ID if missing
     };
-    if (item.id) payload.id = item.id;
 
     const { error } = await supabase.from('comparison_items').upsert(payload);
     if (error) throw error;
@@ -299,9 +314,9 @@ export const upsertPersona = async (item: Partial<Persona>) => {
         description: item.description,
         focus_tags: item.focusTags,
         cta_text: item.ctaText,
-        icon_name: item.iconName
+        icon_name: item.iconName,
+        id: item.id || generateUUID() // FIX: Generate ID if missing
     };
-    if (item.id) payload.id = item.id;
 
     const { error } = await supabase.from('personas').upsert(payload);
     if (error) throw error;
