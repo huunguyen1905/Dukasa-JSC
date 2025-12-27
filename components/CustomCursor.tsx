@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -34,7 +35,8 @@ const CustomCursor: React.FC = () => {
         target.tagName === 'INPUT' ||
         target.tagName === 'TEXTAREA' ||
         target.classList.contains('cursor-pointer') ||
-        target.closest('.cursor-pointer')
+        target.closest('.cursor-pointer') ||
+        target.closest('.group') // React to cards/items
       ) {
         setIsHovering(true);
       } else {

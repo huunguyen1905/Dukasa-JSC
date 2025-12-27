@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Calendar, Tag } from 'lucide-react';
@@ -60,7 +61,7 @@ const NewsModal: React.FC<NewsModalProps> = ({ item, onClose }) => {
         </div>
 
         {/* Scrollable Content */}
-        <div className="overflow-y-auto p-6 md:p-10">
+        <div className="overflow-y-auto p-6 md:p-10 bg-brand-dark">
             <div className="flex items-center gap-2 text-gray-400 text-sm mb-8 border-b border-gray-800 pb-4">
                 <Calendar size={16} />
                 <span>Đăng ngày: {new Date(item.date).toLocaleDateString('vi-VN')}</span>
@@ -74,7 +75,7 @@ const NewsModal: React.FC<NewsModalProps> = ({ item, onClose }) => {
             {/* Main Content */}
             <div className="prose prose-invert prose-lg max-w-none text-gray-300 leading-relaxed whitespace-pre-line">
                 {item.content ? item.content : (
-                   <p className="text-gray-500 italic">[Nội dung chi tiết chưa được cập nhật cho bài viết này]</p>
+                   <p className="text-gray-500 italic">[Nội dung chi tiết đang được cập nhật...]</p>
                 )}
             </div>
         </div>

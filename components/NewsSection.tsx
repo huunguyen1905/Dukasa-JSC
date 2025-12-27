@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { ArrowRight, Calendar, ChevronLeft, ChevronRight, X, ArrowUpRight } from 'lucide-react';
 import { NewsItem } from '../types';
@@ -13,9 +14,6 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [isViewAllOpen, setIsViewAllOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  // We display all news in the slider now, instead of just 3
-  const displayNews = news;
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -128,7 +126,7 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
                 className="flex overflow-x-auto gap-6 pb-8 snap-x snap-mandatory hide-scrollbar -mx-6 px-6 md:mx-0 md:px-0"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-            {displayNews.map((item, index) => (
+            {news.map((item, index) => (
                 <div 
                     key={item.id} 
                     className="min-w-[85vw] md:min-w-[380px] snap-center"

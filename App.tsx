@@ -1,26 +1,40 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import Services from './components/Services';
-import ContactModal from './components/ContactModal';
-import AdminDashboard from './components/AdminDashboard';
 import Footer from './components/Footer';
-import Testimonials from './components/Testimonials';
-import Process from './components/Process';
-import CTASection from './components/CTASection';
-import FeaturedProjects from './components/FeaturedProjects';
-import NewsSection from './components/NewsSection'; // Imported NewsSection
-import FadeIn from './components/FadeIn';
 import CustomCursor from './components/CustomCursor';
 import Preloader from './components/Preloader';
-import FAQ from './components/FAQ';
 import SmoothScroll from './components/SmoothScroll';
-import { getServices, getProjects, getNews, saveServices, saveProjects, saveNews } from './services/storage'; // Added News imports
-import { fetchCloudData } from './services/googleSheetService';
-import { Service, Project, NewsItem } from './types'; // Added NewsItem
-import { ArrowLeft } from 'lucide-react';
+import NoiseOverlay from './components/NoiseOverlay'; 
+import ScrollProgress from './components/ScrollProgress';
+import ErrorBoundary from './components/ErrorBoundary';
+import SectionLoader from './components/SectionLoader';
+import MobileStickyBar from './components/MobileStickyBar'; 
+import ExitIntent from './components/ExitIntent'; 
+import ClientLogos from './components/ClientLogos';
+import PersonaTabs from './components/PersonaTabs';
+import { fetchServices, fetchProjects, fetchNews, fetchTeamMembers } from './services/supabaseService';
+import { Service, Project, NewsItem, TeamMember } from './types';
+import { ArrowLeft, Sparkles } from 'lucide-react';
+
+// Lazy Load Heavy Components
+const Services = lazy(() => import('./components/Services'));
+const ContactModal = lazy(() => import('./components/ContactModal'));
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
+const Testimonials = lazy(() => import('./components/Testimonials'));
+const Process = lazy(() => import('./components/Process'));
+const Team = lazy(() => import('./components/Team'));
+const CTASection = lazy(() => import('./components/CTASection'));
+const FeaturedProjects = lazy(() => import('./components/FeaturedProjects'));
+const NewsSection = lazy(() => import('./components/NewsSection'));
+const FAQ = lazy(() => import('./components/FAQ'));
+const TechStack = lazy(() => import('./components/TechStack'));
+const Pricing = lazy(() => import('./components/Pricing'));
+const Contact = lazy(() => import('./components/Contact'));
+const About = lazy(() => import('./components/About'));
+const ROICalculator = lazy(() => import('./components/ROICalculator'));
+const StrategyQuiz = lazy(() => import('./components/StrategyQuiz'));
 
 // Admin Login Component
 const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
@@ -84,11 +98,13 @@ interface LandingPageProps {
     services: Service[];
     projects: Project[];
     news: NewsItem[];
+    teamMembers: TeamMember[];
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, projects, news }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, projects, news, teamMembers }) => {
   const navigate = useNavigate();
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isQuizOpen, setIsQuizOpen] = useState(false); 
 
   const handleOpenAdmin = () => {
       onUnlockAdmin();
@@ -98,47 +114,159 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
   return (
     <div className="bg-brand-black min-h-screen text-white font-sans selection:bg-brand-yellow selection:text-black md:cursor-none">
       <CustomCursor />
+      <NoiseOverlay /> 
       
-      {/* Navbar should be OUTSIDE SmoothScroll to remain effectively fixed on top of the viewport */}
       <Navbar onOpenContact={() => setIsContactOpen(true)} />
+      <ScrollProgress /> 
+      
+      {/* Conversion Optimization Components */}
+      <MobileStickyBar onCtaClick={() => setIsContactOpen(true)} />
+      <ExitIntent />
+
+      {/* Floating Strategy Finder Button (Bottom Left) */}
+      <div className="fixed bottom-8 left-8 z-[80] hidden md:block">
+        <button 
+            onClick={() => setIsQuizOpen(true)}
+            className="group flex items-center gap-3 bg-gray-900 border border-brand-yellow/30 pl-4 pr-6 py-3 rounded-full hover:bg-brand-yellow hover:text-black hover:border-brand-yellow transition-all duration-300 shadow-2xl"
+        >
+            <div className="w-8 h-8 bg-brand-yellow rounded-full flex items-center justify-center text-black group-hover:bg-black group-hover:text-brand-yellow transition-colors animate-pulse">
+                <Sparkles size={16} />
+            </div>
+            <div className="text-left">
+                <div className="text-[10px] uppercase font-bold text-gray-400 group-hover:text-black/60">Bạn cần tư vấn?</div>
+                <div className="text-sm font-black uppercase tracking-wide">Tìm Chiến Lược</div>
+            </div>
+        </button>
+      </div>
       
       <SmoothScroll>
         <Hero onCtaClick={() => setIsContactOpen(true)} />
         
-        <div className="bg-brand-yellow py-4 overflow-hidden whitespace-nowrap border-y-4 border-black relative z-10">
-            <div className="inline-flex animate-scroll-right items-center gap-16 text-brand-black font-black text-xl uppercase tracking-widest">
-                <span>Google Partner Premium</span><span>•</span><span>Meta Business Partner</span><span>•</span>
-                <span>HubSpot Certified Agency</span><span>•</span><span>TikTok Marketing Partner</span><span>•</span>
-                <span>Google Partner Premium</span><span>•</span><span>Meta Business Partner</span><span>•</span>
-                <span>HubSpot Certified Agency</span><span>•</span><span>TikTok Marketing Partner</span>
-            </div>
-        </div>
+        {/* REPLACED: New Client Marquee instead of static text strip */}
+        <ClientLogos />
 
-        <Services services={services} onCtaClick={() => setIsContactOpen(true)} />
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <PersonaTabs onCtaClick={() => setIsContactOpen(true)} />
+            </Suspense>
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <About />
+            </Suspense>
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <Services services={services} onCtaClick={() => setIsContactOpen(true)} />
+            </Suspense>
+        </ErrorBoundary>
         
-        <FeaturedProjects projects={projects} />
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <FeaturedProjects projects={projects} />
+            </Suspense>
+        </ErrorBoundary>
+        
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <TechStack />
+            </Suspense>
+        </ErrorBoundary>
 
-        <Process />
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <Process />
+            </Suspense>
+        </ErrorBoundary>
+        
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <Pricing onCtaClick={() => setIsContactOpen(true)} />
+            </Suspense>
+        </ErrorBoundary>
+        
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <ROICalculator />
+            </Suspense>
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <Team members={teamMembers} />
+            </Suspense>
+        </ErrorBoundary>
         
         <section id="results" className="py-20 bg-brand-dark border-y border-gray-800 relative z-10">
             <div className="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <FadeIn delay={0}><div className="text-4xl md:text-6xl font-black text-white mb-2">500+</div><div className="text-brand-yellow font-bold uppercase text-sm">Dự Án Thành Công</div></FadeIn>
-                <FadeIn delay={100}><div className="text-4xl md:text-6xl font-black text-white mb-2">200%</div><div className="text-brand-yellow font-bold uppercase text-sm">Tăng Trưởng TB</div></FadeIn>
-                <FadeIn delay={200}><div className="text-4xl md:text-6xl font-black text-white mb-2">10+</div><div className="text-brand-yellow font-bold uppercase text-sm">Năm Kinh Nghiệm</div></FadeIn>
-                <FadeIn delay={300}><div className="text-4xl md:text-6xl font-black text-white mb-2">24/7</div><div className="text-brand-yellow font-bold uppercase text-sm">Hỗ Trợ Tận Tâm</div></FadeIn>
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-0">
+                    <div className="text-4xl md:text-6xl font-black text-white mb-2">500+</div>
+                    <div className="text-brand-yellow font-bold uppercase text-sm">Dự Án Thành Công</div>
+                </div>
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+                    <div className="text-4xl md:text-6xl font-black text-white mb-2">200%</div>
+                    <div className="text-brand-yellow font-bold uppercase text-sm">Tăng Trưởng TB</div>
+                </div>
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+                    <div className="text-4xl md:text-6xl font-black text-white mb-2">10+</div>
+                    <div className="text-brand-yellow font-bold uppercase text-sm">Năm Kinh Nghiệm</div>
+                </div>
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+                    <div className="text-4xl md:text-6xl font-black text-white mb-2">24/7</div>
+                    <div className="text-brand-yellow font-bold uppercase text-sm">Hỗ Trợ Tận Tâm</div>
+                </div>
             </div>
         </section>
 
-        <Testimonials />
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <Testimonials />
+            </Suspense>
+        </ErrorBoundary>
         
-        <NewsSection news={news} />
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <NewsSection news={news} />
+            </Suspense>
+        </ErrorBoundary>
 
-        <FAQ />
-        <CTASection onCtaClick={() => setIsContactOpen(true)} />
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <FAQ />
+            </Suspense>
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <Contact />
+            </Suspense>
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+                <CTASection onCtaClick={() => setIsContactOpen(true)} />
+            </Suspense>
+        </ErrorBoundary>
+
         <Footer onOpenAdmin={handleOpenAdmin} />
       </SmoothScroll>
       
-      <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
+      <Suspense fallback={null}>
+        <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
+      </Suspense>
+      
+      <Suspense fallback={null}>
+        <StrategyQuiz 
+            isOpen={isQuizOpen} 
+            onClose={() => setIsQuizOpen(false)} 
+            onComplete={() => {
+                setIsQuizOpen(false);
+                setIsContactOpen(true);
+            }}
+        />
+      </Suspense>
     </div>
   );
 };
@@ -149,31 +277,27 @@ const App: React.FC = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
   useEffect(() => {
-    // 1. Load data immediately from LocalStorage (Instant UI)
-    setServices(getServices());
-    setProjects(getProjects());
-    setNews(getNews());
-
-    // 2. Fetch fresh data from Google Sheets (Background Sync)
-    fetchCloudData().then(data => {
-        if (data) {
-            console.log("Cloud data fetched:", data);
-            if (data.services && Array.isArray(data.services) && data.services.length > 0) {
-                setServices(data.services);
-                saveServices(data.services); // Sync back to LocalStorage
-            }
-            if (data.projects && Array.isArray(data.projects) && data.projects.length > 0) {
-                setProjects(data.projects);
-                saveProjects(data.projects);
-            }
-            if (data.news && Array.isArray(data.news) && data.news.length > 0) {
-                setNews(data.news);
-                saveNews(data.news);
-            }
+    // Fetch data from Supabase on init
+    const loadData = async () => {
+        try {
+            const [s, p, n, t] = await Promise.all([
+                fetchServices(),
+                fetchProjects(),
+                fetchNews(),
+                fetchTeamMembers()
+            ]);
+            setServices(s);
+            setProjects(p);
+            setNews(n);
+            setTeamMembers(t);
+        } catch (error) {
+            console.error("Failed to load initial data", error);
         }
-    });
+    };
+    loadData();
   }, []);
 
   const handleLogin = () => {
@@ -191,11 +315,15 @@ const App: React.FC = () => {
   return (
     <HashRouter>
       <Routes>
-        <Route path="/" element={<LandingPage onUnlockAdmin={() => {}} services={services} projects={projects} news={news} />} />
+        <Route path="/" element={<LandingPage onUnlockAdmin={() => {}} services={services} projects={projects} news={news} teamMembers={teamMembers} />} />
         <Route path="/admin-login" element={<AdminLogin onLogin={handleLogin} />} />
         <Route 
             path="/admin" 
-            element={isAuthenticated ? <AdminDashboard onLogout={handleLogout} /> : <Navigate to="/admin-login" />} 
+            element={isAuthenticated ? (
+                <Suspense fallback={<div className="min-h-screen bg-black flex items-center justify-center text-white"><SectionLoader/></div>}>
+                    <AdminDashboard onLogout={handleLogout} />
+                </Suspense>
+            ) : <Navigate to="/admin-login" />} 
         />
       </Routes>
     </HashRouter>

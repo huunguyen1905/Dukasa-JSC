@@ -122,7 +122,7 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
   }, []);
 
   return (
-    <div id="about" className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-brand-black">
+    <div id="hero" className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-brand-black">
       <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-black/40 to-brand-black z-10 pointer-events-none"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#050505_120%)] z-10 pointer-events-none"></div>

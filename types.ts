@@ -1,3 +1,4 @@
+
 export interface Service {
   id: string;
   title: string;
@@ -26,6 +27,42 @@ export interface NewsItem {
   content?: string; // Optional full content
 }
 
+export interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  imageUrl: string;
+  bio: string;
+}
+
+// --- NEW TYPES FOR CRO & POSITIONING ---
+
+export interface ClientPartner {
+  id: string;
+  name: string;
+  logoUrl?: string; // Optional image URL, otherwise text
+  sortOrder: number;
+}
+
+export interface ComparisonItem {
+  id: string;
+  criterion: string;
+  duhavaValue: string; // "TRUE" for checkmark, or text
+  agencyValue: string;
+  freelanceValue: string;
+  sortOrder: number;
+}
+
+export interface Persona {
+  id: string;
+  keyName: string; // 'STARTUP' | 'SME' | 'ENTERPRISE'
+  title: string;
+  description: string;
+  focusTags: string[];
+  ctaText: string;
+  iconName: string;
+}
+
 export enum LeadStatus {
   NEW = 'NEW',
   CONTACTED = 'CONTACTED',
@@ -48,7 +85,12 @@ export enum AdminView {
   SERVICES = 'SERVICES',
   PROJECTS = 'PROJECTS',
   NEWS = 'NEWS',
-  LEADS = 'LEADS'
+  LEADS = 'LEADS',
+  TEAM = 'TEAM',
+  // New Views
+  PARTNERS = 'PARTNERS',
+  COMPARISON = 'COMPARISON',
+  PERSONAS = 'PERSONAS'
 }
 
 export interface AlertState {
