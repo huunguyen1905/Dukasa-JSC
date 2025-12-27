@@ -117,12 +117,14 @@ export const uploadImage = async (file: File): Promise<string | null> => {
 // --- Services Operations ---
 
 export const fetchServices = async (): Promise<Service[]> => {
-    const { data, error } = await supabase.from('services').select('*').order('created_at', { ascending: true });
-    if (error) { 
-        console.warn('⚠️ Could not fetch services from Supabase. Falling back to MOCK data.', error.message); 
-        return MOCK_SERVICES; 
+    try {
+        const { data, error } = await supabase.from('services').select('*').order('created_at', { ascending: true });
+        if (error) throw error;
+        return (data || []).map(mapService);
+    } catch (error: any) {
+        console.warn('⚠️ Could not fetch services from Supabase. Falling back to MOCK data.', error.message);
+        return MOCK_SERVICES;
     }
-    return data.map(mapService);
 };
 
 export const upsertService = async (service: Partial<Service>) => {
@@ -146,12 +148,14 @@ export const deleteService = async (id: string) => {
 // --- Projects Operations ---
 
 export const fetchProjects = async (): Promise<Project[]> => {
-    const { data, error } = await supabase.from('projects').select('*').order('created_at', { ascending: true });
-    if (error) { 
-        console.warn('⚠️ Could not fetch projects from Supabase. Falling back to MOCK data.', error.message); 
-        return MOCK_PROJECTS; 
+    try {
+        const { data, error } = await supabase.from('projects').select('*').order('created_at', { ascending: true });
+        if (error) throw error;
+        return (data || []).map(mapProject);
+    } catch (error: any) {
+        console.warn('⚠️ Could not fetch projects from Supabase. Falling back to MOCK data.', error.message);
+        return MOCK_PROJECTS;
     }
-    return data.map(mapProject);
 };
 
 export const upsertProject = async (project: Partial<Project>) => {
@@ -177,12 +181,14 @@ export const deleteProject = async (id: string) => {
 // --- News Operations ---
 
 export const fetchNews = async (): Promise<NewsItem[]> => {
-    const { data, error } = await supabase.from('news').select('*').order('date', { ascending: false });
-    if (error) { 
-        console.warn('⚠️ Could not fetch news from Supabase. Falling back to MOCK data.', error.message); 
-        return MOCK_NEWS; 
+    try {
+        const { data, error } = await supabase.from('news').select('*').order('date', { ascending: false });
+        if (error) throw error;
+        return (data || []).map(mapNews);
+    } catch (error: any) {
+        console.warn('⚠️ Could not fetch news from Supabase. Falling back to MOCK data.', error.message);
+        return MOCK_NEWS;
     }
-    return data.map(mapNews);
 };
 
 export const upsertNews = async (news: Partial<NewsItem>) => {
@@ -208,12 +214,14 @@ export const deleteNews = async (id: string) => {
 // --- Team Operations ---
 
 export const fetchTeamMembers = async (): Promise<TeamMember[]> => {
-    const { data, error } = await supabase.from('team_members').select('*').order('created_at', { ascending: true });
-    if (error) { 
-        console.warn('⚠️ Could not fetch team_members from Supabase. Falling back to MOCK data.', error.message); 
-        return MOCK_TEAM; 
+    try {
+        const { data, error } = await supabase.from('team_members').select('*').order('created_at', { ascending: true });
+        if (error) throw error;
+        return (data || []).map(mapTeamMember);
+    } catch (error: any) {
+        console.warn('⚠️ Could not fetch team_members from Supabase. Falling back to MOCK data.', error.message);
+        return MOCK_TEAM;
     }
-    return data.map(mapTeamMember);
 };
 
 export const upsertTeamMember = async (member: Partial<TeamMember>) => {
@@ -237,9 +245,14 @@ export const deleteTeamMember = async (id: string) => {
 // --- Leads Operations ---
 
 export const fetchLeads = async (): Promise<Lead[]> => {
-    const { data, error } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
-    if (error) { console.error('Error fetching leads:', error.message); return []; }
-    return data.map(mapLead);
+    try {
+        const { data, error } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+        return (data || []).map(mapLead);
+    } catch (error: any) {
+        console.error('Error fetching leads:', error.message || error);
+        return [];
+    }
 };
 
 export const createLead = async (lead: Partial<Lead>) => {
@@ -267,9 +280,14 @@ export const updateLeadStatus = async (id: string, status: string) => {
 
 // --- PARTNERS Operations ---
 export const fetchPartners = async (): Promise<ClientPartner[]> => {
-    const { data, error } = await supabase.from('client_partners').select('*').order('sort_order', { ascending: true });
-    if (error) { console.warn('Error fetching partners:', error.message); return []; }
-    return data.map(mapPartner);
+    try {
+        const { data, error } = await supabase.from('client_partners').select('*').order('sort_order', { ascending: true });
+        if (error) throw error;
+        return (data || []).map(mapPartner);
+    } catch (error: any) {
+        console.warn('Error fetching partners:', error.message || error);
+        return [];
+    }
 };
 export const upsertPartner = async (item: Partial<ClientPartner>) => {
     const payload: any = {
@@ -289,9 +307,14 @@ export const deletePartner = async (id: string) => {
 
 // --- COMPARISON Operations ---
 export const fetchComparisons = async (): Promise<ComparisonItem[]> => {
-    const { data, error } = await supabase.from('comparison_items').select('*').order('sort_order', { ascending: true });
-    if (error) { console.warn('Error fetching comparisons:', error.message); return []; }
-    return data.map(mapComparison);
+    try {
+        const { data, error } = await supabase.from('comparison_items').select('*').order('sort_order', { ascending: true });
+        if (error) throw error;
+        return (data || []).map(mapComparison);
+    } catch (error: any) {
+        console.warn('Error fetching comparisons:', error.message || error);
+        return [];
+    }
 };
 export const upsertComparison = async (item: Partial<ComparisonItem>) => {
     const payload: any = {
@@ -313,9 +336,14 @@ export const deleteComparison = async (id: string) => {
 
 // --- PERSONAS Operations ---
 export const fetchPersonas = async (): Promise<Persona[]> => {
-    const { data, error } = await supabase.from('personas').select('*').order('created_at', { ascending: true });
-    if (error) { console.warn('Error fetching personas:', error.message); return []; }
-    return data.map(mapPersona);
+    try {
+        const { data, error } = await supabase.from('personas').select('*').order('created_at', { ascending: true });
+        if (error) throw error;
+        return (data || []).map(mapPersona);
+    } catch (error: any) {
+        console.warn('Error fetching personas:', error.message || error);
+        return [];
+    }
 };
 export const upsertPersona = async (item: Partial<Persona>) => {
     const payload: any = {

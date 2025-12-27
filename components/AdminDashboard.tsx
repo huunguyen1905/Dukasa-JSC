@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Service, Lead, Project, NewsItem, AdminView, LeadStatus, TeamMember, ComparisonItem, Persona } from '../types';
@@ -95,7 +96,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           setPersonas(per);
       } catch (e) {
           console.error("Error loading data", e);
-          showToast("Lỗi tải dữ liệu", 'error');
+          showToast("Lỗi tải dữ liệu. Vui lòng kiểm tra kết nối.", 'error');
       } finally {
           setIsLoading(false);
       }
@@ -508,15 +509,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {isLoading ? Array(2).fill(0).map((_,i) => <SkeletonRow key={i}/>) : projects.map(p => (
-                    <div key={p.id} className="bg-gray-800/50 p-5 rounded-xl border border-gray-700 hover:border-brand-yellow/50 transition-all flex gap-4">
+                    <div key={p.id} className="bg-gray-800/50 p-5 rounded-xl border border-gray-700 hover:border-brand-yellow/50 transition-all flex gap-4 h-full">
                         <div className="w-32 h-32 rounded-lg bg-gray-700 overflow-hidden shrink-0"><img src={p.imageUrl} className="w-full h-full object-cover"/></div>
-                        <div className="flex-1">
-                            <div className="flex justify-between items-start mb-2">
-                                <h3 className="text-xl font-bold">{p.title}</h3>
-                                <span className="text-xs bg-brand-yellow text-black px-2 py-1 rounded font-bold">{p.result}</span>
+                        <div className="flex-1 flex flex-col justify-between min-w-0">
+                            <div>
+                                <div className="flex justify-between items-start mb-2 gap-2">
+                                    <h3 className="text-lg font-bold line-clamp-2 leading-tight">{p.title}</h3>
+                                    <span className="text-[10px] bg-brand-yellow text-black px-2 py-1 rounded font-bold whitespace-nowrap shrink-0">{p.result}</span>
+                                </div>
+                                <p className="text-gray-500 text-xs mb-2 uppercase font-bold truncate">{p.client} • {p.category}</p>
+                                <p className="text-gray-400 text-sm mb-4 line-clamp-2">{p.description}</p>
                             </div>
-                            <p className="text-gray-500 text-xs mb-2 uppercase font-bold">{p.client} • {p.category}</p>
-                            <p className="text-gray-400 text-sm mb-4 line-clamp-2">{p.description}</p>
                             <div className="flex gap-2">
                                 <button onClick={() => openModal('PROJECTS', p)} className="px-3 py-1 bg-gray-700 hover:bg-blue-600 rounded text-xs font-bold">Sửa</button>
                                 <button onClick={() => handleDelete('PROJECTS', p.id)} className="px-3 py-1 bg-gray-700 hover:bg-red-600 rounded text-xs font-bold flex items-center justify-center gap-1"><Trash2 size={12}/> Xóa</button>
