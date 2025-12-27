@@ -89,8 +89,9 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
 
     const animate = () => {
       time++;
-      ctx.fillStyle = 'rgba(5, 5, 5, 0.15)'; 
-      ctx.fillRect(0, 0, width, height);
+      ctx.clearRect(0, 0, width, height); // Clear to let background show through
+      // Removed the fillStyle background to make it transparent for the new nebula background
+      
       particles.forEach(p => { p.update(mouse, time); p.draw(ctx); });
       ctx.strokeStyle = 'rgba(250, 204, 21, 0.15)'; ctx.lineWidth = 0.5;
       for (let i = 0; i < particles.length; i++) {
@@ -122,25 +123,26 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
   }, []);
 
   return (
-    <div id="hero" className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-brand-black">
-      <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-black/40 to-brand-black z-10 pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#050505_120%)] z-10 pointer-events-none"></div>
+    <div id="hero" className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
+      {/* Canvas for Particles (Foreground Interaction) */}
+      <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0 opacity-60 pointer-events-none" />
+      
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-black/20 to-brand-black z-10 pointer-events-none"></div>
 
       <div className="relative z-20 text-center px-4 max-w-7xl mx-auto pt-24 md:pt-38 pb-20 flex flex-col justify-center h-full">
         
         <div className="inline-block mb-6 md:mb-10 animate-in fade-in slide-in-from-top-8 duration-1000">
-            <span className="py-2 px-6 md:py-3 md:px-8 rounded-full border border-brand-yellow/30 bg-brand-yellow/10 text-brand-yellow font-bold tracking-widest text-[10px] md:text-sm uppercase backdrop-blur-md shadow-[0_0_20px_rgba(250,204,21,0.1)]">
+            <span className="py-2 px-6 md:py-3 md:px-8 rounded-full border border-brand-yellow/30 bg-white/5 text-brand-yellow font-bold tracking-[0.2em] text-[10px] md:text-xs uppercase backdrop-blur-md shadow-[0_0_20px_rgba(250,204,21,0.2)]">
                 Đối Tác Chiến Lược Cấp Cao
             </span>
         </div>
         
-        {/* Adjusted Typography for Mobile: text-4xl on mobile, text-7xl on md */}
+        {/* Adjusted Typography with Glow */}
         <h1 className="text-4xl md:text-7xl lg:text-8xl xl:text-9xl font-black text-white uppercase leading-tight md:leading-normal tracking-tight mb-8 md:mb-16 drop-shadow-2xl animate-in zoom-in-90 duration-1000">
           Định Hình <br className="hidden md:block" />
           <span className="relative inline-block mt-2">
-            <span className="absolute -inset-4 bg-brand-yellow/20 blur-2xl rounded-full"></span>
-            <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow via-yellow-200 to-yellow-600 pb-2">
+            <span className="absolute -inset-8 bg-brand-yellow/10 blur-3xl rounded-full"></span>
+            <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow via-white to-brand-yellow pb-2 animate-pulse-slow drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]">
               Tương Lai Số
             </span>
           </span>
@@ -148,22 +150,24 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
         
         <p className="text-gray-300 text-sm md:text-2xl max-w-3xl mx-auto mb-10 md:mb-14 font-light leading-relaxed animate-in slide-in-from-bottom-8 duration-1000 delay-200 px-4">
           DUHAVA biến dữ liệu thành lợi nhuận. Chúng tôi kiến tạo những trải nghiệm kỹ thuật số 
-          <span className="text-white font-semibold border-b border-brand-yellow"> độc bản</span>, giúp thương hiệu của bạn thống trị thị trường.
+          <span className="text-white font-semibold border-b border-brand-yellow mx-1">độc bản</span>, giúp thương hiệu của bạn thống trị thị trường.
         </p>
         
         <div className="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-center animate-in slide-in-from-bottom-8 duration-1000 delay-300 pb-10 w-full max-w-sm md:max-w-none mx-auto">
+          {/* Magnetic Primary Button */}
           <MagneticButton>
             <button 
                 onClick={onCtaClick}
-                className="w-full md:w-auto group relative bg-brand-yellow text-brand-black text-base md:text-xl font-black py-4 md:py-5 px-8 md:px-12 rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(250,204,21,0.5)]"
+                className="w-full md:w-auto group relative bg-brand-yellow text-brand-black text-base md:text-xl font-black py-4 md:py-5 px-8 md:px-12 rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_50px_rgba(250,204,21,0.6)]"
             >
-                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 skew-y-12"></div>
+                <div className="absolute inset-0 bg-white/40 translate-y-full group-hover:translate-y-0 transition-transform duration-300 skew-y-12"></div>
                 <span className="relative flex items-center justify-center gap-2">
-                    NHẬN TƯ VẤN <ArrowRight className="w-5 h-5" />
+                    NHẬN TƯ VẤN <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
             </button>
           </MagneticButton>
           
+          {/* Magnetic Secondary Button */}
           <MagneticButton>
             <button 
                 onClick={() => {
@@ -175,7 +179,7 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
                     });
                 }
                 }}
-                className="w-full md:w-auto group text-white text-base md:text-xl font-bold py-4 md:py-5 px-8 md:px-10 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-sm"
+                className="w-full md:w-auto group text-white text-base md:text-xl font-bold py-4 md:py-5 px-8 md:px-10 rounded-full border border-white/20 hover:bg-white/10 hover:text-white transition-all duration-300 backdrop-blur-md"
             >
                 Khám Phá Dịch Vụ
             </button>
@@ -185,7 +189,7 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
       
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center gap-2 opacity-60 hidden md:flex">
         <span className="text-[10px] uppercase tracking-[0.3em] text-brand-yellow animate-pulse">Cuộn xuống</span>
-        <div className="w-[2px] h-16.5 bg-gradient-to-b from-brand-yellow to-transparent"></div>
+        <div className="w-[1px] h-16 bg-gradient-to-b from-brand-yellow to-transparent"></div>
       </div>
     </div>
   );
