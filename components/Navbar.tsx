@@ -1,5 +1,7 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ArrowRight, Search, ChevronDown, Zap, Globe, Layout, BarChart, TrendingUp, Phone } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface NavbarProps {
   onOpenContact: () => void;
@@ -11,6 +13,36 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
   const [activeSection, setActiveSection] = useState('hero');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  
+  // Admin Secret Entry Logic
+  const navigate = useNavigate();
+  const [logoClicks, setLogoClicks] = useState(0);
+  const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleLogoClick = () => {
+    // 1. Default behavior: Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // 2. Secret Admin Access Logic
+    const newCount = logoClicks + 1;
+    setLogoClicks(newCount);
+
+    // Clear existing reset timer
+    if (clickTimeoutRef.current) {
+        clearTimeout(clickTimeoutRef.current);
+    }
+
+    if (newCount === 4) {
+        // If 4 clicks reached, go to admin login
+        navigate('/admin-login');
+        setLogoClicks(0);
+    } else {
+        // Reset count if no next click within 500ms
+        clickTimeoutRef.current = setTimeout(() => {
+            setLogoClicks(0);
+        }, 500);
+    }
+  };
 
   // Handle Scroll Effect & Active Section Detection
   useEffect(() => {
@@ -94,8 +126,9 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
         >
             {/* Left: Brand Logo */}
             <div 
-                className="flex items-center gap-3 cursor-pointer group shrink-0"
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="flex items-center gap-3 cursor-pointer group shrink-0 select-none"
+                onClick={handleLogoClick}
+                title="DUHAVA Digital Agency"
             >
                 <div className={`
                     flex items-center justify-center font-black text-brand-black transition-all duration-500 rounded-full bg-brand-yellow relative overflow-hidden
@@ -176,7 +209,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                 <button 
                     onClick={onOpenContact}
                     className={`
-                        bg-white text-black font-black uppercase tracking-wide rounded-full transition-all duration-300 hover:bg-brand-yellow hover:scale-105 hover:shadow-[0_0_20px_rgba(250,204,21,0.4)]
+                        bg-white text-black font-black uppercase tracking-wide rounded-full transition-all duration-300 hover:bg-brand-yellow hover:scale-105 hover:shadow-[0_0_20px_rgba(250,204,21,0.4)] whitespace-nowrap
                         ${isScrolled ? 'px-5 py-2 text-[10px]' : 'px-6 py-3 text-xs'}
                         hidden md:flex items-center gap-2
                     `}
@@ -310,7 +343,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
             <div className="p-8 border-t border-white/5 space-y-4">
                 <button 
                     onClick={() => { onOpenContact(); setIsMobileMenuOpen(false); }}
-                    className="w-full bg-brand-yellow text-brand-black text-sm font-black py-4 rounded-xl uppercase hover:bg-white transition-colors flex items-center justify-center gap-2"
+                    className="w-full bg-brand-yellow text-brand-black text-sm font-black py-4 rounded-xl uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
                 >
                     Nhận Tư Vấn <ArrowRight size={16} />
                 </button>

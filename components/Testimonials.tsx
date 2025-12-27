@@ -1,5 +1,6 @@
-import React from 'react';
-import { Quote, Star, TrendingUp, ArrowUpRight, ShieldCheck } from 'lucide-react';
+
+import React, { useState, useEffect, useRef } from 'react';
+import { Quote, Star, TrendingUp, ArrowUpRight, ShieldCheck, X, ZoomIn, MessageCircle, Image as ImageIcon } from 'lucide-react';
 import FadeIn from './FadeIn';
 
 const testimonials = [
@@ -32,13 +33,63 @@ const testimonials = [
   }
 ];
 
+// Mock Images for the Gallery (Replace with your real screenshots/feedback images)
+const PROOF_IMAGES = [
+    "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600", // Dashboard Chart
+    "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=600", // Mobile Chat
+    "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=600", // Payment Proof
+    "https://images.unsplash.com/photo-1553877615-30c73a63bbc4?auto=format&fit=crop&q=80&w=600", // Meeting
+    "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=600", // Analytics
+    "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=600", // Team working
+    "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600",
+    "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=600",
+];
+
+const AnimatedCounter = ({ end }: { end: number }) => {
+    const [count, setCount] = useState(0);
+    const ref = useRef<HTMLSpanElement>(null);
+    const hasAnimated = useRef(false);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if(entries[0].isIntersecting && !hasAnimated.current) {
+                hasAnimated.current = true;
+                let start = 0;
+                const duration = 2000;
+                const startTime = performance.now();
+                
+                const animate = (currentTime: number) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const ease = 1 - Math.pow(1 - progress, 3); // Cubic ease out
+                    
+                    setCount(Math.floor(end * ease));
+                    
+                    if(progress < 1) requestAnimationFrame(animate);
+                };
+                requestAnimationFrame(animate);
+            }
+        });
+        if(ref.current) observer.observe(ref.current);
+        return () => observer.disconnect();
+    }, [end]);
+
+    return <span ref={ref}>{count}</span>;
+}
+
 const Testimonials: React.FC = () => {
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+
+  // Split images for dual rows
+  const row1 = [...PROOF_IMAGES, ...PROOF_IMAGES]; // Duplicate for infinite loop
+  const row2 = [...PROOF_IMAGES, ...PROOF_IMAGES].reverse();
+
   return (
     <section className="bg-brand-black py-24 relative overflow-hidden border-t border-gray-900">
       {/* Background Ambience */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-yellow/5 rounded-full blur-[150px] pointer-events-none"></div>
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-6 relative z-10 mb-24">
         <FadeIn>
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
                 <div>
@@ -102,7 +153,9 @@ const Testimonials: React.FC = () => {
                 <FadeIn delay={100}>
                     <div className="bg-brand-yellow p-8 rounded-3xl flex flex-col items-center justify-center text-center relative overflow-hidden group cursor-pointer">
                         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <h4 className="text-brand-black font-black text-6xl mb-2 tracking-tighter">500+</h4>
+                        <h4 className="text-brand-black font-black text-6xl mb-2 tracking-tighter">
+                            <AnimatedCounter end={500} />+
+                        </h4>
                         <p className="text-brand-black font-bold uppercase tracking-widest text-sm">Đối tác hài lòng</p>
                         <ArrowUpRight className="absolute top-6 right-6 text-brand-black opacity-50 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                     </div>
@@ -158,6 +211,86 @@ const Testimonials: React.FC = () => {
             </div>
         </div>
       </div>
+
+      {/* --- NEW: REAL RESULTS GALLERY (INFINITE SCROLL) --- */}
+      <div className="relative border-t border-gray-800 bg-gray-900/30 pt-16 pb-20">
+         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+         
+         <div className="container mx-auto px-6 mb-12 text-center">
+             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-yellow/10 border border-brand-yellow/20 text-brand-yellow text-[10px] font-bold uppercase tracking-widest mb-4">
+                <ImageIcon size={12} />
+                <span>Real Results Gallery</span>
+             </div>
+             <h3 className="text-2xl md:text-4xl font-black text-white uppercase tracking-tighter">
+                Người Thật <span className="text-gray-600 px-2">•</span> Việc Thật
+             </h3>
+         </div>
+
+         {/* Marquee Container */}
+         <div className="flex flex-col gap-6 relative z-10">
+            
+            {/* Row 1: Left to Right */}
+            <div className="flex overflow-hidden w-full mask-linear-fade">
+                 <div className="flex animate-scroll-right gap-6 whitespace-nowrap py-2" style={{ animationDuration: '60s' }}>
+                    {row1.map((img, idx) => (
+                        <div 
+                            key={`r1-${idx}`} 
+                            onClick={() => setZoomedImage(img)}
+                            className="relative w-64 md:w-80 aspect-[16/10] bg-gray-800 rounded-xl overflow-hidden border border-gray-700 cursor-zoom-in group shrink-0"
+                        >
+                            <img src={img} alt="Proof" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" />
+                            <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors"></div>
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="w-10 h-10 bg-black/50 backdrop-blur rounded-full flex items-center justify-center text-white">
+                                    <ZoomIn size={18} />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                 </div>
+            </div>
+
+            {/* Row 2: Right to Left */}
+            <div className="flex overflow-hidden w-full mask-linear-fade">
+                 <div className="flex animate-scroll-right gap-6 whitespace-nowrap py-2" style={{ animationDirection: 'reverse', animationDuration: '70s' }}>
+                    {row2.map((img, idx) => (
+                        <div 
+                            key={`r2-${idx}`} 
+                            onClick={() => setZoomedImage(img)}
+                            className="relative w-64 md:w-80 aspect-[16/10] bg-gray-800 rounded-xl overflow-hidden border border-gray-700 cursor-zoom-in group shrink-0"
+                        >
+                            <img src={img} alt="Proof" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" />
+                             <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors"></div>
+                             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="w-10 h-10 bg-black/50 backdrop-blur rounded-full flex items-center justify-center text-white">
+                                    <ZoomIn size={18} />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                 </div>
+            </div>
+
+         </div>
+
+         {/* Lightbox Modal */}
+         {zoomedImage && (
+             <div className="fixed inset-0 z-[10000] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4" onClick={() => setZoomedImage(null)}>
+                 <button className="absolute top-6 right-6 text-gray-400 hover:text-white p-2">
+                     <X size={32} />
+                 </button>
+                 <div className="relative max-w-5xl w-full max-h-[90vh] flex items-center justify-center">
+                     <img 
+                        src={zoomedImage} 
+                        alt="Zoomed Proof" 
+                        className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl border border-gray-800"
+                        onClick={(e) => e.stopPropagation()} 
+                     />
+                 </div>
+             </div>
+         )}
+      </div>
+
     </section>
   );
 };

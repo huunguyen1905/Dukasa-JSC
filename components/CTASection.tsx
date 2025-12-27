@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 
@@ -24,7 +25,7 @@ const CTASection: React.FC<CTASectionProps> = ({ onCtaClick }) => {
             
             <button 
                 onClick={onCtaClick}
-                className="bg-brand-black text-white text-xl font-bold py-6 px-16 rounded-full hover:scale-105 hover:shadow-2xl transition-all duration-300 flex items-center gap-3 mx-auto"
+                className="bg-brand-black text-white text-xl font-bold py-6 px-16 rounded-full hover:scale-105 hover:shadow-2xl transition-all duration-300 flex items-center gap-3 mx-auto whitespace-nowrap"
             >
                 BẮT ĐẦU DỰ ÁN NGAY <ArrowRight />
             </button>

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { ArrowRight } from 'lucide-react';
 import MagneticButton from './MagneticButton';
@@ -158,7 +159,7 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
           <MagneticButton>
             <button 
                 onClick={onCtaClick}
-                className="w-full md:w-auto group relative bg-brand-yellow text-brand-black text-base md:text-xl font-black py-4 md:py-5 px-8 md:px-12 rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_50px_rgba(250,204,21,0.6)]"
+                className="w-full md:w-auto group relative bg-brand-yellow text-brand-black text-base md:text-xl font-black py-4 md:py-5 px-8 md:px-12 rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_50px_rgba(250,204,21,0.6)] whitespace-nowrap"
             >
                 <div className="absolute inset-0 bg-white/40 translate-y-full group-hover:translate-y-0 transition-transform duration-300 skew-y-12"></div>
                 <span className="relative flex items-center justify-center gap-2">
@@ -179,7 +180,7 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
                     });
                 }
                 }}
-                className="w-full md:w-auto group text-white text-base md:text-xl font-bold py-4 md:py-5 px-8 md:px-10 rounded-full border border-white/20 hover:bg-white/10 hover:text-white transition-all duration-300 backdrop-blur-md"
+                className="w-full md:w-auto group text-white text-base md:text-xl font-bold py-4 md:py-5 px-8 md:px-10 rounded-full border border-white/20 hover:bg-white/10 hover:text-white transition-all duration-300 backdrop-blur-md whitespace-nowrap"
             >
                 Khám Phá Dịch Vụ
             </button>

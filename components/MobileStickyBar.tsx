@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Phone, Zap } from 'lucide-react';
 
@@ -26,15 +27,15 @@ const MobileStickyBar: React.FC<MobileStickyBarProps> = ({ onCtaClick }) => {
         <div className="flex gap-3">
             <a 
                 href="tel:0906291941"
-                className="flex-1 bg-gray-800 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                className="flex-1 bg-gray-800 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-transform whitespace-nowrap text-xs sm:text-sm"
             >
-                <Phone size={18} /> Gọi Ngay
+                <Phone size={16} /> Gọi Ngay
             </a>
             <button 
                 onClick={onCtaClick}
-                className="flex-[2] bg-brand-yellow text-black font-black uppercase py-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-[0_0_15px_rgba(250,204,21,0.3)]"
+                className="flex-[2] bg-brand-yellow text-black font-black uppercase py-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-[0_0_15px_rgba(250,204,21,0.3)] whitespace-nowrap text-xs sm:text-sm"
             >
-                <Zap size={18} fill="currentColor" /> Nhận Báo Giá
+                <Zap size={16} fill="currentColor" /> Nhận Báo Giá
             </button>
         </div>
     </div>

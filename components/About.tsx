@@ -1,6 +1,57 @@
-import React from 'react';
-import { Target, Eye, Zap, Award, Users, Globe, Rocket } from 'lucide-react';
+
+import React, { useEffect, useState, useRef } from 'react';
+import { Target, Eye, Zap, Award, Users, Globe, Rocket, ArrowUpRight } from 'lucide-react';
 import FadeIn from './FadeIn';
+
+// Helper Component for Animated Numbers
+const AnimatedCounter = ({ end, duration = 2000, suffix = "", prefix = "", decimals = 0, live = false }: { end: number, duration?: number, suffix?: string, prefix?: string, decimals?: number, live?: boolean }) => {
+    const [count, setCount] = useState(0);
+    const elementRef = useRef<HTMLDivElement>(null);
+    const hasAnimated = useRef(false);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !hasAnimated.current) {
+                    hasAnimated.current = true;
+                    let startTime: number | null = null;
+                    
+                    const animate = (currentTime: number) => {
+                        if (!startTime) startTime = currentTime;
+                        const progress = Math.min((currentTime - startTime) / duration, 1);
+                        
+                        // Ease Out Quart
+                        const ease = 1 - Math.pow(1 - progress, 4);
+                        
+                        const currentVal = progress === 1 ? end : end * ease;
+                        setCount(currentVal);
+
+                        if (progress < 1) {
+                            requestAnimationFrame(animate);
+                        } else if (live) {
+                            // Live Drift Effect: Slowly increase after finishing
+                            const driftInterval = setInterval(() => {
+                                setCount(prev => prev + (Math.random() * (end * 0.001)));
+                            }, 3000);
+                            return () => clearInterval(driftInterval);
+                        }
+                    };
+                    requestAnimationFrame(animate);
+                }
+            },
+            { threshold: 0.5 }
+        );
+
+        if (elementRef.current) observer.observe(elementRef.current);
+        return () => observer.disconnect();
+    }, [end, duration, live]);
+
+    return (
+        <span ref={elementRef} className="tabular-nums">
+            {prefix}{count.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}{suffix}
+        </span>
+    );
+};
 
 const About: React.FC = () => {
   return (
@@ -124,18 +175,24 @@ const About: React.FC = () => {
              <div className="relative z-10">
                 <h3 className="text-3xl font-black text-white uppercase mb-8">Tại Sao 500+ Thương Hiệu Chọn DUHAVA?</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                    <div>
-                        <div className="text-5xl font-black text-white mb-2">98%</div>
+                    <div className="group">
+                        <div className="text-5xl md:text-6xl font-black text-white mb-2 group-hover:text-brand-yellow transition-colors">
+                            <AnimatedCounter end={98} suffix="%" />
+                        </div>
                         <div className="text-brand-yellow font-bold uppercase text-sm mb-4">Tỷ lệ gia hạn hợp đồng</div>
                         <p className="text-gray-500 text-sm">Khách hàng ở lại vì hiệu quả thực tế, không phải vì ràng buộc pháp lý.</p>
                     </div>
-                    <div>
-                        <div className="text-5xl font-black text-white mb-2">x3</div>
+                    <div className="group">
+                         <div className="text-5xl md:text-6xl font-black text-white mb-2 group-hover:text-brand-yellow transition-colors">
+                            <AnimatedCounter end={300} suffix="%" prefix="+" />
+                        </div>
                         <div className="text-brand-yellow font-bold uppercase text-sm mb-4">ROI Trung Bình</div>
                         <p className="text-gray-500 text-sm">Mỗi 1 đồng bạn bỏ ra, chúng tôi nỗ lực mang về ít nhất 3 đồng doanh thu.</p>
                     </div>
-                    <div>
-                        <div className="text-5xl font-black text-white mb-2">300K+</div>
+                    <div className="group">
+                         <div className="text-5xl md:text-6xl font-black text-white mb-2 group-hover:text-brand-yellow transition-colors">
+                            <AnimatedCounter end={300000} suffix="+" live={true} />
+                        </div>
                         <div className="text-brand-yellow font-bold uppercase text-sm mb-4">Cộng Đồng AI Lớn Nhất</div>
                         <p className="text-gray-500 text-sm">Sở hữu cộng đồng 300.000+ thành viên, dẫn đầu xu hướng công nghệ.</p>
                     </div>
