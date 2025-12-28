@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from 'react';
 
 const MagneticButton: React.FC<{ children: React.ReactElement; strength?: number }> = ({ children, strength = 30 }) => {

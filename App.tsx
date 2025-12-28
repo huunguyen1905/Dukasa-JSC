@@ -15,7 +15,8 @@ import MobileStickyBar from './components/MobileStickyBar';
 import ExitIntent from './components/ExitIntent'; 
 import ClientLogos from './components/ClientLogos';
 import PersonaTabs from './components/PersonaTabs';
-import WorldClassBackground from './components/WorldClassBackground'; // Import new background
+import WorldClassBackground from './components/WorldClassBackground'; 
+import StoryTimeline from './components/StoryTimeline'; 
 import { fetchServices, fetchProjects, fetchNews, fetchTeamMembers } from './services/supabaseService';
 import { Service, Project, NewsItem, TeamMember } from './types';
 import { ArrowLeft, Sparkles } from 'lucide-react';
@@ -38,9 +39,9 @@ const About = lazy(() => import('./components/About'));
 const ROICalculator = lazy(() => import('./components/ROICalculator'));
 const StrategyQuiz = lazy(() => import('./components/StrategyQuiz'));
 const PressSection = lazy(() => import('./components/PressSection'));
-const GrowthSection = lazy(() => import('./components/GrowthSection')); // Import new component
+const GrowthSection = lazy(() => import('./components/GrowthSection')); 
 
-// Admin Login Component
+// Admin Login Component (Giữ nguyên code cũ)
 const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
   const navigate = useNavigate();
 
@@ -146,6 +147,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
         </button>
       </div>
       
+      {/* WRAP EVERYTHING IN SMOOTH SCROLL */}
       <SmoothScroll>
         <Hero onCtaClick={() => setIsContactOpen(true)} />
         
@@ -156,6 +158,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
             <Suspense fallback={<SectionLoader />}>
                 <PersonaTabs onCtaClick={() => setIsContactOpen(true)} />
             </Suspense>
+        </ErrorBoundary>
+
+        {/* --- NEW 3D STORY TIMELINE --- */}
+        <ErrorBoundary>
+            <StoryTimeline />
         </ErrorBoundary>
 
         <ErrorBoundary>
@@ -271,6 +278,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
   );
 };
 
+// ... (Giữ nguyên phần App và export)
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -280,7 +288,6 @@ const App: React.FC = () => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
   useEffect(() => {
-    // Fetch data from Supabase on init
     const loadData = async () => {
         try {
             const [s, p, n, t] = await Promise.all([
