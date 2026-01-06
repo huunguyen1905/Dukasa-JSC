@@ -1,7 +1,7 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X, ArrowRight, Trophy, User } from 'lucide-react';
+import { X, ArrowRight, Trophy, User, Share2, Check } from 'lucide-react';
 import { Project } from '../types';
 
 interface ProjectModalProps {
@@ -10,12 +10,15 @@ interface ProjectModalProps {
 }
 
 const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
+  const [copied, setCopied] = useState(false);
+
   // Prevent background scrolling when modal is open
   useEffect(() => {
     if (project) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
+      setCopied(false);
     }
     return () => {
       document.body.style.overflow = '';
@@ -23,6 +26,15 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
   }, [project]);
 
   if (!project) return null;
+
+  const handleCopyLink = () => {
+    // Construct the URL. Using hash router format
+    const url = `${window.location.origin}/#/project/${project.id}`;
+    navigator.clipboard.writeText(url).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   // Use Portal to render outside of the SmoothScroll container (fixes "moving modal" issue)
   return createPortal(
@@ -35,12 +47,23 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
       
       {/* Modal Content */}
       <div className="relative bg-brand-dark border border-gray-800 w-full max-w-5xl max-h-[90vh] overflow-hidden rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-in zoom-in-95 duration-300 flex flex-col md:flex-row">
-        <button 
-          onClick={onClose} 
-          className="absolute top-4 right-4 text-white bg-black/50 p-2 rounded-full hover:bg-brand-yellow hover:text-black transition-colors z-50"
-        >
-          <X size={24} />
-        </button>
+        
+        {/* Controls */}
+        <div className="absolute top-4 right-4 flex gap-2 z-50">
+            <button 
+                onClick={handleCopyLink} 
+                className="text-white bg-black/50 p-2 rounded-full hover:bg-brand-yellow hover:text-black transition-colors"
+                title="Sao chép liên kết"
+            >
+                {copied ? <Check size={20} /> : <Share2 size={20} />}
+            </button>
+            <button 
+                onClick={onClose} 
+                className="text-white bg-black/50 p-2 rounded-full hover:bg-brand-yellow hover:text-black transition-colors"
+            >
+                <X size={20} />
+            </button>
+        </div>
 
         {/* Scrollable Container */}
         <div className="flex flex-col md:flex-row w-full overflow-y-auto h-full max-h-[90vh]">

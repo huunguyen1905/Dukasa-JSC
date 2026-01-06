@@ -1,7 +1,7 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Calendar, Tag } from 'lucide-react';
+import { X, Calendar, Share2, Check } from 'lucide-react';
 import { NewsItem } from '../types';
 
 interface NewsModalProps {
@@ -10,12 +10,15 @@ interface NewsModalProps {
 }
 
 const NewsModal: React.FC<NewsModalProps> = ({ item, onClose }) => {
+  const [copied, setCopied] = useState(false);
+
   // Prevent background scrolling when modal is open
   useEffect(() => {
     if (item) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
+      setCopied(false);
     }
     return () => {
       document.body.style.overflow = '';
@@ -23,6 +26,15 @@ const NewsModal: React.FC<NewsModalProps> = ({ item, onClose }) => {
   }, [item]);
 
   if (!item) return null;
+
+  const handleCopyLink = () => {
+    // Construct the URL. Using hash router format
+    const url = `${window.location.origin}/#/news/${item.id}`;
+    navigator.clipboard.writeText(url).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-6">
@@ -35,12 +47,22 @@ const NewsModal: React.FC<NewsModalProps> = ({ item, onClose }) => {
       {/* Modal Content */}
       <div className="relative bg-brand-dark border border-gray-800 w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-in zoom-in-95 duration-300 flex flex-col">
         
-        <button 
-          onClick={onClose} 
-          className="absolute top-4 right-4 text-white bg-black/50 p-2 rounded-full hover:bg-brand-yellow hover:text-black transition-colors z-50"
-        >
-          <X size={24} />
-        </button>
+        {/* Controls */}
+        <div className="absolute top-4 right-4 flex gap-2 z-50">
+             <button 
+                onClick={handleCopyLink} 
+                className="text-white bg-black/50 p-2 rounded-full hover:bg-brand-yellow hover:text-black transition-colors"
+                title="Sao chép liên kết"
+            >
+                {copied ? <Check size={20} /> : <Share2 size={20} />}
+            </button>
+            <button 
+                onClick={onClose} 
+                className="text-white bg-black/50 p-2 rounded-full hover:bg-brand-yellow hover:text-black transition-colors"
+            >
+                <X size={20} />
+            </button>
+        </div>
 
         {/* Header Image */}
         <div className="relative h-64 md:h-80 shrink-0">

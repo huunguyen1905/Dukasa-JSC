@@ -1,9 +1,10 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { ArrowUpRight, ArrowDown, Filter, Layers, Zap } from 'lucide-react';
 import FadeIn from './FadeIn';
 import { Project } from '../types';
 import ProjectModal from './ProjectModal';
+import { useParams, useNavigate } from 'react-router-dom';
 
 interface FeaturedProjectsProps {
     projects: Project[];
@@ -14,9 +15,37 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [visibleCount, setVisibleCount] = useState(9); // Show 9 items initially
   const [isAnimating, setIsAnimating] = useState(false);
+  
+  // URL Params handling
+  const { projectId } = useParams();
+  const navigate = useNavigate();
 
   // Extract unique categories
   const categories = useMemo(() => ['All', ...Array.from(new Set(projects.map(p => p.category)))], [projects]);
+
+  // Handle Deep Linking
+  useEffect(() => {
+    if (projectId && projects.length > 0) {
+        const found = projects.find(p => p.id === projectId);
+        if (found) {
+            setSelectedProject(found);
+            // Optional: Scroll to projects section if landing directly
+            const element = document.getElementById('projects');
+            if(element) element.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+  }, [projectId, projects]);
+
+  const handleProjectClick = (project: Project) => {
+      // Instead of just setting state, navigate to the URL
+      navigate(`/project/${project.id}`);
+  };
+
+  const handleCloseModal = () => {
+      setSelectedProject(null);
+      // Revert URL to home but keep scroll position (mostly)
+      navigate('/', { replace: true, preventScrollReset: true });
+  };
 
   // Filter Logic
   const filteredProjects = useMemo(() => {
@@ -103,7 +132,7 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
                     {visibleProjects.map((project, index) => (
                         <FadeIn key={project.id} delay={(index % 3) * 100} className="h-full">
                             <div 
-                                onClick={() => setSelectedProject(project)}
+                                onClick={() => handleProjectClick(project)}
                                 className="group relative aspect-[4/3] md:aspect-[3/2] cursor-pointer overflow-hidden rounded-xl border border-gray-800 bg-gray-900"
                             >
                                 {/* Image with Zoom Effect */}
@@ -185,7 +214,7 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
         
         <ProjectModal 
             project={selectedProject} 
-            onClose={() => setSelectedProject(null)} 
+            onClose={handleCloseModal} 
         />
     </>
   );

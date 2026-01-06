@@ -91,6 +91,7 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
     const animate = () => {
       time++;
       ctx.clearRect(0, 0, width, height); // Clear to let background show through
+      // Removed the fillStyle background to make it transparent for the new nebula background
       
       particles.forEach(p => { p.update(mouse, time); p.draw(ctx); });
       ctx.strokeStyle = 'rgba(250, 204, 21, 0.15)'; ctx.lineWidth = 0.5;

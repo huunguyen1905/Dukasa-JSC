@@ -1,10 +1,11 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, Calendar, ChevronLeft, ChevronRight, X, ArrowUpRight } from 'lucide-react';
 import { NewsItem } from '../types';
 import FadeIn from './FadeIn';
 import NewsModal from './NewsModal';
 import { createPortal } from 'react-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 interface NewsSectionProps {
   news: NewsItem[];
@@ -14,6 +15,31 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [isViewAllOpen, setIsViewAllOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  
+  // URL Params handling
+  const { newsId } = useParams();
+  const navigate = useNavigate();
+
+  // Handle Deep Linking
+  useEffect(() => {
+    if (newsId && news.length > 0) {
+        const found = news.find(n => n.id === newsId);
+        if (found) {
+            setSelectedNews(found);
+            const element = document.getElementById('news');
+            if(element) element.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+  }, [newsId, news]);
+
+  const handleNewsClick = (item: NewsItem) => {
+    navigate(`/news/${item.id}`);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedNews(null);
+    navigate('/', { replace: true, preventScrollReset: true });
+  };
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -56,7 +82,10 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
                             key={item.id}
                             className="group cursor-pointer flex flex-col bg-gray-900/30 border border-gray-800 rounded-xl overflow-hidden hover:border-brand-yellow/50 transition-all duration-300 animate-in slide-in-from-bottom-4 fade-in"
                             style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'backwards' }}
-                            onClick={() => setSelectedNews(item)}
+                            onClick={() => {
+                                setIsViewAllOpen(false);
+                                handleNewsClick(item);
+                            }}
                         >
                             <div className="relative h-48 overflow-hidden shrink-0">
                                 <div className="absolute top-4 left-4 bg-brand-yellow text-brand-black text-xs font-bold px-3 py-1 rounded z-10 uppercase tracking-wider">
@@ -134,7 +163,7 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
                     <FadeIn delay={index * 100} className="h-full">
                         <article 
                             className="group cursor-pointer h-full flex flex-col bg-gray-900/30 border border-gray-800 rounded-xl overflow-hidden hover:border-brand-yellow/50 transition-all duration-300 hover:-translate-y-2"
-                            onClick={() => setSelectedNews(item)}
+                            onClick={() => handleNewsClick(item)}
                         >
                             <div className="relative h-56 overflow-hidden">
                                 <div className="absolute top-4 left-4 bg-brand-yellow text-brand-black text-xs font-bold px-3 py-1 rounded z-10 uppercase tracking-wider">
@@ -178,7 +207,10 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
 
         <ViewAllOverlay />
 
-        <NewsModal item={selectedNews} onClose={() => setSelectedNews(null)} />
+        <NewsModal 
+            item={selectedNews} 
+            onClose={handleCloseModal} 
+        />
     </>
   );
 };
