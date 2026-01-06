@@ -55,7 +55,7 @@ const AnimatedCounter = ({ end, duration = 2000, suffix = "", prefix = "", decim
 
 const About: React.FC = () => {
   return (
-    <section id="about-info" className="bg-brand-black py-24 relative overflow-hidden">
+    <section id="ve-chung-toi" className="bg-brand-black py-24 relative overflow-hidden">
       {/* Background Abstract Elements */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-yellow/5 rounded-full blur-[150px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[120px] pointer-events-none translate-y-1/2 -translate-x-1/4"></div>

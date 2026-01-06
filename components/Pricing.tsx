@@ -64,7 +64,7 @@ const Pricing: React.FC<PricingProps> = ({ onCtaClick }) => {
   ];
 
   return (
-    <section id="pricing" className="bg-brand-black py-24 relative overflow-hidden">
+    <section id="bang-gia" className="bg-brand-black py-24 relative overflow-hidden">
       {/* Background Ambience */}
       <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-brand-dark to-transparent opacity-50"></div>
       

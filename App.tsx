@@ -107,6 +107,7 @@ interface LandingPageProps {
 
 const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, projects, news, teamMembers }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false); 
 
@@ -114,6 +115,32 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
       onUnlockAdmin();
       navigate('/admin-login');
   };
+
+  // Logic to handle scrolling based on URL path (Deep Linking for Sections)
+  useEffect(() => {
+    // Determine the section ID from the path (remove leading slash)
+    let sectionId = location.pathname.replace('/', '');
+    
+    // Default to top if root
+    if (!sectionId) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+    }
+
+    // Handle special cases where URL path doesn't exactly match ID if needed, 
+    // but we will try to keep them consistent.
+    
+    // Wait for DOM to be ready/rendered
+    setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            // Calculate offset for fixed header if necessary
+            const yOffset = -50; 
+            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+    }, 300); // Slight delay to ensure lazy loaded components are mounted
+  }, [location]);
 
   return (
     <div className="bg-brand-black min-h-screen text-white font-sans selection:bg-brand-yellow selection:text-black md:cursor-none relative">
@@ -325,7 +352,15 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<LandingPage {...landingProps} />} />
         
-        {/* NEW: Deep linking routes that render the LandingPage but allow components to read params */}
+        {/* Section URLs (Vietnamese Slugs) */}
+        <Route path="/ve-chung-toi" element={<LandingPage {...landingProps} />} />
+        <Route path="/giai-phap" element={<LandingPage {...landingProps} />} />
+        <Route path="/du-an" element={<LandingPage {...landingProps} />} />
+        <Route path="/tin-tuc" element={<LandingPage {...landingProps} />} />
+        <Route path="/lien-he" element={<LandingPage {...landingProps} />} />
+        <Route path="/bang-gia" element={<LandingPage {...landingProps} />} />
+        
+        {/* Deep linking routes */}
         <Route path="/project/:projectId" element={<LandingPage {...landingProps} />} />
         <Route path="/news/:newsId" element={<LandingPage {...landingProps} />} />
         

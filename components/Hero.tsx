@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { ArrowRight } from 'lucide-react';
 import MagneticButton from './MagneticButton';
+import { useNavigate } from 'react-router-dom';
 
 interface HeroProps {
   onCtaClick: () => void;
@@ -9,6 +10,7 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -91,7 +93,6 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
     const animate = () => {
       time++;
       ctx.clearRect(0, 0, width, height); // Clear to let background show through
-      // Removed the fillStyle background to make it transparent for the new nebula background
       
       particles.forEach(p => { p.update(mouse, time); p.draw(ctx); });
       ctx.strokeStyle = 'rgba(250, 204, 21, 0.15)'; ctx.lineWidth = 0.5;
@@ -124,7 +125,7 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
   }, []);
 
   return (
-    <div id="hero" className="relative min-h-[85vh] w-full flex items-center justify-center overflow-hidden">
+    <div id="trang-chu" className="relative min-h-[85vh] w-full flex items-center justify-center overflow-hidden">
       {/* Canvas for Particles (Foreground Interaction) */}
       <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0 opacity-60 pointer-events-none" />
       
@@ -138,7 +139,6 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
             </span>
         </div>
         
-        {/* Adjusted Typography with Glow */}
         <h1 className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black text-white uppercase leading-tight md:leading-normal tracking-tight mb-8 md:mb-16 drop-shadow-2xl animate-in zoom-in-90 duration-1000">
           Định Hình <br className="hidden md:block" />
           <span className="relative inline-block mt-2">
@@ -171,15 +171,7 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
           {/* Magnetic Secondary Button */}
           <MagneticButton>
             <button 
-                onClick={() => {
-                const el = document.getElementById('services');
-                if (el) {
-                    window.scrollTo({
-                        top: el.offsetTop,
-                        behavior: 'smooth'
-                    });
-                }
-                }}
+                onClick={() => navigate('/giai-phap')}
                 className="w-full md:w-auto group text-white text-sm md:text-xl font-bold py-3 px-6 md:py-5 md:px-10 rounded-full border border-white/20 hover:bg-white/10 hover:text-white transition-all duration-300 backdrop-blur-md whitespace-nowrap"
             >
                 Khám Phá Dịch Vụ

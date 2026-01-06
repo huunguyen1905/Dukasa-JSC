@@ -30,7 +30,7 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
         if (found) {
             setSelectedProject(found);
             // Optional: Scroll to projects section if landing directly
-            const element = document.getElementById('projects');
+            const element = document.getElementById('du-an');
             if(element) element.scrollIntoView({ behavior: 'smooth' });
         }
     }
@@ -43,8 +43,8 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
 
   const handleCloseModal = () => {
       setSelectedProject(null);
-      // Revert URL to home but keep scroll position (mostly)
-      navigate('/', { replace: true, preventScrollReset: true });
+      // Revert URL to projects page but keep scroll position (mostly)
+      navigate('/du-an', { replace: true, preventScrollReset: true });
   };
 
   // Filter Logic
@@ -73,7 +73,7 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
 
   return (
     <>
-        <section id="projects" className="bg-brand-black py-24 border-t border-gray-900 relative">
+        <section id="du-an" className="bg-brand-black py-24 border-t border-gray-900 relative">
              {/* Background Subtle Grid */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#111_1px,transparent_1px),linear-gradient(to_bottom,#111_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20 pointer-events-none"></div>
 

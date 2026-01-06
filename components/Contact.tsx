@@ -10,39 +10,23 @@ const Contact: React.FC = () => {
     name: '',
     email: '',
     phone: '',
-    service: [] as string[],
-    budget: '',
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const servicesList = ["Branding", "Web Design", "SEO", "Ads Performance", "Social Media", "Khác"];
-  const budgetList = ["< 50 Triệu", "50 - 200 Triệu", "200 - 500 Triệu", "> 500 Triệu"];
-
-  const toggleService = (service: string) => {
-    setFormData(prev => ({
-        ...prev,
-        service: prev.service.includes(service) 
-            ? prev.service.filter(s => s !== service)
-            : [...prev.service, service]
-    }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Combine service and budget into details for the generic Lead type
+    // Combine into details string
     const combinedDetails = `
-      Dịch vụ quan tâm: ${formData.service.join(', ')}
-      Ngân sách: ${formData.budget}
+      Nguồn: Form Liên Hệ (Footer Section)
       Lời nhắn: ${formData.message}
     `;
 
     try {
         const newLead: Lead = {
-            // id is removed to let Supabase generate UUID
             name: formData.name,
             email: formData.email,
             phone: formData.phone,
@@ -53,7 +37,7 @@ const Contact: React.FC = () => {
         await createLead(newLead);
         
         setIsSuccess(true);
-        setFormData({ name: '', email: '', phone: '', service: [], budget: '', message: '' });
+        setFormData({ name: '', email: '', phone: '', message: '' });
         
         setTimeout(() => setIsSuccess(false), 5000);
     } catch (error: any) {
@@ -65,7 +49,7 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="bg-brand-black py-24 border-t border-gray-800 relative">
+    <section id="lien-he" className="bg-brand-black py-24 border-t border-gray-800 relative">
       <div className="container mx-auto px-6 relative z-10">
         <FadeIn>
             <div className="mb-16">
@@ -78,7 +62,7 @@ const Contact: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
             
-            {/* LEFT COLUMN: The Form */}
+            {/* LEFT COLUMN: The Simplified Form */}
             <div className="lg:col-span-7">
                 <FadeIn delay={100}>
                     {isSuccess ? (
@@ -96,99 +80,53 @@ const Contact: React.FC = () => {
                             </button>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="space-y-10">
-                            {/* Personal Info Group */}
+                        <form onSubmit={handleSubmit} className="space-y-8 bg-gray-900/20 p-8 rounded-3xl border border-gray-800/50">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="group relative">
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-2 group-focus-within:text-brand-yellow transition-colors duration-300">Họ và Tên *</label>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1 group-focus-within:text-brand-yellow transition-colors duration-300">Họ và Tên *</label>
                                     <input 
                                         required
                                         type="text" 
                                         value={formData.name}
                                         onChange={e => setFormData({...formData, name: e.target.value})}
-                                        className="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-brand-yellow focus:bg-white/5 focus:px-2 focus:outline-none transition-all duration-300 text-lg placeholder-gray-800 rounded-t"
-                                        placeholder="Nhập tên của bạn"
+                                        className="w-full bg-gray-900 border border-gray-700 rounded-xl px-5 py-4 text-white focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow/50 focus:outline-none transition-all duration-300 text-base placeholder-gray-600"
+                                        placeholder="Tên của bạn"
                                     />
                                 </div>
                                 <div className="group relative">
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-2 group-focus-within:text-brand-yellow transition-colors duration-300">Số Điện Thoại *</label>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1 group-focus-within:text-brand-yellow transition-colors duration-300">Số Điện Thoại *</label>
                                     <input 
                                         required
                                         type="tel" 
                                         value={formData.phone}
                                         onChange={e => setFormData({...formData, phone: e.target.value})}
-                                        className="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-brand-yellow focus:bg-white/5 focus:px-2 focus:outline-none transition-all duration-300 text-lg placeholder-gray-800 rounded-t"
+                                        className="w-full bg-gray-900 border border-gray-700 rounded-xl px-5 py-4 text-white focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow/50 focus:outline-none transition-all duration-300 text-base placeholder-gray-600"
                                         placeholder="090..."
                                     />
                                 </div>
                             </div>
                             
                             <div className="group relative">
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2 group-focus-within:text-brand-yellow transition-colors duration-300">Email Doanh Nghiệp *</label>
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1 group-focus-within:text-brand-yellow transition-colors duration-300">Email Doanh Nghiệp *</label>
                                 <input 
                                     required
                                     type="email" 
                                     value={formData.email}
                                     onChange={e => setFormData({...formData, email: e.target.value})}
-                                    className="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-brand-yellow focus:bg-white/5 focus:px-2 focus:outline-none transition-all duration-300 text-lg placeholder-gray-800 rounded-t"
+                                    className="w-full bg-gray-900 border border-gray-700 rounded-xl px-5 py-4 text-white focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow/50 focus:outline-none transition-all duration-300 text-base placeholder-gray-600"
                                     placeholder="name@company.com"
-                                    name="email_field_duhava"
-                                    autoComplete="email"
+                                    name="email_contact_duhava"
                                 />
                             </div>
 
-                            {/* Service Selection Tags */}
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-4">Dịch Vụ Quan Tâm</label>
-                                <div className="flex flex-wrap gap-3">
-                                    {servicesList.map(item => (
-                                        <button
-                                            key={item}
-                                            type="button"
-                                            onClick={() => toggleService(item)}
-                                            className={`px-4 py-2 rounded-full border text-sm font-bold transition-all duration-300
-                                                ${formData.service.includes(item) 
-                                                    ? 'bg-brand-yellow text-black border-brand-yellow shadow-[0_0_15px_rgba(250,204,21,0.2)]' 
-                                                    : 'bg-transparent text-gray-400 border-gray-700 hover:border-gray-500 hover:text-white'
-                                                }
-                                            `}
-                                        >
-                                            {item}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                             {/* Budget Selection */}
-                             <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-4">Ngân Sách Dự Kiến</label>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                    {budgetList.map(item => (
-                                        <button
-                                            key={item}
-                                            type="button"
-                                            onClick={() => setFormData({...formData, budget: item})}
-                                            className={`px-2 py-2 rounded border text-xs font-bold transition-all duration-300
-                                                ${formData.budget === item
-                                                    ? 'bg-white text-black border-white shadow-[0_0_15px_rgba(255,255,255,0.2)]' 
-                                                    : 'bg-transparent text-gray-500 border-gray-800 hover:border-gray-600 hover:text-gray-300'
-                                                }
-                                            `}
-                                        >
-                                            {item}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
                             <div className="group relative">
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2 group-focus-within:text-brand-yellow transition-colors duration-300">Lời Nhắn / Yêu Cầu Cụ Thể</label>
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1 group-focus-within:text-brand-yellow transition-colors duration-300">Lời Nhắn (Tùy chọn)</label>
                                 <textarea 
-                                    rows={3}
+                                    rows={4}
                                     value={formData.message}
                                     onChange={e => setFormData({...formData, message: e.target.value})}
-                                    className="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-brand-yellow focus:bg-white/5 focus:px-2 focus:outline-none transition-all duration-300 text-lg placeholder-gray-800 resize-none rounded-t"
-                                    placeholder="Chia sẻ thêm về mục tiêu của bạn..."
+                                    className="w-full bg-gray-900 border border-gray-700 rounded-xl px-5 py-4 text-white focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow/50 focus:outline-none transition-all duration-300 text-base placeholder-gray-600 resize-none"
+                                    placeholder="Mô tả sơ lược nhu cầu của bạn..."
                                 />
                             </div>
 
@@ -196,7 +134,7 @@ const Contact: React.FC = () => {
                                 type="submit"
                                 disabled={isSubmitting}
                                 className={`
-                                    w-full bg-brand-yellow text-black font-black uppercase py-3 md:py-5 rounded hover:bg-white transition-all shadow-lg flex items-center justify-center gap-2
+                                    w-full bg-brand-yellow text-black font-black uppercase py-4 md:py-5 rounded-xl hover:bg-white transition-all shadow-lg flex items-center justify-center gap-2
                                     ${isSubmitting ? 'opacity-70 cursor-wait' : 'hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(250,204,21,0.4)]'}
                                 `}
                             >

@@ -43,7 +43,7 @@ const Services: React.FC<ServicesProps> = ({ services, onCtaClick }) => {
   const activeService = services[activeIndex] || services[0];
 
   return (
-    <section id="services" className="bg-brand-black relative overflow-hidden min-h-screen flex items-center py-24 md:py-0 border-t border-gray-900">
+    <section id="giai-phap" className="bg-brand-black relative overflow-hidden min-h-screen flex items-center py-24 md:py-0 border-t border-gray-900">
        
        {/* GLOBAL BACKGROUND NOISE */}
        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>

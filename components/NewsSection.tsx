@@ -26,7 +26,7 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
         const found = news.find(n => n.id === newsId);
         if (found) {
             setSelectedNews(found);
-            const element = document.getElementById('news');
+            const element = document.getElementById('tin-tuc');
             if(element) element.scrollIntoView({ behavior: 'smooth' });
         }
     }
@@ -38,7 +38,7 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
 
   const handleCloseModal = () => {
     setSelectedNews(null);
-    navigate('/', { replace: true, preventScrollReset: true });
+    navigate('/tin-tuc', { replace: true, preventScrollReset: true });
   };
 
   const scroll = (direction: 'left' | 'right') => {
@@ -121,7 +121,7 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
 
   return (
     <>
-        <section id="news" className="bg-brand-black py-24 border-t border-gray-900 relative overflow-hidden">
+        <section id="tin-tuc" className="bg-brand-black py-24 border-t border-gray-900 relative overflow-hidden">
         {/* Decorative Elements */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none"></div>
         

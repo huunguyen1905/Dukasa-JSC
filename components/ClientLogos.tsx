@@ -35,10 +35,9 @@ const STATIC_PARTNERS = [
 
 const LogoItem: React.FC<{ partner: { name: string, url: string } }> = ({ partner }) => {
   return (
-    // Adjusted: Tighter width (w-44/w-72), reduced padding, increased container height (h-40)
-    <div className="group relative h-32 w-44 md:w-72 flex items-center justify-center px-4 md:px-8 transition-all duration-500">
-        {/* Hover Glow Effect Behind */}
-        <div className="absolute inset-0 bg-brand-yellow/0 group-hover:bg-brand-yellow/5 rounded-xl transition-colors duration-500 filter blur-xl"></div>
+    // UPDATED: Reduced width (w-32/w-52) to bring them closer visually
+    // UPDATED: Increased height (h-32) container to accommodate larger logos
+    <div className="group relative h-32 w-32 md:w-52 flex items-center justify-center px-2 transition-all duration-500 shrink-0">
         
         <img 
             src={partner.url} 
@@ -46,8 +45,8 @@ const LogoItem: React.FC<{ partner: { name: string, url: string } }> = ({ partne
             referrerPolicy="no-referrer"
             className="
                 max-h-16 md:max-h-24 w-auto object-contain transition-all duration-500 ease-out
-                filter grayscale brightness-[0.6] opacity-70 contrast-125
-                group-hover:grayscale-0 group-hover:brightness-100 group-hover:opacity-100 group-hover:scale-110 group-hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]
+                filter grayscale brightness-[0.6] opacity-50 
+                group-hover:grayscale-0 group-hover:brightness-100 group-hover:opacity-100 group-hover:scale-110 
             "
         />
     </div>
@@ -55,45 +54,40 @@ const LogoItem: React.FC<{ partner: { name: string, url: string } }> = ({ partne
 };
 
 const ClientLogos: React.FC = () => {
+  // Use the full list in a single continuous stream
   const partners = STATIC_PARTNERS;
-  const half = Math.ceil(partners.length / 2);
-  const row1 = partners.slice(0, half);
-  const row2 = partners.slice(half);
 
   return (
-    <section className="bg-brand-black border-b border-gray-900 py-10 overflow-hidden relative z-20 group/section">
-      {/* Background Texture */}
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>
+    <section className="bg-brand-black border-b border-white/5 py-12 overflow-hidden relative z-20">
       
-      {/* Vignette Fade Edges (Smooth Transition) */}
-      <div className="absolute left-0 top-0 bottom-0 w-32 md:w-64 bg-gradient-to-r from-brand-black via-brand-black/80 to-transparent z-10 pointer-events-none"></div>
-      <div className="absolute right-0 top-0 bottom-0 w-32 md:w-64 bg-gradient-to-l from-brand-black via-brand-black/80 to-transparent z-10 pointer-events-none"></div>
+      {/* Vignette Fade Edges */}
+      <div className="absolute left-0 top-0 bottom-0 w-24 md:w-60 bg-gradient-to-r from-brand-black via-brand-black/90 to-transparent z-20 pointer-events-none"></div>
+      <div className="absolute right-0 top-0 bottom-0 w-24 md:w-60 bg-gradient-to-l from-brand-black via-brand-black/90 to-transparent z-20 pointer-events-none"></div>
 
-      <div className="container mx-auto px-6 mb-8 text-center relative z-10">
-          <span className="text-brand-yellow font-bold tracking-[0.3em] uppercase text-xs md:text-sm mb-2 block animate-pulse">Ecosystem</span>
-          <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight opacity-90">
-             Mạng Lưới <span className="text-gray-600">Đối Tác Chiến Lược</span>
+      <div className="container mx-auto px-6 mb-10 text-center relative z-10">
+          <span className="inline-block py-1 px-3 rounded-full border border-white/10 bg-white/5 text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-4 backdrop-blur-md">
+            Strategic Ecosystem
+          </span>
+          <h3 className="text-xl md:text-3xl font-display font-medium text-white tracking-tight">
+             Được Tin Tưởng Bởi <span className="text-gray-600">500+ Doanh Nghiệp</span>
           </h3>
       </div>
 
-      <div className="flex flex-col gap-4 relative">
-        {/* ROW 1: Scrolling Left (Normal) */}
-        <div className="flex w-full relative">
-            <div className="flex animate-scroll-right items-center whitespace-nowrap" style={{ animationDirection: 'normal', animationDuration: '60s' }}>
-                {[...row1, ...row1, ...row1].map((partner, index) => (
-                    <LogoItem key={`r1-${index}`} partner={partner} />
-                ))}
-            </div>
-        </div>
-
-        {/* ROW 2: Scrolling Right (Reverse) */}
-        <div className="flex w-full relative">
-            <div className="flex animate-scroll-right items-center whitespace-nowrap" style={{ animationDirection: 'reverse', animationDuration: '70s' }}>
-                {[...row2, ...row2, ...row2].map((partner, index) => (
-                    <LogoItem key={`r2-${index}`} partner={partner} />
-                ))}
-            </div>
-        </div>
+      {/* SINGLE ROW SCROLL */}
+      <div className="flex w-full relative mask-linear-fade">
+          {/* We duplicate the array 3 times to ensure infinite scroll feels seamless on large screens */}
+          <div 
+            className="flex animate-scroll-right items-center gap-6 md:gap-12 pl-6" 
+            style={{ 
+                animationDirection: 'normal', 
+                animationDuration: '80s', // Slightly faster due to higher density
+                width: 'max-content' 
+            }}
+          >
+              {[...partners, ...partners, ...partners].map((partner, index) => (
+                  <LogoItem key={`p-${index}`} partner={partner} />
+              ))}
+          </div>
       </div>
     </section>
   );

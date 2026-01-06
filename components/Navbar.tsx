@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ArrowRight, Search, ChevronDown, Zap, Globe, Layout, BarChart, TrendingUp, Phone } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface NavbarProps {
   onOpenContact: () => void;
@@ -10,34 +10,35 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('hero');
+  const [activeSection, setActiveSection] = useState('trang-chu');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   
-  // Admin Secret Entry Logic
+  // Navigation
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Admin Secret Entry Logic
   const [logoClicks, setLogoClicks] = useState(0);
   const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleLogoClick = () => {
-    // 1. Default behavior: Scroll to top
+    // 1. Default behavior: Go to home
+    navigate('/');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // 2. Secret Admin Access Logic
     const newCount = logoClicks + 1;
     setLogoClicks(newCount);
 
-    // Clear existing reset timer
     if (clickTimeoutRef.current) {
         clearTimeout(clickTimeoutRef.current);
     }
 
     if (newCount === 4) {
-        // If 4 clicks reached, go to admin login
         navigate('/admin-login');
         setLogoClicks(0);
     } else {
-        // Reset count if no next click within 500ms
         clickTimeoutRef.current = setTimeout(() => {
             setLogoClicks(0);
         }, 500);
@@ -47,12 +48,12 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
   // Handle Scroll Effect & Active Section Detection
   useEffect(() => {
     const handleScroll = () => {
-      // Trigger transformation slightly earlier for better feel
       setIsScrolled(window.scrollY > 20);
 
       // Detect active section for highlighting
-      const sections = ['hero', 'about-info', 'services', 'projects', 'news'];
-      let current = 'hero';
+      // Map sections to their new IDs
+      const sections = ['trang-chu', 've-chung-toi', 'giai-phap', 'du-an', 'tin-tuc'];
+      let current = 'trang-chu';
       
       for (const section of sections) {
         const element = document.getElementById(section);
@@ -70,7 +71,14 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Lock scroll when mobile menu is open
+  // Sync active section with URL path if initially loaded
+  useEffect(() => {
+      const path = location.pathname.replace('/', '');
+      if (path && ['ve-chung-toi', 'giai-phap', 'du-an', 'tin-tuc'].includes(path)) {
+          setActiveSection(path);
+      }
+  }, [location]);
+
   useEffect(() => {
     if (isMobileMenuOpen || isSearchOpen) {
       document.body.style.overflow = 'hidden';
@@ -79,7 +87,6 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
     }
   }, [isMobileMenuOpen, isSearchOpen]);
 
-  // Focus input when search opens
   useEffect(() => {
     if (isSearchOpen && searchInputRef.current) {
       setTimeout(() => {
@@ -88,32 +95,25 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
     }
   }, [isSearchOpen]);
 
-  const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+  // Use Navigate to update URL
+  const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
-    const element = document.getElementById(id);
-    if (element) {
-      const yOffset = -100; 
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
+    navigate(`/${id}`);
     setIsMobileMenuOpen(false);
   };
 
   const servicesSubMenu = [
-      { name: 'Branding Identity', icon: <Zap size={16}/>, link: '#services' },
-      { name: 'Web & App Design', icon: <Layout size={16}/>, link: '#services' },
-      { name: 'Performance Ads', icon: <Globe size={16}/>, link: '#services' },
-      { name: 'Social Media', icon: <BarChart size={16}/>, link: '#services' },
+      { name: 'Branding Identity', icon: <Zap size={16}/>, link: '/giai-phap' },
+      { name: 'Web & App Design', icon: <Layout size={16}/>, link: '/giai-phap' },
+      { name: 'Performance Ads', icon: <Globe size={16}/>, link: '/giai-phap' },
+      { name: 'Social Media', icon: <BarChart size={16}/>, link: '/giai-phap' },
   ];
 
   const popularSearches = ["Báo giá Website", "Dịch vụ SEO", "Tuyển dụng", "Branding"];
 
   return (
     <>
-      {/* 
-        NAVBAR WRAPPER 
-        The "Dynamic Capsule" Concept
-      */}
+      {/* NAVBAR WRAPPER */}
       <div className="fixed top-0 left-0 w-full z-50 flex justify-center pointer-events-none transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]">
         <nav 
           className={`
@@ -148,15 +148,15 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
             {/* Center: Navigation Links (Desktop Only) */}
             <div className={`hidden md:flex items-center gap-2 mx-8 transition-opacity duration-300 ${isScrolled ? 'opacity-100' : 'opacity-90'}`}>
                 {[
-                    { id: 'about-info', label: 'Về Chúng Tôi' },
-                    { id: 'services', label: 'Dịch Vụ', hasDropdown: true },
-                    { id: 'projects', label: 'Dự Án' },
-                    { id: 'news', label: 'Tin Tức' }
+                    { id: 've-chung-toi', label: 'Về Chúng Tôi' },
+                    { id: 'giai-phap', label: 'Dịch Vụ', hasDropdown: true },
+                    { id: 'du-an', label: 'Dự Án' },
+                    { id: 'tin-tuc', label: 'Tin Tức' }
                 ].map((item) => (
                     <div key={item.id} className="relative group/item">
                         <a 
-                            href={`#${item.id}`} 
-                            onClick={(e) => handleScrollTo(e, item.id)}
+                            href={`/${item.id}`} 
+                            onClick={(e) => handleNavigation(e, item.id)}
                             className={`
                                 relative px-4 py-2 text-[11px] font-bold uppercase tracking-[0.15em] transition-all duration-300 rounded-full flex items-center gap-1 overflow-hidden
                                 ${activeSection === item.id 
@@ -177,7 +177,10 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                                         <a 
                                             key={idx} 
                                             href={sub.link}
-                                            onClick={(e) => handleScrollTo(e, 'services')}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                navigate('/giai-phap');
+                                            }}
                                             className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 hover:text-white transition-all group/sub"
                                         >
                                             <span className="text-brand-yellow bg-brand-yellow/5 p-1.5 rounded-lg group-hover/sub:bg-brand-yellow group-hover/sub:text-black transition-colors">{sub.icon}</span>
@@ -233,9 +236,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
         </nav>
       </div>
 
-      {/* 
-          SEARCH OVERLAY (Command Palette Style) 
-      */}
+      {/* SEARCH OVERLAY */}
       <div 
         className={`fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl transition-all duration-500 flex flex-col items-center justify-center
             ${isSearchOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}
@@ -259,8 +260,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                     onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                             setIsSearchOpen(false);
-                            const element = document.getElementById('contact');
-                            if(element) element.scrollIntoView({behavior: 'smooth'});
+                            navigate('/lien-he');
                         }
                         if (e.key === 'Escape') setIsSearchOpen(false);
                     }}
@@ -286,18 +286,13 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
          </div>
       </div>
 
-      {/* 
-          MOBILE MENU (Slide-in Drawer)
-          An elegant drawer sliding from the right, blurring the background.
-      */}
+      {/* MOBILE MENU */}
       <>
-        {/* Backdrop */}
         <div 
             className={`fixed inset-0 bg-black/80 backdrop-blur-sm z-[90] transition-opacity duration-500 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
             onClick={() => setIsMobileMenuOpen(false)}
         />
         
-        {/* Drawer */}
         <div 
             className={`fixed top-0 right-0 h-full w-[85%] max-w-md bg-[#0A0A0A] border-l border-white/5 z-[100] transform transition-transform duration-500 cubic-bezier(0.19, 1, 0.22, 1) shadow-2xl flex flex-col
             ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}
@@ -318,15 +313,15 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
 
             <div className="flex-1 flex flex-col justify-center px-8 gap-6 overflow-y-auto">
                 {[
-                    { id: 'about-info', label: 'Về Chúng Tôi', num: '01' },
-                    { id: 'services', label: 'Dịch Vụ', num: '02' },
-                    { id: 'projects', label: 'Dự Án', num: '03' },
-                    { id: 'news', label: 'Tin Tức', num: '04' }
+                    { id: 've-chung-toi', label: 'Về Chúng Tôi', num: '01' },
+                    { id: 'giai-phap', label: 'Dịch Vụ', num: '02' },
+                    { id: 'du-an', label: 'Dự Án', num: '03' },
+                    { id: 'tin-tuc', label: 'Tin Tức', num: '04' }
                 ].map((item, index) => (
                     <a 
                         key={item.id}
-                        href={`#${item.id}`} 
-                        onClick={(e) => handleScrollTo(e, item.id)} 
+                        href={`/${item.id}`} 
+                        onClick={(e) => handleNavigation(e, item.id)} 
                         className={`group flex items-center gap-6 py-2 transition-all duration-500 delay-[${index * 100}ms]
                             ${isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}
                         `}
