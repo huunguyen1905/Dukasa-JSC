@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ArrowRight, Search, ChevronDown, Zap, Globe, Layout, BarChart, TrendingUp, Phone } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 interface NavbarProps {
   onOpenContact: () => void;
@@ -10,7 +10,6 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('trang-chu');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   
@@ -23,62 +22,33 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
   const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleLogoClick = () => {
-    // 1. Default behavior: Go to home
     navigate('/');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // 2. Secret Admin Access Logic
+    // Secret Admin Access
     const newCount = logoClicks + 1;
     setLogoClicks(newCount);
 
-    if (clickTimeoutRef.current) {
-        clearTimeout(clickTimeoutRef.current);
-    }
+    if (clickTimeoutRef.current) clearTimeout(clickTimeoutRef.current);
 
     if (newCount === 4) {
         navigate('/admin-login');
         setLogoClicks(0);
     } else {
-        clickTimeoutRef.current = setTimeout(() => {
-            setLogoClicks(0);
-        }, 500);
+        clickTimeoutRef.current = setTimeout(() => setLogoClicks(0), 500);
     }
   };
 
-  // Handle Scroll Effect & Active Section Detection
+  // Handle Scroll Effect only (Active state now depends on URL)
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
-
-      // Detect active section for highlighting
-      // Map sections to their new IDs
-      const sections = ['trang-chu', 've-chung-toi', 'giai-phap', 'du-an', 'tin-tuc'];
-      let current = 'trang-chu';
-      
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 300 && rect.bottom >= 300) {
-            current = section;
-          }
-        }
-      }
-      setActiveSection(current);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Sync active section with URL path if initially loaded
-  useEffect(() => {
-      const path = location.pathname.replace('/', '');
-      if (path && ['ve-chung-toi', 'giai-phap', 'du-an', 'tin-tuc'].includes(path)) {
-          setActiveSection(path);
-      }
-  }, [location]);
-
+  // Body lock for modals
   useEffect(() => {
     if (isMobileMenuOpen || isSearchOpen) {
       document.body.style.overflow = 'hidden';
@@ -87,23 +57,14 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
     }
   }, [isMobileMenuOpen, isSearchOpen]);
 
+  // Focus search
   useEffect(() => {
     if (isSearchOpen && searchInputRef.current) {
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 100);
+      setTimeout(() => searchInputRef.current?.focus(), 100);
     }
   }, [isSearchOpen]);
 
-  // Use Navigate to update URL
-  const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    navigate(`/${id}`);
-    setIsMobileMenuOpen(false);
-  };
-
-  // Updated Submenu to point to Specific Service Detail Pages
-  // Using IDs from mockData
+  // Updated Submenu
   const servicesSubMenu = [
       { name: 'Branding Identity', icon: <Zap size={16}/>, link: '/service/svc-branding' },
       { name: 'Web & App Design', icon: <Layout size={16}/>, link: '/service/svc-web' },
@@ -113,9 +74,14 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
 
   const popularSearches = ["Báo giá Website", "Dịch vụ SEO", "Tuyển dụng", "Branding"];
 
+  // Helper to check active state
+  const isActive = (path: string) => {
+      if (path === 'trang-chu' && location.pathname === '/') return true;
+      return location.pathname.includes(`/${path}`);
+  };
+
   return (
     <>
-      {/* NAVBAR WRAPPER - Changed to HEADER for Semantic SEO */}
       <header className="fixed top-0 left-0 w-full z-50 flex justify-center pointer-events-none transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]">
         <nav 
           aria-label="Main Navigation"
@@ -157,12 +123,11 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                     { id: 'tin-tuc', label: 'Tin Tức' }
                 ].map((item) => (
                     <div key={item.id} className="relative group/item">
-                        <a 
-                            href={`/${item.id}`} 
-                            onClick={(e) => handleNavigation(e, item.id)}
+                        <Link 
+                            to={`/${item.id}`}
                             className={`
                                 relative px-4 py-2 text-[11px] font-bold uppercase tracking-[0.15em] transition-all duration-300 rounded-full flex items-center gap-1 overflow-hidden
-                                ${activeSection === item.id 
+                                ${isActive(item.id) 
                                     ? 'text-brand-black bg-brand-yellow' 
                                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                                 }
@@ -170,25 +135,21 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                         >
                             {item.label}
                             {item.hasDropdown && <ChevronDown size={10} className="group-hover/item:rotate-180 transition-transform"/>}
-                        </a>
+                        </Link>
 
                         {/* Mega Dropdown for Services */}
                         {item.hasDropdown && (
                             <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-64 opacity-0 invisible group-hover/item:opacity-100 group-hover/item:visible transition-all duration-300 transform translate-y-2 group-hover/item:translate-y-0">
                                 <div className="bg-[#0A0A0A] border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9)] overflow-hidden p-2 backdrop-blur-3xl">
                                     {servicesSubMenu.map((sub, idx) => (
-                                        <a 
+                                        <div 
                                             key={idx} 
-                                            href={sub.link}
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                navigate(sub.link); // Navigate to specific service
-                                            }}
-                                            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 hover:text-white transition-all group/sub"
+                                            onClick={() => navigate(sub.link)}
+                                            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 hover:text-white transition-all group/sub cursor-pointer"
                                         >
                                             <span className="text-brand-yellow bg-brand-yellow/5 p-1.5 rounded-lg group-hover/sub:bg-brand-yellow group-hover/sub:text-black transition-colors">{sub.icon}</span>
                                             <span className="text-xs font-bold uppercase tracking-wide">{sub.name}</span>
-                                        </a>
+                                        </div>
                                     ))}
                                 </div>
                             </div>
@@ -199,7 +160,6 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
 
             {/* Right: Actions */}
             <div className="flex items-center gap-2 shrink-0">
-                {/* Search Toggle */}
                 <button 
                     onClick={() => setIsSearchOpen(true)}
                     className={`
@@ -211,7 +171,6 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                     <Search size={18} className="group-hover:scale-110 transition-transform" />
                 </button>
 
-                {/* CTA Button */}
                 <button 
                     onClick={onOpenContact}
                     className={`
@@ -224,7 +183,6 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                     {!isScrolled && <ArrowRight size={14} />}
                 </button>
 
-                {/* Mobile Menu Toggle */}
                 <button 
                     className={`
                         md:hidden text-white p-2 rounded-full transition-colors relative z-50
@@ -239,7 +197,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
         </nav>
       </header>
 
-      {/* SEARCH OVERLAY */}
+      {/* SEARCH OVERLAY - Same as before */}
       <div 
         className={`fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl transition-all duration-500 flex flex-col items-center justify-center
             ${isSearchOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}
@@ -289,7 +247,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
          </div>
       </div>
 
-      {/* MOBILE MENU */}
+      {/* MOBILE MENU - Updated to use Link */}
       <>
         <div 
             className={`fixed inset-0 bg-black/80 backdrop-blur-sm z-[90] transition-opacity duration-500 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
@@ -321,20 +279,22 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                     { id: 'du-an', label: 'Dự Án', num: '03' },
                     { id: 'tin-tuc', label: 'Tin Tức', num: '04' }
                 ].map((item, index) => (
-                    <a 
+                    <Link 
                         key={item.id}
-                        href={`/${item.id}`} 
-                        onClick={(e) => handleNavigation(e, item.id)} 
+                        to={`/${item.id}`} 
+                        onClick={() => setIsMobileMenuOpen(false)}
                         className={`group flex items-center gap-6 py-2 transition-all duration-500 delay-[${index * 100}ms]
                             ${isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}
                         `}
                         style={{ transitionDelay: `${index * 50}ms` }}
                     >
                         <span className="text-xs font-bold text-gray-700 group-hover:text-brand-yellow transition-colors font-mono">{item.num}</span>
-                        <span className="text-4xl font-black text-white uppercase group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-brand-yellow group-hover:to-white transition-all">
+                        <span className={`text-4xl font-black uppercase transition-all
+                            ${isActive(item.id) ? 'text-brand-yellow' : 'text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-brand-yellow group-hover:to-white'}
+                        `}>
                             {item.label}
                         </span>
-                    </a>
+                    </Link>
                 ))}
             </div>
 

@@ -168,13 +168,13 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
             </button>
           </MagneticButton>
           
-          {/* Magnetic Secondary Button */}
+          {/* Magnetic Secondary Button - Now links to dedicated Services Page */}
           <MagneticButton>
             <button 
                 onClick={() => navigate('/giai-phap')}
                 className="w-full md:w-auto group text-white text-sm md:text-xl font-bold py-3 px-6 md:py-5 md:px-10 rounded-full border border-white/20 hover:bg-white/10 hover:text-white transition-all duration-300 backdrop-blur-md whitespace-nowrap"
             >
-                Khám Phá Dịch Vụ
+                Khám Phá Giải Pháp
             </button>
           </MagneticButton>
         </div>

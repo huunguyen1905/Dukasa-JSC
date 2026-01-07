@@ -22,9 +22,9 @@ import { ArrowLeft, Sparkles } from 'lucide-react';
 
 // Lazy Load Heavy Components
 const Services = lazy(() => import('./components/Services'));
-const ServiceDetail = lazy(() => import('./components/ServiceDetail')); // NEW COMPONENT
-const ProjectDetail = lazy(() => import('./components/ProjectDetail')); // NEW COMPONENT
-const NewsDetail = lazy(() => import('./components/NewsDetail')); // NEW COMPONENT
+const ServiceDetail = lazy(() => import('./components/ServiceDetail')); 
+const ProjectDetail = lazy(() => import('./components/ProjectDetail')); 
+const NewsDetail = lazy(() => import('./components/NewsDetail')); 
 const ContactModal = lazy(() => import('./components/ContactModal'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const Testimonials = lazy(() => import('./components/Testimonials'));
@@ -33,8 +33,9 @@ const Team = lazy(() => import('./components/Team'));
 const CTASection = lazy(() => import('./components/CTASection'));
 const FeaturedProjects = lazy(() => import('./components/FeaturedProjects'));
 const NewsSection = lazy(() => import('./components/NewsSection'));
-const NewsPage = lazy(() => import('./components/NewsPage')); // NEW NEWS PAGE
-const ProjectsPage = lazy(() => import('./components/ProjectsPage')); // NEW PROJECTS PAGE
+const NewsPage = lazy(() => import('./components/NewsPage')); 
+const ProjectsPage = lazy(() => import('./components/ProjectsPage')); 
+const ServicesPage = lazy(() => import('./components/ServicesPage')); 
 const FAQ = lazy(() => import('./components/FAQ'));
 const TechStack = lazy(() => import('./components/TechStack'));
 const Pricing = lazy(() => import('./components/Pricing'));
@@ -43,7 +44,7 @@ const About = lazy(() => import('./components/About'));
 const ROICalculator = lazy(() => import('./components/ROICalculator'));
 const StrategyQuiz = lazy(() => import('./components/StrategyQuiz'));
 const PressSection = lazy(() => import('./components/PressSection'));
-const GrowthSection = lazy(() => import('./components/GrowthSection')); // Import new component
+const GrowthSection = lazy(() => import('./components/GrowthSection')); 
 
 // Admin Login Component
 const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
@@ -67,7 +68,7 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
         <p className="text-gray-500 text-sm mb-8">Hệ thống dành riêng cho quản trị viên DUHAVA</p>
         <LoginForm onLogin={() => {
             onLogin();
-            navigate('/admin/leads'); // Redirect straight to leads on login
+            navigate('/admin/leads'); 
         }} />
       </div>
     </div>
@@ -121,53 +122,27 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
       navigate('/admin-login');
   };
 
-  // Default SEO Title for Landing Page
   useEffect(() => {
       document.title = "DUHAVA - Thống Trị Thị Trường Số | Digital Marketing Agency";
   }, []);
 
-  // Logic to handle scrolling based on URL path (Deep Linking for Sections)
-  useEffect(() => {
-    // Determine the section ID from the path (remove leading slash)
-    let sectionId = location.pathname.replace('/', '');
-    
-    // Default to top if root
-    if (!sectionId) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-    }
-
-    // Handle special cases where URL path doesn't exactly match ID if needed, 
-    // but we will try to keep them consistent.
-    
-    // Wait for DOM to be ready/rendered
-    setTimeout(() => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-            // Calculate offset for fixed header if necessary
-            const yOffset = -50; 
-            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-        }
-    }, 300); // Slight delay to ensure lazy loaded components are mounted
-  }, [location]);
+  // Optimization: Only show top items on landing page
+  const featuredProjects = projects.slice(0, 3); // Show only top 3 for balanced grid
+  const latestNews = news.slice(0, 5); // Show only top 5
 
   return (
     <div className="bg-brand-black min-h-screen text-white font-sans selection:bg-brand-yellow selection:text-black md:cursor-none relative">
       <CustomCursor />
       <NoiseOverlay />
-      
-      {/* THE NEW WORLD CLASS BACKGROUND */}
       <WorldClassBackground />
       
       <Navbar onOpenContact={() => setIsContactOpen(true)} />
       <ScrollProgress /> 
       
-      {/* Conversion Optimization Components */}
       <MobileStickyBar onCtaClick={() => setIsContactOpen(true)} />
       <ExitIntent />
 
-      {/* Floating Strategy Finder Button (Bottom Left) */}
+      {/* Floating Strategy Finder */}
       <div className="fixed bottom-8 left-8 z-[80] hidden md:block">
         <button 
             onClick={() => setIsQuizOpen(true)}
@@ -186,8 +161,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
       <SmoothScroll>
         <main>
             <Hero onCtaClick={() => setIsContactOpen(true)} />
-            
-            {/* REPLACED: New Client Marquee instead of static text strip */}
             <ClientLogos />
 
             <ErrorBoundary>
@@ -210,11 +183,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
             
             <ErrorBoundary>
                 <Suspense fallback={<SectionLoader />}>
-                    <FeaturedProjects projects={projects} />
+                    {/* Pass only featured projects to landing page version */}
+                    <FeaturedProjects projects={featuredProjects} />
                 </Suspense>
             </ErrorBoundary>
             
-            {/* PRESS SECTION ADDED HERE */}
             <ErrorBoundary>
                 <Suspense fallback={<SectionLoader />}>
                     <PressSection />
@@ -251,7 +224,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
                 </Suspense>
             </ErrorBoundary>
             
-            {/* NEW GROWTH SECTION REPLACING STATIC STATS */}
             <ErrorBoundary>
                 <Suspense fallback={<SectionLoader />}>
                     <GrowthSection />
@@ -266,7 +238,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
             
             <ErrorBoundary>
                 <Suspense fallback={<SectionLoader />}>
-                    <NewsSection news={news} />
+                    {/* Pass only latest news to landing page version */}
+                    <NewsSection news={latestNews} />
                 </Suspense>
             </ErrorBoundary>
 
@@ -318,7 +291,6 @@ const App: React.FC = () => {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   
-  // Modal state for ServiceDetail/NewsPage page usage
   const [isContactOpen, setIsContactOpen] = useState(false);
 
   useEffect(() => {
@@ -368,13 +340,23 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<LandingPage {...landingProps} />} />
         
-        {/* Section URLs (Vietnamese Slugs) */}
+        {/* Support Section URLs specifically mapping to Landing Page sections if needed, but primarily now we have dedicated pages. 
+            For 've-chung-toi' we keep it as Landing Page section or maybe a new page later.
+            For now, let's keep /ve-chung-toi mapping to Landing Page scrolling behavior if someone bookmarks it.
+        */}
         <Route path="/ve-chung-toi" element={<LandingPage {...landingProps} />} />
-        <Route path="/giai-phap" element={<LandingPage {...landingProps} />} />
         <Route path="/lien-he" element={<LandingPage {...landingProps} />} />
-        <Route path="/bang-gia" element={<LandingPage {...landingProps} />} />
         
-        {/* UPDATE: /du-an now points to dedicated Projects Page */}
+        {/* Dedicated Pages */}
+        <Route 
+            path="/giai-phap" 
+            element={
+                <Suspense fallback={<SectionLoader />}>
+                    <ServicesPage services={services} onOpenAdmin={() => {}} />
+                </Suspense>
+            } 
+        />
+
         <Route 
             path="/du-an" 
             element={
@@ -384,7 +366,6 @@ const App: React.FC = () => {
             } 
         />
 
-        {/* UPDATE: /tin-tuc now points to dedicated News Page */}
         <Route 
             path="/tin-tuc" 
             element={
@@ -394,7 +375,7 @@ const App: React.FC = () => {
             } 
         />
         
-        {/* NEW: SERVICE DETAIL ROUTE */}
+        {/* Details */}
         <Route 
             path="/service/:id" 
             element={
@@ -408,7 +389,6 @@ const App: React.FC = () => {
             } 
         />
 
-        {/* NEW: PROJECT DETAIL ROUTE */}
         <Route 
             path="/project/:projectId" 
             element={
@@ -421,7 +401,6 @@ const App: React.FC = () => {
             } 
         />
 
-        {/* NEW: NEWS DETAIL ROUTE */}
         <Route 
             path="/news/:newsId" 
             element={
@@ -436,7 +415,6 @@ const App: React.FC = () => {
         
         <Route path="/admin-login" element={<AdminLogin onLogin={handleLogin} />} />
         
-        {/* UPDATED: Admin Route uses Wildcard for sub-routing */}
         <Route 
             path="/admin/*" 
             element={isAuthenticated ? (
