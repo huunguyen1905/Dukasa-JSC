@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Service, Lead, Project, NewsItem, AdminView, LeadStatus, TeamMember, ComparisonItem, Persona } from '../types';
+import { Service, Lead, Project, NewsItem, AdminView, LeadStatus, TeamMember, ComparisonItem, Persona, GalleryImage } from '../types';
 import { 
     fetchServices, upsertService, deleteService,
     fetchProjects, upsertProject, deleteProject,
@@ -10,6 +10,7 @@ import {
     fetchTeamMembers, upsertTeamMember, deleteTeamMember,
     fetchComparisons, upsertComparison, deleteComparison,
     fetchPersonas, upsertPersona, deletePersona,
+    fetchGalleryImages, upsertGalleryImage, deleteGalleryImage,
     uploadImage
 } from '../services/supabaseService';
 import { generateServiceDescription } from '../services/geminiService';
@@ -57,6 +58,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
       if (path.includes('/team')) return AdminView.TEAM;
       if (path.includes('/comparison')) return AdminView.COMPARISON;
       if (path.includes('/personas')) return AdminView.PERSONAS;
+      if (path.includes('/gallery')) return AdminView.GALLERY;
       return AdminView.LEADS; // Default view
   };
 
@@ -77,6 +79,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [comparisons, setComparisons] = useState<ComparisonItem[]>([]);
   const [personas, setPersonas] = useState<Persona[]>([]);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
   
   // UI States
   const [isEditing, setIsEditing] = useState(false);
@@ -99,14 +102,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const refreshData = async () => {
       setIsLoading(true);
       try {
-          const [s, p, n, l, t, comp, per] = await Promise.all([
+          const [s, p, n, l, t, comp, per, gal] = await Promise.all([
               fetchServices(),
               fetchProjects(),
               fetchNews(),
               fetchLeads(),
               fetchTeamMembers(),
               fetchComparisons(),
-              fetchPersonas()
+              fetchPersonas(),
+              fetchGalleryImages()
           ]);
           setServices(s);
           setProjects(p);
@@ -115,6 +119,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           setTeamMembers(t);
           setComparisons(comp);
           setPersonas(per);
+          setGalleryImages(gal);
       } catch (e) {
           console.error("Error loading data", e);
           showToast("Lỗi tải dữ liệu. Vui lòng kiểm tra kết nối.", 'error');
@@ -176,6 +181,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
         } else if (type === 'PERSONAS') {
             await deletePersona(id);
             setPersonas(prev => prev.filter(item => item.id !== id));
+        } else if (type === 'GALLERY') {
+            await deleteGalleryImage(id);
+            setGalleryImages(prev => prev.filter(item => item.id !== id));
         }
         showToast("Đã xóa thành công", 'success');
     } catch (e) {
@@ -362,6 +370,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
             };
             if (formData.id) newPersona.id = formData.id;
             await upsertPersona(newPersona);
+        } else if (editingType === 'GALLERY') {
+            const newGallery: Partial<GalleryImage> = {
+                imageUrl: formData.imageUrl,
+                caption: formData.caption,
+                sortOrder: parseInt(formData.sortOrder) || 0
+            };
+            if (formData.id) newGallery.id = formData.id;
+            await upsertGalleryImage(newGallery);
         }
         
         showToast("Lưu thành công!", 'success');
@@ -468,6 +484,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
             <NavItem targetView={AdminView.PROJECTS} label="Dự Án" icon={Briefcase} />
             <NavItem targetView={AdminView.NEWS} label="Tin Tức" icon={FileText} />
             <NavItem targetView={AdminView.TEAM} label="Đội Ngũ" icon={UserCheck} />
+            <NavItem targetView={AdminView.GALLERY} label="Thư Viện Ảnh" icon={ImageIcon} />
 
              <div className="px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider hidden md:block mt-6">Cấu Hình</div>
             
@@ -602,6 +619,30 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                             <button onClick={() => openModal('TEAM', t)} className="flex-1 bg-gray-700 hover:bg-blue-600 py-2 rounded text-xs font-bold">Sửa</button>
                             <button onClick={() => handleDelete('TEAM', t.id)} className="flex-1 bg-gray-700 hover:bg-red-600 py-2 rounded text-xs font-bold flex items-center justify-center gap-1"><Trash2 size={12}/> Xóa</button>
                         </div>
+                    </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* --- GALLERY VIEW --- */}
+           {view === AdminView.GALLERY && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
+              <div className="flex justify-between items-center mb-8">
+                <h1 className="text-3xl font-black text-white">Thư Viện Ảnh (Real Results)</h1>
+                <button onClick={() => openModal('GALLERY')} className="bg-brand-yellow text-black px-4 py-2 rounded font-bold flex items-center gap-2"><Plus size={18}/> Thêm Ảnh</button>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {galleryImages.map(img => (
+                    <div key={img.id} className="bg-gray-800/50 p-2 rounded-xl border border-gray-700 hover:border-brand-yellow/50 transition-all relative group">
+                        <div className="aspect-[4/3] rounded-lg bg-gray-700 overflow-hidden relative">
+                            <img src={img.imageUrl} className="w-full h-full object-cover"/>
+                            {/* Hover Actions */}
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 transition-opacity">
+                                <button onClick={() => handleDelete('GALLERY', img.id)} className="p-2 bg-red-600 rounded text-white hover:bg-red-700"><Trash2 size={16}/></button>
+                            </div>
+                        </div>
+                        {img.caption && <p className="text-[10px] text-gray-400 mt-2 truncate">{img.caption}</p>}
                     </div>
                 ))}
               </div>
@@ -756,7 +797,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                     )}
 
                     {/* Image URL logic */}
-                    {(editingType === 'SERVICES' || editingType === 'PROJECTS' || editingType === 'NEWS' || editingType === 'TEAM') && (
+                    {(editingType === 'SERVICES' || editingType === 'PROJECTS' || editingType === 'NEWS' || editingType === 'TEAM' || editingType === 'GALLERY') && (
                         <div>
                             <label className="block text-xs font-bold text-gray-500 uppercase mb-1 flex justify-between items-center">
                                 <span>Hình Ảnh / Logo</span>
@@ -793,16 +834,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                                                 </label>
                                             </div>
 
-                                            {/* AI Generate Button */}
-                                            <button 
-                                                onClick={handleGenerateImageAI}
-                                                disabled={isUploading || isGeneratingImage}
-                                                className="flex-1 bg-gradient-to-r from-brand-yellow via-yellow-400 to-brand-yellow text-black font-bold py-2 rounded border border-brand-yellow hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 text-sm shadow-[0_0_15px_rgba(250,204,21,0.2)]"
-                                                title="Sử dụng Gemini Nano Banana Pro để tạo ảnh độc bản"
-                                            >
-                                                {isGeneratingImage ? <Loader2 size={16} className="animate-spin"/> : <Wand2 size={16} />} 
-                                                AI Design
-                                            </button>
+                                            {/* AI Generate Button - Only show if context exists */}
+                                            {editingType !== 'GALLERY' && (
+                                                <button 
+                                                    onClick={handleGenerateImageAI}
+                                                    disabled={isUploading || isGeneratingImage}
+                                                    className="flex-1 bg-gradient-to-r from-brand-yellow via-yellow-400 to-brand-yellow text-black font-bold py-2 rounded border border-brand-yellow hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 text-sm shadow-[0_0_15px_rgba(250,204,21,0.2)]"
+                                                    title="Sử dụng Gemini Nano Banana Pro để tạo ảnh độc bản"
+                                                >
+                                                    {isGeneratingImage ? <Loader2 size={16} className="animate-spin"/> : <Wand2 size={16} />} 
+                                                    AI Design
+                                                </button>
+                                            )}
                                         </div>
 
                                         {/* Manual URL Input (Fallback) */}
@@ -816,7 +859,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                                         />
                                     </div>
                                 </div>
-                                <p className="text-[10px] text-gray-500 italic">*Mẹo: Nhập Tiêu Đề trước, sau đó bấm "AI Design". Hệ thống sẽ tự động thiết kế ảnh chuẩn phong cách Black & Gold Luxury.</p>
+                                {editingType !== 'GALLERY' && <p className="text-[10px] text-gray-500 italic">*Mẹo: Nhập Tiêu Đề trước, sau đó bấm "AI Design". Hệ thống sẽ tự động thiết kế ảnh chuẩn phong cách Black & Gold Luxury.</p>}
                             </div>
                         </div>
                     )}
@@ -891,6 +934,26 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                                     value={Array.isArray(formData.focusTags) ? formData.focusTags.join(', ') : formData.focusTags || ''}
                                     onChange={e => setFormData({...formData, focusTags: e.target.value})}
                                     placeholder="SEO, Ads, Branding..."
+                                />
+                            </div>
+                        </>
+                    )}
+
+                    {/* GALLERY Specific */}
+                    {editingType === 'GALLERY' && (
+                        <>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Caption (Mô tả ngắn)</label>
+                                <input className="w-full bg-black border border-gray-700 rounded p-3 text-white focus:border-brand-yellow outline-none"
+                                    value={formData.caption || ''}
+                                    onChange={e => setFormData({...formData, caption: e.target.value})}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Thứ tự hiển thị</label>
+                                <input type="number" className="w-full bg-black border border-gray-700 rounded p-3 text-white focus:border-brand-yellow outline-none"
+                                    value={formData.sortOrder || 0}
+                                    onChange={e => setFormData({...formData, sortOrder: e.target.value})}
                                 />
                             </div>
                         </>

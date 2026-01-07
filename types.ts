@@ -63,6 +63,13 @@ export interface Persona {
   iconName: string;
 }
 
+export interface GalleryImage {
+  id: string;
+  imageUrl: string;
+  caption?: string;
+  sortOrder: number;
+}
+
 export enum LeadStatus {
   NEW = 'NEW',
   CONTACTED = 'CONTACTED',
@@ -90,7 +97,8 @@ export enum AdminView {
   // New Views
   PARTNERS = 'PARTNERS',
   COMPARISON = 'COMPARISON',
-  PERSONAS = 'PERSONAS'
+  PERSONAS = 'PERSONAS',
+  GALLERY = 'GALLERY'
 }
 
 export interface AlertState {

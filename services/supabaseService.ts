@@ -1,6 +1,6 @@
 
 import { supabase } from './supabaseClient';
-import { Service, Project, NewsItem, Lead, LeadStatus, TeamMember, ClientPartner, ComparisonItem, Persona } from '../types';
+import { Service, Project, NewsItem, Lead, LeadStatus, TeamMember, ClientPartner, ComparisonItem, Persona, GalleryImage } from '../types';
 import { MOCK_TEAM, MOCK_SERVICES, MOCK_PROJECTS, MOCK_NEWS } from '../data/mockData';
 
 // --- Local Storage Keys ---
@@ -12,7 +12,8 @@ const LS_KEYS = {
     LEADS: 'duhava_ls_leads',
     PARTNERS: 'duhava_ls_partners',
     COMPARISON: 'duhava_ls_comparison',
-    PERSONAS: 'duhava_ls_personas'
+    PERSONAS: 'duhava_ls_personas',
+    GALLERY: 'duhava_ls_gallery'
 };
 
 // --- Helpers ---
@@ -99,6 +100,13 @@ const mapPersona = (data: any): Persona => ({
     focusTags: data.focus_tags || [],
     ctaText: data.cta_text,
     iconName: data.icon_name
+});
+
+const mapGalleryImage = (data: any): GalleryImage => ({
+    id: data.id,
+    imageUrl: data.image_url,
+    caption: data.caption,
+    sortOrder: data.sort_order
 });
 
 // --- Storage Operations ---
@@ -353,3 +361,27 @@ export const upsertPersona = (item: Partial<Persona>) => upsertWithFallback(
     fetchPersonas
 );
 export const deletePersona = (id: string) => deleteWithFallback('personas', LS_KEYS.PERSONAS, id, fetchPersonas);
+
+// --- GALLERY Operations ---
+// Define defaults locally to avoid import loop or if simple
+const MOCK_GALLERY: GalleryImage[] = [
+    { id: '1', imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600", sortOrder: 1 },
+    { id: '2', imageUrl: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=600", sortOrder: 2 },
+    { id: '3', imageUrl: "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=600", sortOrder: 3 },
+    { id: '4', imageUrl: "https://images.unsplash.com/photo-1553877615-30c73a63bbc4?auto=format&fit=crop&q=80&w=600", sortOrder: 4 },
+];
+
+export const fetchGalleryImages = () => fetchWithFallback('gallery_images', LS_KEYS.GALLERY, mapGalleryImage, MOCK_GALLERY);
+
+export const upsertGalleryImage = (item: Partial<GalleryImage>) => upsertWithFallback(
+    'gallery_images', LS_KEYS.GALLERY, item,
+    (g) => ({
+        id: g.id,
+        image_url: g.imageUrl,
+        caption: g.caption,
+        sort_order: g.sortOrder
+    }),
+    fetchGalleryImages
+);
+
+export const deleteGalleryImage = (id: string) => deleteWithFallback('gallery_images', LS_KEYS.GALLERY, id, fetchGalleryImages);

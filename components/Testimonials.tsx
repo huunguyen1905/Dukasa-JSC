@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Quote, Star, TrendingUp, ArrowUpRight, ShieldCheck, X, ZoomIn, MessageCircle, Image as ImageIcon } from 'lucide-react';
 import FadeIn from './FadeIn';
 import { useNavigate } from 'react-router-dom';
+import { fetchGalleryImages } from '../services/supabaseService';
+import { GalleryImage } from '../types';
 
 const testimonials = [
   {
@@ -32,18 +34,6 @@ const testimonials = [
     metric: "24/7 Support",
     featured: false
   }
-];
-
-// Mock Images for the Gallery (Replace with your real screenshots/feedback images)
-const PROOF_IMAGES = [
-    "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600", // Dashboard Chart
-    "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=600", // Mobile Chat
-    "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=600", // Payment Proof
-    "https://images.unsplash.com/photo-1553877615-30c73a63bbc4?auto=format&fit=crop&q=80&w=600", // Meeting
-    "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=600", // Analytics
-    "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=600", // Team working
-    "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600",
-    "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=600",
 ];
 
 const AnimatedCounter = ({ end }: { end: number }) => {
@@ -80,11 +70,22 @@ const AnimatedCounter = ({ end }: { end: number }) => {
 
 const Testimonials: React.FC = () => {
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
   const navigate = useNavigate();
 
-  // Split images for dual rows
-  const row1 = [...PROOF_IMAGES, ...PROOF_IMAGES]; // Duplicate for infinite loop
-  const row2 = [...PROOF_IMAGES, ...PROOF_IMAGES].reverse();
+  useEffect(() => {
+      const loadGallery = async () => {
+          const imgs = await fetchGalleryImages();
+          setGalleryImages(imgs);
+      };
+      loadGallery();
+  }, []);
+
+  // Split images for dual rows. Duplicate array to ensure seamless infinite scroll
+  const images = galleryImages.length > 0 ? galleryImages : []; 
+  // If no images (yet), we might render nothing or a loader, but let's assume we have default mock data from service
+  const row1 = [...images, ...images]; 
+  const row2 = [...images, ...images].reverse();
 
   return (
     <section className="bg-brand-black py-24 relative overflow-hidden border-t border-gray-900">
@@ -218,6 +219,7 @@ const Testimonials: React.FC = () => {
       </div>
 
       {/* --- NEW: REAL RESULTS GALLERY (INFINITE SCROLL) --- */}
+      {images.length > 0 && (
       <div className="relative border-t border-gray-800 bg-gray-900/30 pt-16 pb-20">
          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
          
@@ -240,10 +242,10 @@ const Testimonials: React.FC = () => {
                     {row1.map((img, idx) => (
                         <div 
                             key={`r1-${idx}`} 
-                            onClick={() => setZoomedImage(img)}
+                            onClick={() => setZoomedImage(img.imageUrl)}
                             className="relative w-64 md:w-80 aspect-[16/10] bg-gray-800 rounded-xl overflow-hidden border border-gray-700 cursor-zoom-in group shrink-0"
                         >
-                            <img src={img} alt="Proof" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" />
+                            <img src={img.imageUrl} alt={img.caption || "Result Proof"} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" />
                             <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors"></div>
                             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                 <div className="w-10 h-10 bg-black/50 backdrop-blur rounded-full flex items-center justify-center text-white">
@@ -261,10 +263,10 @@ const Testimonials: React.FC = () => {
                     {row2.map((img, idx) => (
                         <div 
                             key={`r2-${idx}`} 
-                            onClick={() => setZoomedImage(img)}
+                            onClick={() => setZoomedImage(img.imageUrl)}
                             className="relative w-64 md:w-80 aspect-[16/10] bg-gray-800 rounded-xl overflow-hidden border border-gray-700 cursor-zoom-in group shrink-0"
                         >
-                            <img src={img} alt="Proof" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" />
+                            <img src={img.imageUrl} alt={img.caption || "Result Proof"} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" />
                              <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors"></div>
                              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                 <div className="w-10 h-10 bg-black/50 backdrop-blur rounded-full flex items-center justify-center text-white">
@@ -295,6 +297,7 @@ const Testimonials: React.FC = () => {
              </div>
          )}
       </div>
+      )}
 
     </section>
   );

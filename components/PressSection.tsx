@@ -1,6 +1,6 @@
 
 import React, { useState, useRef } from 'react';
-import { ArrowUpRight, Newspaper, Tv, Video, Award, Mic } from 'lucide-react';
+import { ArrowUpRight, Newspaper, Tv, Video, Award, Mic, ChevronDown, ChevronUp } from 'lucide-react';
 import FadeIn from './FadeIn';
 
 const pressData = [
@@ -14,7 +14,7 @@ const pressData = [
     link: "https://vtv.vn/cong-nghe/ai-va-tu-dong-hoa-co-hoi-thach-thuc-va-xu-huong-trong-5-nam-toi-20250318163053081.htm",
     icon: <Newspaper size={20} />,
     featured: true,
-    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1000&auto=format&fit=crop" // Abstract Tech Background
+    image: "https://cdn-images.vtv.vn/66349b6076cb4dee98746cf1/2025/03/18/4-11-17301276384016826390671.jpg"
   },
   {
     id: 2,
@@ -102,6 +102,14 @@ const SpotlightCard: React.FC<{ children: React.ReactNode; className?: string; o
 };
 
 const PressSection: React.FC = () => {
+  const [showAll, setShowAll] = useState(false);
+
+  const featuredArticle = pressData.find(p => p.featured);
+  const otherArticles = pressData.filter(p => !p.featured);
+  
+  // Show only 3 items initially, or all if expanded
+  const visibleOthers = showAll ? otherArticles : otherArticles.slice(0, 3);
+
   return (
     <section className="bg-brand-black py-32 border-t border-gray-900 relative overflow-hidden">
       {/* Ambient Lighting */}
@@ -121,51 +129,51 @@ const PressSection: React.FC = () => {
             </div>
         </FadeIn>
 
-        {/* BENTO GRID LAYOUT */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* RESTRUCTURED LAYOUT: 2/3 Left (Featured) - 1/3 Right (List) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            {/* 1. FEATURED CARD (Spans 2 columns on desktop) */}
-            {pressData.filter(p => p.featured).map((item) => (
-                <div key={item.id} className="md:col-span-2 md:row-span-2">
+            {/* 1. FEATURED CARD (Left - Spans 2 cols) */}
+            {featuredArticle && (
+                <div className="lg:col-span-2 h-full min-h-[500px]">
                     <FadeIn className="h-full">
-                        <SpotlightCard className="h-full min-h-[400px]">
-                            <a href={item.link} target="_blank" rel="noopener noreferrer" className="block h-full relative group">
-                                {/* Background Image for Featured */}
+                        <SpotlightCard className="h-full">
+                            <a href={featuredArticle.link} target="_blank" rel="noopener noreferrer" className="block h-full relative group">
+                                {/* Background Image */}
                                 <div className="absolute inset-0">
-                                    <img src={item.image} alt="Cover" className="w-full h-full object-cover opacity-30 group-hover:opacity-40 transition-opacity duration-700 scale-105 group-hover:scale-100" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
+                                    <img src={featuredArticle.image} alt="Cover" className="w-full h-full object-cover opacity-40 group-hover:opacity-50 transition-opacity duration-700 scale-105 group-hover:scale-100" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
                                 </div>
 
-                                <div className="relative z-10 p-10 flex flex-col h-full justify-end">
+                                <div className="relative z-10 p-8 md:p-12 flex flex-col h-full justify-end">
                                     <div className="mb-auto">
-                                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-yellow text-black text-[10px] font-black uppercase tracking-widest mb-6">
-                                            <Award size={12} /> Tiêu Điểm
+                                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-yellow text-black text-xs font-black uppercase tracking-widest mb-6">
+                                            <Award size={14} /> Tiêu Điểm
                                         </div>
                                     </div>
 
                                     {/* Logo Area */}
                                     <div className="mb-6 h-12 flex items-center">
-                                        {item.logo ? (
+                                        {featuredArticle.logo ? (
                                             <img 
-                                                src={item.logo} 
-                                                alt={item.outlet} 
-                                                className="h-full w-auto object-contain brightness-0 invert opacity-80 group-hover:opacity-100 transition-all"
+                                                src={featuredArticle.logo} 
+                                                alt={featuredArticle.outlet} 
+                                                className="h-full w-auto object-contain brightness-0 invert opacity-90 group-hover:opacity-100 transition-all"
                                                 onError={(e) => {
                                                     (e.target as HTMLImageElement).style.display = 'none';
                                                     (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
                                                 }} 
                                             />
                                         ) : null}
-                                        <span className={`text-2xl font-black uppercase tracking-wider text-white/90 ${item.logo ? 'hidden' : ''}`}>
-                                            {item.outlet}
+                                        <span className={`text-3xl font-black uppercase tracking-wider text-white/90 ${featuredArticle.logo ? 'hidden' : ''}`}>
+                                            {featuredArticle.outlet}
                                         </span>
                                     </div>
 
-                                    <h4 className="text-2xl md:text-4xl font-black text-white mb-4 leading-tight group-hover:text-brand-yellow transition-colors">
-                                        {item.title}
+                                    <h4 className="text-3xl md:text-5xl font-black text-white mb-6 leading-[1.1] group-hover:text-brand-yellow transition-colors">
+                                        {featuredArticle.title}
                                     </h4>
-                                    <p className="text-gray-300 text-lg leading-relaxed mb-8 max-w-2xl line-clamp-3">
-                                        {item.desc}
+                                    <p className="text-gray-300 text-lg leading-relaxed mb-8 max-w-2xl line-clamp-3 font-light">
+                                        {featuredArticle.desc}
                                     </p>
 
                                     <div className="flex items-center gap-3 text-white text-sm font-bold uppercase tracking-wider border-b border-transparent group-hover:border-brand-yellow w-fit pb-1 transition-all">
@@ -176,24 +184,24 @@ const PressSection: React.FC = () => {
                         </SpotlightCard>
                     </FadeIn>
                 </div>
-            ))}
+            )}
 
-            {/* 2. STANDARD CARDS (Right Column) */}
-            <div className="md:col-span-1 flex flex-col gap-6">
-                {pressData.filter(p => !p.featured).slice(0, 2).map((item, index) => (
+            {/* 2. SIDEBAR LIST (Right - Spans 1 col) */}
+            <div className="lg:col-span-1 flex flex-col gap-6">
+                {visibleOthers.map((item, index) => (
                     <FadeIn key={item.id} delay={index * 100} className="flex-1">
                         <SpotlightCard className="h-full">
-                            <a href={item.link} target="_blank" rel="noopener noreferrer" className="block h-full p-8 flex flex-col justify-between group">
+                            <a href={item.link} target="_blank" rel="noopener noreferrer" className="block h-full p-6 md:p-8 flex flex-col justify-between group bg-gray-900/20 hover:bg-gray-900/60 transition-colors">
                                 <div>
-                                    <div className="flex justify-between items-start mb-6">
-                                        <div className="h-8 flex items-center">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="h-6 flex items-center">
                                             {item.logo ? (
-                                                <img src={item.logo} alt={item.outlet} className="h-full w-auto object-contain brightness-0 invert opacity-50 group-hover:opacity-100 group-hover:brightness-100 group-hover:invert-0 transition-all duration-500" onError={(e) => {
+                                                <img src={item.logo} alt={item.outlet} className="h-full w-auto object-contain brightness-0 invert opacity-60 group-hover:opacity-100 group-hover:brightness-100 group-hover:invert-0 transition-all duration-500" onError={(e) => {
                                                     (e.target as HTMLImageElement).style.display = 'none';
                                                     (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
                                                 }} />
                                             ) : null}
-                                            <span className={`text-sm font-black uppercase tracking-wider text-gray-500 group-hover:text-white transition-colors ${item.logo ? 'hidden' : ''}`}>
+                                            <span className={`text-xs font-black uppercase tracking-wider text-gray-500 group-hover:text-white transition-colors ${item.logo ? 'hidden' : ''}`}>
                                                 {item.outlet}
                                             </span>
                                         </div>
@@ -201,45 +209,12 @@ const PressSection: React.FC = () => {
                                             {item.icon}
                                         </div>
                                     </div>
-                                    <h4 className="text-lg font-bold text-white mb-3 group-hover:text-brand-yellow transition-colors line-clamp-2">
+                                    <h4 className="text-base md:text-lg font-bold text-white mb-2 group-hover:text-brand-yellow transition-colors line-clamp-2 leading-snug">
                                         {item.title}
                                     </h4>
                                     <p className="text-gray-500 text-xs leading-relaxed line-clamp-2">
                                         {item.desc}
                                     </p>
-                                </div>
-                            </a>
-                        </SpotlightCard>
-                    </FadeIn>
-                ))}
-            </div>
-
-            {/* 3. BOTTOM ROW CARDS (Spanning across if needed) */}
-            {pressData.filter(p => !p.featured).slice(2).map((item, index) => (
-                 <div key={item.id} className="md:col-span-1">
-                    <FadeIn delay={(index + 2) * 100} className="h-full">
-                        <SpotlightCard className="h-full">
-                            <a href={item.link} target="_blank" rel="noopener noreferrer" className="block h-full p-8 flex flex-col justify-between group">
-                                <div>
-                                    <div className="flex justify-between items-start mb-6">
-                                        <div className="h-6 flex items-center">
-                                            {item.logo ? (
-                                                <img src={item.logo} alt={item.outlet} className="h-full w-auto object-contain brightness-0 invert opacity-50 group-hover:opacity-100 group-hover:brightness-100 group-hover:invert-0 transition-all duration-500" onError={(e) => {
-                                                    (e.target as HTMLImageElement).style.display = 'none';
-                                                    (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
-                                                }} />
-                                            ) : null}
-                                            <span className={`text-sm font-black uppercase tracking-wider text-gray-500 group-hover:text-white transition-colors ${item.logo ? 'hidden' : ''}`}>
-                                                {item.outlet}
-                                            </span>
-                                        </div>
-                                        <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-brand-yellow group-hover:bg-brand-yellow/10 transition-colors">
-                                            {item.icon}
-                                        </div>
-                                    </div>
-                                    <h4 className="text-lg font-bold text-white mb-2 group-hover:text-brand-yellow transition-colors line-clamp-2">
-                                        {item.title}
-                                    </h4>
                                 </div>
                                 <div className="mt-4 pt-4 border-t border-white/5 flex justify-between items-center opacity-50 group-hover:opacity-100 transition-opacity">
                                     <span className="text-[10px] uppercase font-bold tracking-widest text-gray-400">Xem Chi Tiết</span>
@@ -248,10 +223,27 @@ const PressSection: React.FC = () => {
                             </a>
                         </SpotlightCard>
                     </FadeIn>
-                 </div>
-            ))}
+                ))}
+            </div>
 
         </div>
+
+        {/* 3. VIEW ALL BUTTON (If more items exist) */}
+        {otherArticles.length > 3 && (
+            <div className="mt-12 flex justify-center">
+                <button 
+                    onClick={() => setShowAll(!showAll)}
+                    className="group flex items-center gap-2 text-gray-400 hover:text-white border-b border-gray-700 hover:border-brand-yellow pb-1 transition-all uppercase text-xs font-bold tracking-widest"
+                >
+                    {showAll ? (
+                        <>Thu Gọn <ChevronUp size={14} className="group-hover:-translate-y-1 transition-transform"/></>
+                    ) : (
+                        <>Xem Tất Cả ({otherArticles.length} bài) <ChevronDown size={14} className="group-hover:translate-y-1 transition-transform"/></>
+                    )}
+                </button>
+            </div>
+        )}
+
       </div>
     </section>
   );
