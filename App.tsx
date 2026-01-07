@@ -22,6 +22,9 @@ import { ArrowLeft, Sparkles } from 'lucide-react';
 
 // Lazy Load Heavy Components
 const Services = lazy(() => import('./components/Services'));
+const ServiceDetail = lazy(() => import('./components/ServiceDetail')); // NEW COMPONENT
+const ProjectDetail = lazy(() => import('./components/ProjectDetail')); // NEW COMPONENT
+const NewsDetail = lazy(() => import('./components/NewsDetail')); // NEW COMPONENT
 const ContactModal = lazy(() => import('./components/ContactModal'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const Testimonials = lazy(() => import('./components/Testimonials'));
@@ -62,7 +65,7 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
         <p className="text-gray-500 text-sm mb-8">Hệ thống dành riêng cho quản trị viên DUHAVA</p>
         <LoginForm onLogin={() => {
             onLogin();
-            navigate('/admin');
+            navigate('/admin/leads'); // Redirect straight to leads on login
         }} />
       </div>
     </div>
@@ -115,6 +118,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
       onUnlockAdmin();
       navigate('/admin-login');
   };
+
+  // Default SEO Title for Landing Page
+  useEffect(() => {
+      document.title = "DUHAVA - Thống Trị Thị Trường Số | Digital Marketing Agency";
+  }, []);
 
   // Logic to handle scrolling based on URL path (Deep Linking for Sections)
   useEffect(() => {
@@ -174,108 +182,110 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
       </div>
       
       <SmoothScroll>
-        <Hero onCtaClick={() => setIsContactOpen(true)} />
-        
-        {/* REPLACED: New Client Marquee instead of static text strip */}
-        <ClientLogos />
+        <main>
+            <Hero onCtaClick={() => setIsContactOpen(true)} />
+            
+            {/* REPLACED: New Client Marquee instead of static text strip */}
+            <ClientLogos />
 
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <PersonaTabs onCtaClick={() => setIsContactOpen(true)} />
-            </Suspense>
-        </ErrorBoundary>
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <PersonaTabs onCtaClick={() => setIsContactOpen(true)} />
+                </Suspense>
+            </ErrorBoundary>
 
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <About />
-            </Suspense>
-        </ErrorBoundary>
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <About />
+                </Suspense>
+            </ErrorBoundary>
 
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <Services services={services} onCtaClick={() => setIsContactOpen(true)} />
-            </Suspense>
-        </ErrorBoundary>
-        
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <FeaturedProjects projects={projects} />
-            </Suspense>
-        </ErrorBoundary>
-        
-        {/* PRESS SECTION ADDED HERE */}
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <PressSection />
-            </Suspense>
-        </ErrorBoundary>
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <Services services={services} onCtaClick={() => setIsContactOpen(true)} />
+                </Suspense>
+            </ErrorBoundary>
+            
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <FeaturedProjects projects={projects} />
+                </Suspense>
+            </ErrorBoundary>
+            
+            {/* PRESS SECTION ADDED HERE */}
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <PressSection />
+                </Suspense>
+            </ErrorBoundary>
 
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <TechStack />
-            </Suspense>
-        </ErrorBoundary>
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <TechStack />
+                </Suspense>
+            </ErrorBoundary>
 
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <Process />
-            </Suspense>
-        </ErrorBoundary>
-        
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <Pricing onCtaClick={() => setIsContactOpen(true)} />
-            </Suspense>
-        </ErrorBoundary>
-        
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <ROICalculator />
-            </Suspense>
-        </ErrorBoundary>
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <Process />
+                </Suspense>
+            </ErrorBoundary>
+            
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <Pricing onCtaClick={() => setIsContactOpen(true)} />
+                </Suspense>
+            </ErrorBoundary>
+            
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <ROICalculator />
+                </Suspense>
+            </ErrorBoundary>
 
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <Team members={teamMembers} />
-            </Suspense>
-        </ErrorBoundary>
-        
-        {/* NEW GROWTH SECTION REPLACING STATIC STATS */}
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <GrowthSection />
-            </Suspense>
-        </ErrorBoundary>
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <Team members={teamMembers} />
+                </Suspense>
+            </ErrorBoundary>
+            
+            {/* NEW GROWTH SECTION REPLACING STATIC STATS */}
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <GrowthSection />
+                </Suspense>
+            </ErrorBoundary>
 
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <Testimonials />
-            </Suspense>
-        </ErrorBoundary>
-        
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <NewsSection news={news} />
-            </Suspense>
-        </ErrorBoundary>
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <Testimonials />
+                </Suspense>
+            </ErrorBoundary>
+            
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <NewsSection news={news} />
+                </Suspense>
+            </ErrorBoundary>
 
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <FAQ />
-            </Suspense>
-        </ErrorBoundary>
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <FAQ />
+                </Suspense>
+            </ErrorBoundary>
 
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <Contact />
-            </Suspense>
-        </ErrorBoundary>
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <Contact />
+                </Suspense>
+            </ErrorBoundary>
 
-        <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-                <CTASection onCtaClick={() => setIsContactOpen(true)} />
-            </Suspense>
-        </ErrorBoundary>
+            <ErrorBoundary>
+                <Suspense fallback={<SectionLoader />}>
+                    <CTASection onCtaClick={() => setIsContactOpen(true)} />
+                </Suspense>
+            </ErrorBoundary>
+        </main>
 
         <Footer onOpenAdmin={handleOpenAdmin} />
       </SmoothScroll>
@@ -305,6 +315,9 @@ const App: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  
+  // Modal state for ServiceDetail page usage
+  const [isContactOpen, setIsContactOpen] = useState(false);
 
   useEffect(() => {
     // Fetch data from Supabase on init
@@ -348,6 +361,7 @@ const App: React.FC = () => {
   };
 
   return (
+    <>
     <HashRouter>
       <Routes>
         <Route path="/" element={<LandingPage {...landingProps} />} />
@@ -360,13 +374,50 @@ const App: React.FC = () => {
         <Route path="/lien-he" element={<LandingPage {...landingProps} />} />
         <Route path="/bang-gia" element={<LandingPage {...landingProps} />} />
         
-        {/* Deep linking routes */}
-        <Route path="/project/:projectId" element={<LandingPage {...landingProps} />} />
-        <Route path="/news/:newsId" element={<LandingPage {...landingProps} />} />
+        {/* NEW: SERVICE DETAIL ROUTE */}
+        <Route 
+            path="/service/:id" 
+            element={
+                <Suspense fallback={<SectionLoader />}>
+                    <ServiceDetail 
+                        services={services} 
+                        projects={projects} 
+                        onCtaClick={() => setIsContactOpen(true)} 
+                    />
+                </Suspense>
+            } 
+        />
+
+        {/* NEW: PROJECT DETAIL ROUTE */}
+        <Route 
+            path="/project/:projectId" 
+            element={
+                <Suspense fallback={<SectionLoader />}>
+                    <ProjectDetail 
+                        projects={projects}
+                        onCtaClick={() => setIsContactOpen(true)} 
+                    />
+                </Suspense>
+            } 
+        />
+
+        {/* NEW: NEWS DETAIL ROUTE */}
+        <Route 
+            path="/news/:newsId" 
+            element={
+                <Suspense fallback={<SectionLoader />}>
+                    <NewsDetail 
+                        news={news}
+                        onCtaClick={() => setIsContactOpen(true)} 
+                    />
+                </Suspense>
+            } 
+        />
         
         <Route path="/admin-login" element={<AdminLogin onLogin={handleLogin} />} />
+        {/* UPDATED: Allows sub-routes for Admin Dashboard using Wildcard * */}
         <Route 
-            path="/admin" 
+            path="/admin/*" 
             element={isAuthenticated ? (
                 <Suspense fallback={<div className="min-h-screen bg-black flex items-center justify-center text-white"><SectionLoader/></div>}>
                     <AdminDashboard onLogout={handleLogout} />
@@ -375,6 +426,11 @@ const App: React.FC = () => {
         />
       </Routes>
     </HashRouter>
+    
+    <Suspense fallback={null}>
+        <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
+    </Suspense>
+    </>
   );
 };
 

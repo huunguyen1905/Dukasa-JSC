@@ -2,12 +2,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { TrendingUp, ArrowUpRight, Activity, Zap, Cpu, Layers, BarChart3, Globe } from 'lucide-react';
 import FadeIn from './FadeIn';
+import { useNavigate } from 'react-router-dom';
 
 const GrowthSection: React.FC = () => {
   const [animate, setAnimate] = useState(false);
   const [revenue, setRevenue] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const hasAnimated = useRef(false);
+  const navigate = useNavigate();
 
   // Constants
   const TARGET_REVENUE = 2450290;

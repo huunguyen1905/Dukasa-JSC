@@ -102,20 +102,23 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
     setIsMobileMenuOpen(false);
   };
 
+  // Updated Submenu to point to Specific Service Detail Pages
+  // Using IDs from mockData
   const servicesSubMenu = [
-      { name: 'Branding Identity', icon: <Zap size={16}/>, link: '/giai-phap' },
-      { name: 'Web & App Design', icon: <Layout size={16}/>, link: '/giai-phap' },
-      { name: 'Performance Ads', icon: <Globe size={16}/>, link: '/giai-phap' },
-      { name: 'Social Media', icon: <BarChart size={16}/>, link: '/giai-phap' },
+      { name: 'Branding Identity', icon: <Zap size={16}/>, link: '/service/svc-branding' },
+      { name: 'Web & App Design', icon: <Layout size={16}/>, link: '/service/svc-web' },
+      { name: 'Performance Ads', icon: <Globe size={16}/>, link: '/service/svc-ads' },
+      { name: 'SEO Tổng Thể', icon: <BarChart size={16}/>, link: '/service/svc-seo' },
   ];
 
   const popularSearches = ["Báo giá Website", "Dịch vụ SEO", "Tuyển dụng", "Branding"];
 
   return (
     <>
-      {/* NAVBAR WRAPPER */}
-      <div className="fixed top-0 left-0 w-full z-50 flex justify-center pointer-events-none transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]">
+      {/* NAVBAR WRAPPER - Changed to HEADER for Semantic SEO */}
+      <header className="fixed top-0 left-0 w-full z-50 flex justify-center pointer-events-none transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]">
         <nav 
+          aria-label="Main Navigation"
           className={`
             pointer-events-auto flex items-center justify-between transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]
             ${isScrolled 
@@ -179,7 +182,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                                             href={sub.link}
                                             onClick={(e) => {
                                                 e.preventDefault();
-                                                navigate('/giai-phap');
+                                                navigate(sub.link); // Navigate to specific service
                                             }}
                                             className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 hover:text-white transition-all group/sub"
                                         >
@@ -234,7 +237,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                 </button>
             </div>
         </nav>
-      </div>
+      </header>
 
       {/* SEARCH OVERLAY */}
       <div 

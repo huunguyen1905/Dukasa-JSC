@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Service, Lead, Project, NewsItem, AdminView, LeadStatus, TeamMember, ComparisonItem, Persona } from '../types';
 import { 
     fetchServices, upsertService, deleteService,
@@ -46,7 +46,28 @@ const Toast = ({ message, type, onClose }: { message: string, type: 'success' | 
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const navigate = useNavigate();
-  const [view, setView] = useState<AdminView>(AdminView.LEADS);
+  const location = useLocation();
+  
+  // Logic to determine current view from URL
+  const getCurrentView = (): AdminView => {
+      const path = location.pathname.toLowerCase();
+      if (path.includes('/services')) return AdminView.SERVICES;
+      if (path.includes('/projects')) return AdminView.PROJECTS;
+      if (path.includes('/news')) return AdminView.NEWS;
+      if (path.includes('/team')) return AdminView.TEAM;
+      if (path.includes('/comparison')) return AdminView.COMPARISON;
+      if (path.includes('/personas')) return AdminView.PERSONAS;
+      return AdminView.LEADS; // Default view
+  };
+
+  const view = getCurrentView();
+
+  // Redirect root /admin to /admin/leads
+  useEffect(() => {
+      if (location.pathname === '/admin' || location.pathname === '/admin/') {
+          navigate('/admin/leads', { replace: true });
+      }
+  }, [location.pathname, navigate]);
   
   // Data States
   const [services, setServices] = useState<Service[]>([]);
@@ -396,6 +417,24 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
 
   const newLeadsCount = leads.filter(l => l.status === LeadStatus.NEW || !l.status).length;
 
+  // Render Navigation Helper
+  const NavItem = ({ targetView, label, icon: Icon, badgeCount }: { targetView: AdminView, label: string, icon: any, badgeCount?: number }) => {
+      const isActive = view === targetView;
+      return (
+        <button 
+            onClick={() => navigate(`/admin/${targetView.toLowerCase()}`)} 
+            className={`w-full text-left px-4 py-3 rounded font-bold shrink-0 flex items-center justify-between transition-colors
+                ${isActive ? 'bg-brand-yellow text-black shadow-glow' : 'text-gray-400 hover:bg-gray-800'}
+            `}
+        >
+            <div className="flex items-center gap-3"><Icon size={18} /> <span>{label}</span></div>
+            {badgeCount !== undefined && badgeCount > 0 && (
+                <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full animate-pulse">{badgeCount}</span>
+            )}
+        </button>
+      );
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-white font-sans cursor-default">
       {/* Toast Notification Container */}
@@ -423,35 +462,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
 
             <div className="px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider hidden md:block">Quản Lý</div>
 
-            <button onClick={() => setView(AdminView.LEADS)} className={`w-full text-left px-4 py-3 rounded font-bold shrink-0 flex justify-between items-center ${view === AdminView.LEADS ? 'bg-brand-yellow text-black shadow-glow' : 'text-gray-400 hover:bg-gray-800'}`}>
-              <div className="flex items-center gap-3"><Users size={18} /> <span>Leads</span></div>
-              {newLeadsCount > 0 && <span className="bg-red-500 text-white text-[10px] px-1.5 rounded-full animate-pulse">{newLeadsCount}</span>}
-            </button>
-            
-            <button onClick={() => setView(AdminView.SERVICES)} className={`w-full text-left px-4 py-3 rounded font-bold shrink-0 flex items-center gap-3 ${view === AdminView.SERVICES ? 'bg-brand-yellow text-black' : 'text-gray-400 hover:bg-gray-800'}`}>
-              <Sparkles size={18} /> Dịch Vụ
-            </button>
-
-            <button onClick={() => setView(AdminView.PROJECTS)} className={`w-full text-left px-4 py-3 rounded font-bold shrink-0 flex items-center gap-3 ${view === AdminView.PROJECTS ? 'bg-brand-yellow text-black' : 'text-gray-400 hover:bg-gray-800'}`}>
-              <Briefcase size={18} /> Dự Án
-            </button>
-
-            <button onClick={() => setView(AdminView.NEWS)} className={`w-full text-left px-4 py-3 rounded font-bold shrink-0 flex items-center gap-3 ${view === AdminView.NEWS ? 'bg-brand-yellow text-black' : 'text-gray-400 hover:bg-gray-800'}`}>
-              <FileText size={18} /> Tin Tức
-            </button>
-
-            <button onClick={() => setView(AdminView.TEAM)} className={`w-full text-left px-4 py-3 rounded font-bold shrink-0 flex items-center gap-3 ${view === AdminView.TEAM ? 'bg-brand-yellow text-black' : 'text-gray-400 hover:bg-gray-800'}`}>
-              <UserCheck size={18} /> Đội Ngũ
-            </button>
+            <NavItem targetView={AdminView.LEADS} label="Leads" icon={Users} badgeCount={newLeadsCount} />
+            <NavItem targetView={AdminView.SERVICES} label="Dịch Vụ" icon={Sparkles} />
+            <NavItem targetView={AdminView.PROJECTS} label="Dự Án" icon={Briefcase} />
+            <NavItem targetView={AdminView.NEWS} label="Tin Tức" icon={FileText} />
+            <NavItem targetView={AdminView.TEAM} label="Đội Ngũ" icon={UserCheck} />
 
              <div className="px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider hidden md:block mt-6">Cấu Hình</div>
             
-             <button onClick={() => setView(AdminView.COMPARISON)} className={`w-full text-left px-4 py-3 rounded font-bold shrink-0 flex items-center gap-3 ${view === AdminView.COMPARISON ? 'bg-brand-yellow text-black' : 'text-gray-400 hover:bg-gray-800'}`}>
-              <Columns size={18} /> So Sánh
-            </button>
-             <button onClick={() => setView(AdminView.PERSONAS)} className={`w-full text-left px-4 py-3 rounded font-bold shrink-0 flex items-center gap-3 ${view === AdminView.PERSONAS ? 'bg-brand-yellow text-black' : 'text-gray-400 hover:bg-gray-800'}`}>
-              <Target size={18} /> Personas
-            </button>
+             <NavItem targetView={AdminView.COMPARISON} label="So Sánh" icon={Columns} />
+             <NavItem targetView={AdminView.PERSONAS} label="Personas" icon={Target} />
 
             <div className="px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider hidden md:block mt-6">Hệ Thống</div>
             <button onClick={handleSeedData} className="w-full text-left px-4 py-3 rounded font-bold text-blue-400 hover:bg-blue-900/20 hover:text-blue-300 flex items-center gap-3 border border-dashed border-blue-900/50">

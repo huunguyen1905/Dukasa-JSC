@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Quote, Star, TrendingUp, ArrowUpRight, ShieldCheck, X, ZoomIn, MessageCircle, Image as ImageIcon } from 'lucide-react';
 import FadeIn from './FadeIn';
+import { useNavigate } from 'react-router-dom';
 
 const testimonials = [
   {
@@ -79,6 +80,7 @@ const AnimatedCounter = ({ end }: { end: number }) => {
 
 const Testimonials: React.FC = () => {
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   // Split images for dual rows
   const row1 = [...PROOF_IMAGES, ...PROOF_IMAGES]; // Duplicate for infinite loop
@@ -199,7 +201,10 @@ const Testimonials: React.FC = () => {
                         </div>
 
                          {/* CTA Card */}
-                         <div className="bg-gray-800/20 border border-dashed border-gray-700 p-8 rounded-3xl flex flex-col items-center justify-center text-center group hover:bg-gray-800/40 transition-colors cursor-pointer">
+                         <div 
+                            onClick={() => navigate('/lien-he')}
+                            className="bg-gray-800/20 border border-dashed border-gray-700 p-8 rounded-3xl flex flex-col items-center justify-center text-center group hover:bg-gray-800/40 transition-colors cursor-pointer"
+                         >
                             <h4 className="text-white font-bold text-xl mb-2">Bạn đã sẵn sàng bứt phá?</h4>
                             <p className="text-gray-400 text-sm mb-6 max-w-xs">Hãy để chúng tôi viết tiếp câu chuyện thành công của bạn.</p>
                             <span className="text-brand-yellow uppercase font-bold tracking-widest text-xs border-b border-brand-yellow pb-1 group-hover:text-white group-hover:border-white transition-colors">

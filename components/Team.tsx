@@ -1,13 +1,17 @@
+
 import React from 'react';
 import { Linkedin, Twitter, Mail, ArrowUpRight } from 'lucide-react';
 import FadeIn from './FadeIn';
 import { TeamMember } from '../types';
+import { useNavigate } from 'react-router-dom';
 
 interface TeamProps {
     members?: TeamMember[];
 }
 
 const Team: React.FC<TeamProps> = ({ members = [] }) => {
+  const navigate = useNavigate();
+
   // If no members are passed (e.g. still loading or empty DB), don't render or render placeholder
   if (!members || members.length === 0) return null;
 
@@ -88,7 +92,10 @@ const Team: React.FC<TeamProps> = ({ members = [] }) => {
         {/* Recruitment CTA */}
         <div className="mt-20 flex flex-col items-center justify-center text-center animate-in slide-in-from-bottom-8 fade-in duration-700 delay-300">
              <p className="text-gray-500 mb-4 font-medium">Bạn có tố chất của một người dẫn đầu?</p>
-             <button className="group relative inline-flex items-center gap-3 px-8 py-4 bg-transparent border border-gray-700 rounded-full hover:border-brand-yellow hover:bg-brand-yellow/10 transition-all duration-300">
+             <button 
+                onClick={() => navigate('/lien-he')}
+                className="group relative inline-flex items-center gap-3 px-8 py-4 bg-transparent border border-gray-700 rounded-full hover:border-brand-yellow hover:bg-brand-yellow/10 transition-all duration-300"
+             >
                 <span className="text-white font-bold uppercase tracking-widest text-sm group-hover:text-brand-yellow transition-colors">Gia nhập DUHAVA</span>
                 <ArrowUpRight size={18} className="text-gray-500 group-hover:text-brand-yellow group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300"/>
              </button>

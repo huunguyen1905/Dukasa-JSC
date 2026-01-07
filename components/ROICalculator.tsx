@@ -2,12 +2,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DollarSign, TrendingUp, Users, MousePointer, Activity, ArrowRight, Calculator, Zap } from 'lucide-react';
 import FadeIn from './FadeIn';
+import { useNavigate } from 'react-router-dom';
 
 const ROICalculator: React.FC = () => {
   // Input States
   const [budget, setBudget] = useState(50); // Triệu VNĐ
   const [conversionRate, setConversionRate] = useState(2.5); // %
   const [dealValue, setDealValue] = useState(5); // Triệu VNĐ
+  const navigate = useNavigate();
 
   // Target Metrics (Calculated values)
   const [targets, setTargets] = useState({
@@ -226,7 +228,7 @@ const ROICalculator: React.FC = () => {
                 </div>
 
                 <button 
-                    onClick={() => document.getElementById('contact-trigger')?.click()}
+                    onClick={() => navigate('/lien-he')}
                     className="w-full bg-white text-black font-black uppercase py-4 rounded-xl hover:bg-brand-yellow transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(250,204,21,0.5)] flex items-center justify-center gap-2 whitespace-nowrap text-sm md:text-base"
                 >
                     <Zap size={18} fill="black" /> Hiện Thực Hóa Con Số Này

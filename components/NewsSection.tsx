@@ -25,7 +25,7 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
     if (newsId && news.length > 0) {
         const found = news.find(n => n.id === newsId);
         if (found) {
-            setSelectedNews(found);
+            // Optional scroll
             const element = document.getElementById('tin-tuc');
             if(element) element.scrollIntoView({ behavior: 'smooth' });
         }
@@ -206,11 +206,6 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
         </section>
 
         <ViewAllOverlay />
-
-        <NewsModal 
-            item={selectedNews} 
-            onClose={handleCloseModal} 
-        />
     </>
   );
 };

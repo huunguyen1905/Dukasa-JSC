@@ -11,7 +11,8 @@ const SmoothScroll: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
     let current = 0;
     let target = 0;
-    let ease = 0.075; // Smoothness factor
+    // Lower ease factor = heavier, more luxurious feel (0.05 is standard for luxury sites)
+    let ease = 0.05; 
     let isMobile = window.matchMedia('(pointer: coarse)').matches;
 
     // If mobile, don't run custom scroll (performance & UX)

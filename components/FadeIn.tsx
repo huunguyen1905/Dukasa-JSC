@@ -1,17 +1,20 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 
 interface FadeInProps {
   children: React.ReactNode;
   delay?: number;
-  direction?: 'up' | 'left' | 'right';
+  direction?: 'up' | 'down' | 'left' | 'right' | 'none';
   className?: string;
+  duration?: number; // Duration in ms
 }
 
 const FadeIn: React.FC<FadeInProps> = ({ 
   children, 
   delay = 0, 
   direction = 'up',
-  className = '' 
+  className = '',
+  duration = 1000 
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const domRef = useRef<HTMLDivElement>(null);
@@ -19,12 +22,16 @@ const FadeIn: React.FC<FadeInProps> = ({
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
+        // Trigger slightly before the element is fully in view (10% visibility)
         if (entry.isIntersecting) {
           setIsVisible(true);
           if (domRef.current) observer.unobserve(domRef.current);
         }
       });
-    }, { threshold: 0.1 });
+    }, { 
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px" // Trigger animation slightly before bottom of screen
+    });
 
     if (domRef.current) observer.observe(domRef.current);
 
@@ -33,25 +40,35 @@ const FadeIn: React.FC<FadeInProps> = ({
     };
   }, []);
 
-  const getTransform = () => {
-    if (!isVisible) {
-      switch (direction) {
-        case 'up': return 'translateY(50px)';
-        case 'left': return 'translateX(-50px)';
-        case 'right': return 'translateX(50px)';
-        default: return 'none';
-      }
+  // Determine initial state based on direction
+  const getInitialState = () => {
+    switch (direction) {
+      case 'up': return 'translate-y-16 opacity-0 blur-[2px] scale-[0.98]';
+      case 'down': return '-translate-y-16 opacity-0 blur-[2px] scale-[0.98]';
+      case 'left': return '-translate-x-16 opacity-0 blur-[2px]';
+      case 'right': return 'translate-x-16 opacity-0 blur-[2px]';
+      case 'none': return 'opacity-0 blur-[4px] scale-95';
+      default: return 'opacity-0';
     }
-    return 'none';
+  };
+
+  const getVisibleState = () => {
+    return 'translate-x-0 translate-y-0 opacity-100 blur-0 scale-100';
   };
 
   return (
     <div
       ref={domRef}
-      className={`${className} transition-all duration-1000 ease-out will-change-transform`}
+      className={`
+        ${className} 
+        transform-gpu 
+        transition-all 
+        ease-out-expo 
+        will-change-[transform,opacity,filter]
+        ${isVisible ? getVisibleState() : getInitialState()}
+      `}
       style={{
-        opacity: isVisible ? 1 : 0,
-        transform: getTransform(),
+        transitionDuration: `${duration}ms`,
         transitionDelay: `${delay}ms`
       }}
     >

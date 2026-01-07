@@ -125,7 +125,7 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
   }, []);
 
   return (
-    <div id="trang-chu" className="relative min-h-[85vh] w-full flex items-center justify-center overflow-hidden">
+    <section id="trang-chu" className="relative min-h-[85vh] w-full flex items-center justify-center overflow-hidden">
       {/* Canvas for Particles (Foreground Interaction) */}
       <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0 opacity-60 pointer-events-none" />
       
@@ -179,7 +179,7 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
           </MagneticButton>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

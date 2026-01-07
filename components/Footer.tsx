@@ -1,11 +1,20 @@
+
 import React from 'react';
 import { Facebook, Instagram, Linkedin, Twitter, ArrowRight, Lock, Users } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface FooterProps {
   onOpenAdmin: () => void;
 }
 
 const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
+  const navigate = useNavigate();
+
+  const handleNav = (path: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate(path);
+  };
+
   return (
     <footer className="bg-brand-dark text-white pt-24 pb-12 border-t border-gray-800 relative overflow-hidden">
       {/* Giant Watermark Typography */}
@@ -32,7 +41,7 @@ const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
                     <Users size={18} />
                 </a>
                 {[Instagram, Linkedin, Twitter].map((Icon, i) => (
-                    <a key={i} href="#" className="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center text-gray-400 hover:bg-brand-yellow hover:text-brand-black hover:border-brand-yellow transition-all duration-300">
+                    <a key={i} href="#" onClick={(e) => e.preventDefault()} className="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center text-gray-400 hover:bg-brand-yellow hover:text-brand-black hover:border-brand-yellow transition-all duration-300">
                         <Icon size={18} />
                     </a>
                 ))}
@@ -43,9 +52,11 @@ const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
           <div className="lg:col-span-2 md:col-span-4">
              <h4 className="text-xl font-bold uppercase mb-8 text-brand-yellow">Khám Phá</h4>
              <ul className="space-y-4 text-gray-400">
-                {['Về Chúng Tôi', 'Dự Án', 'Dịch Vụ', 'Tuyển Dụng', 'Tin Tức'].map((item) => (
-                    <li key={item}><a href="#" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>{item}</a></li>
-                ))}
+                <li><a href="/ve-chung-toi" onClick={handleNav('/ve-chung-toi')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Về Chúng Tôi</a></li>
+                <li><a href="/du-an" onClick={handleNav('/du-an')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Dự Án</a></li>
+                <li><a href="/giai-phap" onClick={handleNav('/giai-phap')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Dịch Vụ</a></li>
+                <li><a href="/lien-he" onClick={handleNav('/lien-he')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Tuyển Dụng</a></li>
+                <li><a href="/tin-tuc" onClick={handleNav('/tin-tuc')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Tin Tức</a></li>
              </ul>
           </div>
 
@@ -53,9 +64,11 @@ const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
           <div className="lg:col-span-2 md:col-span-4">
              <h4 className="text-xl font-bold uppercase mb-8 text-brand-yellow">Dịch Vụ</h4>
              <ul className="space-y-4 text-gray-400">
-                {['SEO Ranking', 'Google Ads', 'Social Media', 'Branding', 'Web Design'].map((item) => (
-                    <li key={item}><a href="#" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>{item}</a></li>
-                ))}
+                <li><a href="/giai-phap" onClick={handleNav('/giai-phap')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>SEO Ranking</a></li>
+                <li><a href="/giai-phap" onClick={handleNav('/giai-phap')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Google Ads</a></li>
+                <li><a href="/giai-phap" onClick={handleNav('/giai-phap')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Social Media</a></li>
+                <li><a href="/giai-phap" onClick={handleNav('/giai-phap')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Branding</a></li>
+                <li><a href="/giai-phap" onClick={handleNav('/giai-phap')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Web Design</a></li>
              </ul>
           </div>
 
@@ -80,9 +93,9 @@ const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-600 text-sm font-medium">
           <div>© {new Date().getFullYear()} DUHAVA Digital Agency. All rights reserved.</div>
           <div className="flex gap-8 items-center select-none">
-            <a href="#" className="hover:text-white">Điều khoản</a>
-            <a href="#" className="hover:text-white">Bảo mật</a>
-            <a href="#" className="hover:text-white">Sitemap</a>
+            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-white">Điều khoản</a>
+            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-white">Bảo mật</a>
+            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-white">Sitemap</a>
             {/* Admin Lock Button - Improved Visibility */}
             <button 
                 onClick={onOpenAdmin} 

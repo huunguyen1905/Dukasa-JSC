@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Search, Map, Zap, TrendingUp, Clock, Hash, CheckCircle2 } from 'lucide-react';
+import { Search, Map, Zap, TrendingUp, Clock, Hash, CheckCircle2, CircleDashed } from 'lucide-react';
 import FadeIn from './FadeIn';
 
 const steps = [
@@ -44,7 +44,7 @@ const steps = [
 
 const Process: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [activeStep, setActiveStep] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,145 +52,134 @@ const Process: React.FC = () => {
       
       const { top, height } = containerRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-      const scrollPos = windowHeight / 2; // Trigger point at middle of screen
       
-      // Calculate progress relative to the container
-      const relativeY = scrollPos - top;
-      const stepHeight = height / steps.length;
+      // Calculate progress: 0 when top enters bottom of screen, 1 when bottom leaves top of screen
+      // Adjusted for a smoother "fill" experience that starts when the timeline is centered
+      const startOffset = windowHeight * 0.6;
+      const endOffset = windowHeight * 0.4;
       
-      let current = Math.floor(relativeY / stepHeight);
-      current = Math.max(0, Math.min(steps.length - 1, current));
+      const scrollY = -top + startOffset;
+      const maxScroll = height - endOffset;
       
-      // Only update if visible inside container range
-      if (top < windowHeight && top + height > 0) {
-          setActiveStep(current);
-      }
+      let progress = scrollY / maxScroll;
+      progress = Math.max(0, Math.min(1, progress));
+      
+      setScrollProgress(progress * 100);
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
+    handleScroll(); 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <section ref={containerRef} className="bg-[#050505] py-20 relative overflow-hidden">
+    <section className="bg-brand-black py-32 relative overflow-hidden">
       
-      {/* 1. Global Tech Grid Background */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1a1a1a_1px,transparent_1px),linear-gradient(to_bottom,#1a1a1a_1px,transparent_1px)] bg-[size:40px_40px] opacity-30 pointer-events-none"></div>
+      {/* Background Tech Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none"></div>
       <div className="absolute inset-0 bg-gradient-to-b from-brand-black via-transparent to-brand-black pointer-events-none"></div>
 
-      <div className="container mx-auto px-4 md:px-6 relative z-10">
+      <div className="container mx-auto px-6 relative z-10">
         
         {/* HEADER */}
-        <div className="text-center mb-16 max-w-3xl mx-auto">
-            <h3 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter mb-4">
-                Lộ Trình <span className="text-brand-yellow">Thực Thi</span>
-            </h3>
-            <p className="text-gray-400 text-sm md:text-base leading-relaxed">
-                Quy trình chuẩn hóa 4 bước biến mục tiêu thành kết quả thực tế. Tối ưu hóa thời gian và nguồn lực.
-            </p>
-        </div>
+        <FadeIn>
+            <div className="text-center mb-24 max-w-3xl mx-auto">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-6">
+                    <span className="w-2 h-2 rounded-full bg-brand-yellow animate-pulse"></span>
+                    <span className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.2em]">Process Workflow</span>
+                </div>
+                <h3 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-tight mb-6">
+                    Lộ Trình <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-white">Thực Thi Chuẩn</span>
+                </h3>
+                <p className="text-gray-400 text-lg leading-relaxed">
+                    Quy trình 4 bước khép kín biến mục tiêu kinh doanh thành kết quả thực tế. <br className="hidden md:block"/>Tối ưu hóa thời gian, minh bạch ngân sách và cam kết hiệu quả.
+                </p>
+            </div>
+        </FadeIn>
 
-        {/* THE COMPACT TIMELINE */}
-        <div className="relative max-w-4xl mx-auto flex flex-col md:flex-row gap-8">
+        {/* TIMELINE CONTAINER */}
+        <div ref={containerRef} className="relative max-w-6xl mx-auto">
             
-            {/* PROGRESS RAIL (Desktop Sticky) */}
-            <div className="hidden md:block w-1 bg-gray-800 rounded-full relative h-[600px] shrink-0 mt-8">
-                {/* Active Fill */}
+            {/* CENTRAL LINE (Desktop) / LEFT LINE (Mobile) */}
+            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-[2px] bg-gray-800 transform md:-translate-x-1/2 h-full rounded-full">
+                {/* Progress Fill */}
                 <div 
-                    className="absolute top-0 left-0 w-full bg-brand-yellow transition-all duration-500 ease-out shadow-[0_0_15px_#FACC15]"
-                    style={{ height: `${((activeStep + 1) / steps.length) * 100}%` }}
+                    className="absolute top-0 left-0 w-full bg-gradient-to-b from-brand-yellow via-yellow-400 to-brand-yellow transition-all duration-300 ease-out shadow-[0_0_15px_#FACC15]"
+                    style={{ height: `${scrollProgress}%` }}
                 ></div>
-                
-                {/* Nodes */}
-                {steps.map((_, idx) => (
-                    <div 
-                        key={idx}
-                        className={`absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-2 transition-all duration-300 z-10
-                            ${idx <= activeStep ? 'bg-brand-yellow border-brand-yellow shadow-[0_0_10px_#FACC15]' : 'bg-brand-black border-gray-700'}
-                        `}
-                        style={{ top: `${(idx / (steps.length - 1)) * 100}%` }}
-                    ></div>
-                ))}
             </div>
 
-            {/* CONTENT STACK */}
-            <div className="flex-1 flex flex-col gap-6">
+            {/* STEPS */}
+            <div className="space-y-12 md:space-y-24">
                 {steps.map((step, index) => {
-                    const isActive = index === activeStep;
+                    const isEven = index % 2 === 0;
+                    // Determine if this step is "active" based on scroll progress
+                    // Rough estimate: step 1 active at >10%, step 2 at >35%, etc.
+                    const threshold = (index / steps.length) * 100;
+                    const isActive = scrollProgress > threshold;
+
                     return (
-                        <div 
-                            key={index} 
-                            className={`
-                                group relative overflow-hidden rounded-xl border transition-all duration-500
-                                ${isActive 
-                                    ? 'bg-gray-900 border-brand-yellow/50 shadow-[0_0_30px_rgba(250,204,21,0.05)] translate-x-2' 
-                                    : 'bg-gray-900/40 border-gray-800 hover:border-gray-700'
-                                }
-                            `}
-                            onMouseEnter={() => setActiveStep(index)}
-                        >
-                            {/* Number Watermark (Subtle) */}
-                            <div className="absolute -right-4 -bottom-8 text-8xl font-black text-white opacity-[0.02] select-none pointer-events-none font-mono">
-                                {step.id}
-                            </div>
-
-                            <div className="p-6 md:p-8 flex flex-col md:flex-row gap-6 items-start md:items-center relative z-10">
-                                {/* Icon Box */}
-                                <div className={`
-                                    w-14 h-14 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300
-                                    ${isActive 
-                                        ? 'bg-brand-yellow text-black shadow-lg rotate-3' 
-                                        : 'bg-gray-800 text-gray-500 border border-gray-700 group-hover:bg-gray-700 group-hover:text-white'
-                                    }
-                                `}>
-                                    {step.icon}
-                                </div>
-
-                                {/* Main Content */}
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-2">
-                                        <div>
-                                            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1 block">{step.subtitle}</span>
-                                            <h4 className={`text-xl md:text-2xl font-black uppercase transition-colors ${isActive ? 'text-white' : 'text-gray-300'}`}>
-                                                {step.title}
-                                            </h4>
-                                        </div>
-                                        {/* Duration Badge */}
-                                        <div className={`
-                                            flex items-center gap-2 px-3 py-1 rounded text-xs font-bold font-mono w-fit
-                                            ${isActive ? 'bg-brand-yellow/10 text-brand-yellow border border-brand-yellow/20' : 'bg-black/30 text-gray-500 border border-gray-800'}
-                                        `}>
-                                            <Clock size={12} /> {step.duration}
-                                        </div>
-                                    </div>
-
-                                    <p className="text-gray-400 text-sm leading-relaxed mb-4 border-l-2 border-gray-800 pl-3 group-hover:border-brand-yellow/50 transition-colors line-clamp-3 md:line-clamp-none">
-                                        {step.description}
-                                    </p>
-
-                                    {/* Tags */}
-                                    <div className="flex flex-wrap gap-2">
-                                        {step.tags.map((tag, tIdx) => (
-                                            <span 
-                                                key={tIdx} 
-                                                className={`
-                                                    text-[10px] uppercase font-bold px-2 py-1 rounded border transition-colors
-                                                    ${isActive 
-                                                        ? 'bg-brand-yellow/5 border-brand-yellow/30 text-brand-yellow' 
-                                                        : 'bg-transparent border-gray-800 text-gray-600'
-                                                    }
-                                                `}
-                                            >
-                                                #{tag}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
+                        <div key={index} className={`relative flex flex-col md:flex-row items-center w-full ${isEven ? 'md:flex-row-reverse' : ''}`}>
                             
-                            {/* Active Indicator Bar (Left side) */}
-                            <div className={`absolute left-0 top-0 bottom-0 w-1 bg-brand-yellow transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0'}`}></div>
+                            {/* 1. CONTENT SIDE */}
+                            <div className="w-full md:w-[45%] pl-20 md:pl-0 md:pr-16 md:text-right group">
+                                <FadeIn delay={index * 100} direction={isEven ? 'left' : 'right'}>
+                                    <div className={`transition-all duration-500 ${isEven ? 'md:text-left md:pl-16 md:pr-0' : ''}`}>
+                                        <div className="flex items-center gap-3 mb-3 md:justify-end justify-start">
+                                            {isEven && <span className="hidden md:inline-block w-8 h-[1px] bg-brand-yellow/50"></span>}
+                                            <span className="text-brand-yellow font-mono text-xs font-bold uppercase tracking-widest">{step.subtitle}</span>
+                                            {!isEven && <span className="hidden md:inline-block w-8 h-[1px] bg-brand-yellow/50"></span>}
+                                        </div>
+                                        
+                                        <h4 className="text-2xl md:text-3xl font-black text-white uppercase mb-4 group-hover:text-brand-yellow transition-colors">
+                                            {step.title}
+                                        </h4>
+                                        
+                                        <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-6 border-l-2 border-gray-800 pl-4 md:border-l-0 md:border-r-2 md:pr-4 md:pl-0">
+                                            {isEven ? (
+                                                <span className="md:border-r-0 md:pr-0 md:border-l-2 md:border-gray-800 md:pl-4 block">{step.description}</span>
+                                            ) : (
+                                                step.description
+                                            )}
+                                        </p>
+
+                                        {/* Tags & Duration */}
+                                        <div className={`flex flex-wrap gap-2 ${isEven ? 'md:justify-start' : 'md:justify-end'}`}>
+                                            <span className="px-3 py-1 bg-gray-900 border border-gray-700 rounded text-[10px] font-bold text-white uppercase flex items-center gap-2">
+                                                <Clock size={12} className="text-brand-yellow"/> {step.duration}
+                                            </span>
+                                            {step.tags.map((tag, i) => (
+                                                <span key={i} className="px-3 py-1 bg-gray-900/50 border border-gray-800 rounded text-[10px] font-bold text-gray-500 uppercase">
+                                                    #{tag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </FadeIn>
+                            </div>
+
+                            {/* 2. CENTER NODE */}
+                            <div className="absolute left-8 md:left-1/2 transform -translate-x-1/2 flex items-center justify-center z-20">
+                                <div className={`
+                                    w-12 h-12 rounded-full border-4 flex items-center justify-center transition-all duration-500 bg-brand-black
+                                    ${isActive ? 'border-brand-yellow shadow-[0_0_20px_rgba(250,204,21,0.5)] scale-110' : 'border-gray-800 grayscale'}
+                                `}>
+                                    <div className={`text-brand-yellow transition-opacity duration-300 ${isActive ? 'opacity-100' : 'opacity-50'}`}>
+                                        {step.icon}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 3. SPACER / ORNAMENT SIDE */}
+                            <div className="w-full md:w-[45%] hidden md:block">
+                                <div className={`absolute top-1/2 -translate-y-1/2 text-[120px] font-black text-gray-900 opacity-20 pointer-events-none select-none transition-all duration-700
+                                    ${isEven ? 'right-0 translate-x-20' : 'left-0 -translate-x-20'}
+                                    ${isActive ? 'opacity-40 scale-110 text-gray-800' : ''}
+                                `}>
+                                    {step.id}
+                                </div>
+                            </div>
+
                         </div>
                     );
                 })}
