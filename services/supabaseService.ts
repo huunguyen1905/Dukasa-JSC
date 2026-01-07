@@ -3,14 +3,24 @@ import { supabase } from './supabaseClient';
 import { Service, Project, NewsItem, Lead, LeadStatus, TeamMember, ClientPartner, ComparisonItem, Persona } from '../types';
 import { MOCK_TEAM, MOCK_SERVICES, MOCK_PROJECTS, MOCK_NEWS } from '../data/mockData';
 
+// --- Local Storage Keys ---
+const LS_KEYS = {
+    SERVICES: 'duhava_ls_services',
+    PROJECTS: 'duhava_ls_projects',
+    NEWS: 'duhava_ls_news',
+    TEAM: 'duhava_ls_team',
+    LEADS: 'duhava_ls_leads',
+    PARTNERS: 'duhava_ls_partners',
+    COMPARISON: 'duhava_ls_comparison',
+    PERSONAS: 'duhava_ls_personas'
+};
+
 // --- Helpers ---
 
-// Tạo UUID an toàn để fix lỗi "null value in column id" khi DB không tự sinh ID
 const generateUUID = () => {
     if (typeof crypto !== 'undefined' && crypto.randomUUID) {
         return crypto.randomUUID();
     }
-    // Fallback cho trình duyệt cũ
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
@@ -102,145 +112,166 @@ export const uploadImage = async (file: File): Promise<string | null> => {
         const { error: uploadError } = await supabase.storage.from('content').upload(filePath, file);
 
         if (uploadError) {
-            console.error('Error uploading image:', uploadError);
+            console.error('Error uploading image (Supabase):', uploadError);
             throw uploadError;
         }
 
         const { data } = supabase.storage.from('content').getPublicUrl(filePath);
         return data.publicUrl;
     } catch (error) {
-        console.error('Upload failed:', error);
-        return null;
+        console.warn('Upload failed, using Fake URL for demo:', error);
+        // Fallback: Create a fake local URL so the UI doesn't break
+        return URL.createObjectURL(file);
     }
 };
+
+// --- GENERIC CRUD FALLBACK HELPERS ---
+
+async function fetchWithFallback<T>(
+    tableName: string, 
+    lsKey: string, 
+    mapper: (data: any) => T, 
+    mockData: T[]
+): Promise<T[]> {
+    try {
+        const { data, error } = await supabase.from(tableName).select('*').order('created_at', { ascending: true });
+        if (error) throw error;
+        return (data || []).map(mapper);
+    } catch (error: any) {
+        console.warn(`[Supabase Offline] Fetching ${tableName} from LocalStorage.`);
+        const local = localStorage.getItem(lsKey);
+        if (local) {
+            return JSON.parse(local);
+        }
+        // Initialize LS with Mock Data if empty
+        localStorage.setItem(lsKey, JSON.stringify(mockData));
+        return mockData;
+    }
+}
+
+async function upsertWithFallback<T extends { id: string }>(
+    tableName: string, 
+    lsKey: string, 
+    item: Partial<T>, 
+    payloadMapper: (i: Partial<T>) => any,
+    currentDataFetcher: () => Promise<T[]>
+) {
+    // Ensure ID exists
+    const itemWithId = { ...item, id: item.id || generateUUID() };
+    const payload = payloadMapper(itemWithId);
+
+    try {
+        const { error } = await supabase.from(tableName).upsert(payload);
+        if (error) throw error;
+    } catch (error) {
+        console.warn(`[Supabase Offline] Saving ${tableName} to LocalStorage.`);
+        const currentData = await currentDataFetcher();
+        const index = currentData.findIndex(d => d.id === itemWithId.id);
+        
+        let updatedData;
+        if (index > -1) {
+            // Update
+            updatedData = currentData.map(d => d.id === itemWithId.id ? { ...d, ...itemWithId } : d);
+        } else {
+            // Insert
+            updatedData = [itemWithId as T, ...currentData];
+        }
+        localStorage.setItem(lsKey, JSON.stringify(updatedData));
+    }
+}
+
+async function deleteWithFallback(
+    tableName: string, 
+    lsKey: string, 
+    id: string,
+    currentDataFetcher: () => Promise<any[]>
+) {
+    try {
+        const { error } = await supabase.from(tableName).delete().eq('id', id);
+        if (error) throw error;
+    } catch (error) {
+        console.warn(`[Supabase Offline] Deleting ${id} from LocalStorage.`);
+        const currentData = await currentDataFetcher();
+        const updatedData = currentData.filter(d => d.id !== id);
+        localStorage.setItem(lsKey, JSON.stringify(updatedData));
+    }
+}
 
 // --- Services Operations ---
 
-export const fetchServices = async (): Promise<Service[]> => {
-    try {
-        const { data, error } = await supabase.from('services').select('*').order('created_at', { ascending: true });
-        if (error) throw error;
-        return (data || []).map(mapService);
-    } catch (error: any) {
-        console.warn('⚠️ Could not fetch services from Supabase. Falling back to MOCK data.', error.message);
-        return MOCK_SERVICES;
-    }
-};
+export const fetchServices = () => fetchWithFallback('services', LS_KEYS.SERVICES, mapService, MOCK_SERVICES);
 
-export const upsertService = async (service: Partial<Service>) => {
-    const payload: any = {
-        title: service.title,
-        description: service.description,
-        icon: service.icon,
-        image_url: service.imageUrl,
-        id: service.id || generateUUID() // FIX: Generate ID if missing
-    };
-    
-    const { error } = await supabase.from('services').upsert(payload);
-    if (error) throw error;
-};
+export const upsertService = (service: Partial<Service>) => upsertWithFallback(
+    'services', LS_KEYS.SERVICES, service, 
+    (s) => ({
+        id: s.id,
+        title: s.title,
+        description: s.description,
+        icon: s.icon,
+        image_url: s.imageUrl
+    }),
+    fetchServices
+);
 
-export const deleteService = async (id: string) => {
-    const { error } = await supabase.from('services').delete().eq('id', id);
-    if (error) throw error;
-};
+export const deleteService = (id: string) => deleteWithFallback('services', LS_KEYS.SERVICES, id, fetchServices);
 
 // --- Projects Operations ---
 
-export const fetchProjects = async (): Promise<Project[]> => {
-    try {
-        const { data, error } = await supabase.from('projects').select('*').order('created_at', { ascending: true });
-        if (error) throw error;
-        return (data || []).map(mapProject);
-    } catch (error: any) {
-        console.warn('⚠️ Could not fetch projects from Supabase. Falling back to MOCK data.', error.message);
-        return MOCK_PROJECTS;
-    }
-};
+export const fetchProjects = () => fetchWithFallback('projects', LS_KEYS.PROJECTS, mapProject, MOCK_PROJECTS);
 
-export const upsertProject = async (project: Partial<Project>) => {
-    const payload: any = {
-        title: project.title,
-        client: project.client,
-        category: project.category,
-        image_url: project.imageUrl,
-        result: project.result,
-        description: project.description,
-        id: project.id || generateUUID() // FIX: Generate ID if missing
-    };
+export const upsertProject = (project: Partial<Project>) => upsertWithFallback(
+    'projects', LS_KEYS.PROJECTS, project,
+    (p) => ({
+        id: p.id,
+        title: p.title,
+        client: p.client,
+        category: p.category,
+        image_url: p.imageUrl,
+        result: p.result,
+        description: p.description
+    }),
+    fetchProjects
+);
 
-    const { error } = await supabase.from('projects').upsert(payload);
-    if (error) throw error;
-};
-
-export const deleteProject = async (id: string) => {
-    const { error } = await supabase.from('projects').delete().eq('id', id);
-    if (error) throw error;
-};
+export const deleteProject = (id: string) => deleteWithFallback('projects', LS_KEYS.PROJECTS, id, fetchProjects);
 
 // --- News Operations ---
 
-export const fetchNews = async (): Promise<NewsItem[]> => {
-    try {
-        const { data, error } = await supabase.from('news').select('*').order('date', { ascending: false });
-        if (error) throw error;
-        return (data || []).map(mapNews);
-    } catch (error: any) {
-        console.warn('⚠️ Could not fetch news from Supabase. Falling back to MOCK data.', error.message);
-        return MOCK_NEWS;
-    }
-};
+export const fetchNews = () => fetchWithFallback('news', LS_KEYS.NEWS, mapNews, MOCK_NEWS);
 
-export const upsertNews = async (news: Partial<NewsItem>) => {
-    const payload: any = {
-        title: news.title,
-        category: news.category,
-        summary: news.summary,
-        content: news.content,
-        image_url: news.imageUrl,
-        date: news.date,
-        id: news.id || generateUUID() // FIX: Generate ID if missing
-    };
+export const upsertNews = (news: Partial<NewsItem>) => upsertWithFallback(
+    'news', LS_KEYS.NEWS, news,
+    (n) => ({
+        id: n.id,
+        title: n.title,
+        category: n.category,
+        summary: n.summary,
+        content: n.content,
+        image_url: n.imageUrl,
+        date: n.date
+    }),
+    fetchNews
+);
 
-    const { error } = await supabase.from('news').upsert(payload);
-    if (error) throw error;
-};
-
-export const deleteNews = async (id: string) => {
-    const { error } = await supabase.from('news').delete().eq('id', id);
-    if (error) throw error;
-};
+export const deleteNews = (id: string) => deleteWithFallback('news', LS_KEYS.NEWS, id, fetchNews);
 
 // --- Team Operations ---
 
-export const fetchTeamMembers = async (): Promise<TeamMember[]> => {
-    try {
-        const { data, error } = await supabase.from('team_members').select('*').order('created_at', { ascending: true });
-        if (error) throw error;
-        return (data || []).map(mapTeamMember);
-    } catch (error: any) {
-        console.warn('⚠️ Could not fetch team_members from Supabase. Falling back to MOCK data.', error.message);
-        return MOCK_TEAM;
-    }
-};
+export const fetchTeamMembers = () => fetchWithFallback('team_members', LS_KEYS.TEAM, mapTeamMember, MOCK_TEAM);
 
-export const upsertTeamMember = async (member: Partial<TeamMember>) => {
-    const payload: any = {
-        name: member.name,
-        role: member.role,
-        image_url: member.imageUrl,
-        bio: member.bio,
-        id: member.id || generateUUID() // FIX: Generate ID if missing
-    };
+export const upsertTeamMember = (member: Partial<TeamMember>) => upsertWithFallback(
+    'team_members', LS_KEYS.TEAM, member,
+    (m) => ({
+        id: m.id,
+        name: m.name,
+        role: m.role,
+        image_url: m.imageUrl,
+        bio: m.bio
+    }),
+    fetchTeamMembers
+);
 
-    const { error } = await supabase.from('team_members').upsert(payload);
-    if (error) throw error;
-};
-
-export const deleteTeamMember = async (id: string) => {
-    const { error } = await supabase.from('team_members').delete().eq('id', id);
-    if (error) throw error;
-};
+export const deleteTeamMember = (id: string) => deleteWithFallback('team_members', LS_KEYS.TEAM, id, fetchTeamMembers);
 
 // --- Leads Operations ---
 
@@ -249,117 +280,76 @@ export const fetchLeads = async (): Promise<Lead[]> => {
         const { data, error } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
         if (error) throw error;
         return (data || []).map(mapLead);
-    } catch (error: any) {
-        console.error('Error fetching leads:', error.message || error);
-        return [];
+    } catch (error) {
+        console.warn('[Supabase Offline] Fetching Leads from LS');
+        const local = localStorage.getItem(LS_KEYS.LEADS);
+        return local ? JSON.parse(local) : [];
     }
 };
 
 export const createLead = async (lead: Partial<Lead>) => {
-    const payload = {
-        id: lead.id || generateUUID(), // FIX: Ensure Lead ID exists
-        name: lead.name,
-        email: lead.email,
-        phone: lead.phone,
-        details: lead.details,
-        status: 'NEW',
-        created_at: new Date().toISOString()
-    };
+    const newLead = { ...lead, id: lead.id || generateUUID(), created_at: new Date().toISOString(), status: 'NEW' };
     
-    const { error } = await supabase.from('leads').insert(payload);
-    if (error) {
-        console.error("Supabase Error creating lead:", error.message, error.details);
-        throw error;
+    try {
+        const payload = {
+            id: newLead.id,
+            name: newLead.name,
+            email: newLead.email,
+            phone: newLead.phone,
+            details: newLead.details,
+            status: newLead.status,
+            created_at: newLead.created_at
+        };
+        const { error } = await supabase.from('leads').insert(payload);
+        if (error) throw error;
+    } catch (error) {
+        console.warn('[Supabase Offline] Saving Lead to LS');
+        const current = await fetchLeads();
+        const updated = [newLead as Lead, ...current];
+        localStorage.setItem(LS_KEYS.LEADS, JSON.stringify(updated));
     }
 };
 
 export const updateLeadStatus = async (id: string, status: string) => {
-    const { error } = await supabase.from('leads').update({ status }).eq('id', id);
-    if (error) throw error;
-};
-
-// --- PARTNERS Operations ---
-export const fetchPartners = async (): Promise<ClientPartner[]> => {
     try {
-        const { data, error } = await supabase.from('client_partners').select('*').order('sort_order', { ascending: true });
+        const { error } = await supabase.from('leads').update({ status }).eq('id', id);
         if (error) throw error;
-        return (data || []).map(mapPartner);
-    } catch (error: any) {
-        console.warn('Error fetching partners:', error.message || error);
-        return [];
+    } catch (error) {
+        const current = await fetchLeads();
+        const updated = current.map(l => l.id === id ? { ...l, status: status as LeadStatus } : l);
+        localStorage.setItem(LS_KEYS.LEADS, JSON.stringify(updated));
     }
-};
-export const upsertPartner = async (item: Partial<ClientPartner>) => {
-    const payload: any = {
-        name: item.name,
-        logo_url: item.logoUrl,
-        sort_order: item.sortOrder,
-        id: item.id || generateUUID() // FIX: Generate ID if missing
-    };
-    
-    const { error } = await supabase.from('client_partners').upsert(payload);
-    if (error) throw error;
-};
-export const deletePartner = async (id: string) => {
-    const { error } = await supabase.from('client_partners').delete().eq('id', id);
-    if (error) throw error;
 };
 
 // --- COMPARISON Operations ---
-export const fetchComparisons = async (): Promise<ComparisonItem[]> => {
-    try {
-        const { data, error } = await supabase.from('comparison_items').select('*').order('sort_order', { ascending: true });
-        if (error) throw error;
-        return (data || []).map(mapComparison);
-    } catch (error: any) {
-        console.warn('Error fetching comparisons:', error.message || error);
-        return [];
-    }
-};
-export const upsertComparison = async (item: Partial<ComparisonItem>) => {
-    const payload: any = {
-        criterion: item.criterion,
-        duhava_value: item.duhavaValue,
-        agency_value: item.agencyValue,
-        freelance_value: item.freelanceValue,
-        sort_order: item.sortOrder,
-        id: item.id || generateUUID() // FIX: Generate ID if missing
-    };
-
-    const { error } = await supabase.from('comparison_items').upsert(payload);
-    if (error) throw error;
-};
-export const deleteComparison = async (id: string) => {
-    const { error } = await supabase.from('comparison_items').delete().eq('id', id);
-    if (error) throw error;
-};
+export const fetchComparisons = () => fetchWithFallback('comparison_items', LS_KEYS.COMPARISON, mapComparison, []);
+export const upsertComparison = (item: Partial<ComparisonItem>) => upsertWithFallback(
+    'comparison_items', LS_KEYS.COMPARISON, item,
+    (i) => ({
+        id: i.id,
+        criterion: i.criterion,
+        duhava_value: i.duhavaValue,
+        agency_value: i.agencyValue,
+        freelance_value: i.freelanceValue,
+        sort_order: i.sortOrder
+    }),
+    fetchComparisons
+);
+export const deleteComparison = (id: string) => deleteWithFallback('comparison_items', LS_KEYS.COMPARISON, id, fetchComparisons);
 
 // --- PERSONAS Operations ---
-export const fetchPersonas = async (): Promise<Persona[]> => {
-    try {
-        const { data, error } = await supabase.from('personas').select('*').order('created_at', { ascending: true });
-        if (error) throw error;
-        return (data || []).map(mapPersona);
-    } catch (error: any) {
-        console.warn('Error fetching personas:', error.message || error);
-        return [];
-    }
-};
-export const upsertPersona = async (item: Partial<Persona>) => {
-    const payload: any = {
-        key_name: item.keyName,
-        title: item.title,
-        description: item.description,
-        focus_tags: item.focusTags,
-        cta_text: item.ctaText,
-        icon_name: item.iconName,
-        id: item.id || generateUUID() // FIX: Generate ID if missing
-    };
-
-    const { error } = await supabase.from('personas').upsert(payload);
-    if (error) throw error;
-};
-export const deletePersona = async (id: string) => {
-    const { error } = await supabase.from('personas').delete().eq('id', id);
-    if (error) throw error;
-};
+export const fetchPersonas = () => fetchWithFallback('personas', LS_KEYS.PERSONAS, mapPersona, []);
+export const upsertPersona = (item: Partial<Persona>) => upsertWithFallback(
+    'personas', LS_KEYS.PERSONAS, item,
+    (p) => ({
+        id: p.id,
+        key_name: p.keyName,
+        title: p.title,
+        description: p.description,
+        focus_tags: p.focusTags,
+        cta_text: p.ctaText,
+        icon_name: p.iconName
+    }),
+    fetchPersonas
+);
+export const deletePersona = (id: string) => deleteWithFallback('personas', LS_KEYS.PERSONAS, id, fetchPersonas);
