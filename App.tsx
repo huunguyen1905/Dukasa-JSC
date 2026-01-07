@@ -36,6 +36,7 @@ const NewsSection = lazy(() => import('./components/NewsSection'));
 const NewsPage = lazy(() => import('./components/NewsPage')); 
 const ProjectsPage = lazy(() => import('./components/ProjectsPage')); 
 const ServicesPage = lazy(() => import('./components/ServicesPage')); 
+const AboutPage = lazy(() => import('./components/AboutPage')); // New Dedicated About Page
 const FAQ = lazy(() => import('./components/FAQ'));
 const TechStack = lazy(() => import('./components/TechStack'));
 const Pricing = lazy(() => import('./components/Pricing'));
@@ -340,14 +341,21 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<LandingPage {...landingProps} />} />
         
-        {/* Support Section URLs specifically mapping to Landing Page sections if needed, but primarily now we have dedicated pages. 
-            For 've-chung-toi' we keep it as Landing Page section or maybe a new page later.
-            For now, let's keep /ve-chung-toi mapping to Landing Page scrolling behavior if someone bookmarks it.
+        {/* Support Section URLs - Now primarily for compatibility or if used as anchors. 
+            /lien-he still maps to Home with scroll, but we have a dedicated Contact section.
         */}
-        <Route path="/ve-chung-toi" element={<LandingPage {...landingProps} />} />
         <Route path="/lien-he" element={<LandingPage {...landingProps} />} />
         
         {/* Dedicated Pages */}
+        <Route 
+            path="/ve-chung-toi" 
+            element={
+                <Suspense fallback={<SectionLoader />}>
+                    <AboutPage />
+                </Suspense>
+            } 
+        />
+
         <Route 
             path="/giai-phap" 
             element={
