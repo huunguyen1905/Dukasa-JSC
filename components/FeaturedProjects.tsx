@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { ArrowUpRight, ArrowDown, Filter, Layers, Zap, Eye } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, Filter, Layers, Zap, Eye } from 'lucide-react';
 import FadeIn from './FadeIn';
 import { Project } from '../types';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -11,8 +11,7 @@ interface FeaturedProjectsProps {
 
 const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
   const [activeCategory, setActiveCategory] = useState('All');
-  const [visibleCount, setVisibleCount] = useState(6); // Show 6 items initially for cleaner grid
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(6); 
   
   // URL Params handling
   const { projectId } = useParams();
@@ -43,16 +42,12 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
         : projects.filter(p => p.category === activeCategory);
   }, [activeCategory, projects]);
 
-  // Pagination Logic
+  // Use visibleCount only for this preview section
   const visibleProjects = filteredProjects.slice(0, visibleCount);
-  const hasMore = visibleCount < filteredProjects.length;
 
-  const handleLoadMore = () => {
-      setIsAnimating(true);
-      setTimeout(() => {
-          setVisibleCount(prev => prev + 6);
-          setIsAnimating(false);
-      }, 500); 
+  const handleViewAll = () => {
+      // Navigate to full page instead of loading more in-place
+      navigate('/du-an');
   };
 
   const handleCategoryChange = (cat: string) => {
@@ -181,22 +176,18 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
                 </div>
             )}
             
-            {/* 4. Load More Button */}
-            {hasMore && (
-                <div className="mt-24 text-center">
-                   <button 
-                        onClick={handleLoadMore}
-                        disabled={isAnimating}
-                        className="relative overflow-hidden group bg-transparent border border-gray-700 text-white font-bold py-4 px-12 rounded-full hover:border-brand-yellow transition-colors"
-                    >
-                        <div className={`absolute inset-0 bg-brand-yellow transition-transform duration-500 origin-left ${isAnimating ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}></div>
-                        <span className="relative z-10 flex items-center gap-3 uppercase tracking-widest text-xs group-hover:text-black transition-colors">
-                            {isAnimating ? 'Đang tải...' : `Xem Thêm (${filteredProjects.length - visibleCount})`} 
-                            {!isAnimating && <ArrowDown size={16} />}
-                        </span>
-                    </button>
-                </div>
-            )}
+            {/* 4. View All Button (Navigates to separate page) */}
+            <div className="mt-24 text-center">
+                <button 
+                    onClick={handleViewAll}
+                    className="relative overflow-hidden group bg-transparent border border-gray-700 text-white font-bold py-4 px-12 rounded-full hover:border-brand-yellow transition-colors"
+                >
+                    <div className="absolute inset-0 bg-brand-yellow transition-transform duration-500 origin-left scale-x-0 group-hover:scale-x-100"></div>
+                    <span className="relative z-10 flex items-center gap-3 uppercase tracking-widest text-xs group-hover:text-black transition-colors">
+                        Xem Tất Cả Dự Án <ArrowRight size={16} />
+                    </span>
+                </button>
+            </div>
         </div>
     </section>
   );

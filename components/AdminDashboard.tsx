@@ -436,7 +436,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white font-sans cursor-default">
+    // FIX: Changed root container to flex h-screen w-full to fill viewport exactly.
+    // Removed duplicate wrapper. Added overflow-hidden to root to prevent body scroll.
+    <div className="flex h-screen w-full bg-gray-900 text-white font-sans overflow-hidden cursor-default">
       {/* Toast Notification Container */}
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
@@ -447,7 +449,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           </div>
       )}
 
-      <div className="flex h-screen flex-col md:flex-row">
         {/* Sidebar */}
         <aside className="w-full md:w-64 bg-black border-r border-gray-800 flex flex-col shrink-0 z-20">
           <div className="p-6 border-b border-gray-800">
@@ -455,7 +456,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                DUHAVA <span className="text-xs bg-gray-800 text-gray-400 px-1 rounded">ADMIN</span>
             </h2>
           </div>
-          <nav className="flex-1 p-4 space-y-2 overflow-x-auto md:overflow-visible flex md:flex-col gap-2">
+          <nav className="flex-1 p-4 space-y-2 overflow-x-auto md:overflow-visible flex md:flex-col gap-2 custom-scrollbar">
             <button onClick={() => navigate('/')} className="w-full text-left px-4 py-3 rounded font-bold text-white hover:bg-gray-800 flex items-center gap-3 mb-4 border border-gray-700 shrink-0">
               <Home size={20} className="text-brand-yellow" /> <span className="hidden md:inline">Về Trang Chủ</span>
             </button>
@@ -487,6 +488,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
         </aside>
 
         {/* Main Content */}
+        {/* FIX: Removed fixed height or unnecessary flex wrappers. Use flex-1 to fill remaining space. */}
         <main className="flex-1 overflow-y-auto p-4 md:p-8 relative bg-gradient-to-br from-gray-900 to-black">
           {/* Mobile Logout */}
           <div className="md:hidden flex justify-end gap-2 mb-4">
@@ -497,7 +499,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           {/* ... (Existing Views Code remains largely the same, just rendering logic) ... */}
           {/* --- SERVICES VIEW --- */}
           {view === AdminView.SERVICES && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
               <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-black text-white">Quản Lý Dịch Vụ</h1>
                 <button onClick={() => openModal('SERVICES')} className="bg-brand-yellow text-black px-4 py-2 rounded font-bold flex items-center gap-2"><Plus size={18}/> Thêm Mới</button>
@@ -522,7 +524,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
 
           {/* --- PROJECTS VIEW --- */}
           {view === AdminView.PROJECTS && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
               <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-black text-white">Quản Lý Dự Án</h1>
                 <button onClick={() => openModal('PROJECTS')} className="bg-brand-yellow text-black px-4 py-2 rounded font-bold flex items-center gap-2"><Plus size={18}/> Thêm Mới</button>
@@ -553,7 +555,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
 
           {/* --- NEWS VIEW --- */}
           {view === AdminView.NEWS && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
               <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-black text-white">Quản Lý Tin Tức</h1>
                 <button onClick={() => openModal('NEWS')} className="bg-brand-yellow text-black px-4 py-2 rounded font-bold flex items-center gap-2"><Plus size={18}/> Thêm Mới</button>
@@ -582,7 +584,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
 
            {/* --- TEAM VIEW --- */}
            {view === AdminView.TEAM && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
               <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-black text-white">Quản Lý Đội Ngũ</h1>
                 <button onClick={() => openModal('TEAM')} className="bg-brand-yellow text-black px-4 py-2 rounded font-bold flex items-center gap-2"><Plus size={18}/> Thêm Mới</button>
@@ -608,7 +610,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           
           {/* --- COMPARISON VIEW --- */}
            {view === AdminView.COMPARISON && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
               <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-black text-white">Bảng So Sánh</h1>
                 <button onClick={() => openModal('COMPARISON')} className="bg-brand-yellow text-black px-4 py-2 rounded font-bold flex items-center gap-2"><Plus size={18}/> Thêm Mới</button>
@@ -647,7 +649,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
 
           {/* --- PERSONAS VIEW --- */}
            {view === AdminView.PERSONAS && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
               <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-black text-white">Quản Lý Personas</h1>
                 <button onClick={() => openModal('PERSONAS')} className="bg-brand-yellow text-black px-4 py-2 rounded font-bold flex items-center gap-2"><Plus size={18}/> Thêm Mới</button>
@@ -677,7 +679,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
 
           {/* --- LEADS VIEW --- */}
           {view === AdminView.LEADS && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
               <h1 className="text-3xl font-black text-white mb-8">Khách Hàng Tiềm Năng</h1>
               <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden">
                 <div className="overflow-x-auto">
@@ -729,7 +731,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
             </div>
           )}
         </main>
-      </div>
 
       {/* --- EDIT MODAL --- */}
       {isEditing && (

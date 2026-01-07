@@ -1,10 +1,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, Calendar, ChevronLeft, ChevronRight, X, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, Calendar, ChevronLeft, ChevronRight, ArrowUpRight } from 'lucide-react';
 import { NewsItem } from '../types';
 import FadeIn from './FadeIn';
-import NewsModal from './NewsModal';
-import { createPortal } from 'react-dom';
 import { useParams, useNavigate } from 'react-router-dom';
 
 interface NewsSectionProps {
@@ -12,15 +10,13 @@ interface NewsSectionProps {
 }
 
 const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
-  const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
-  const [isViewAllOpen, setIsViewAllOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   
   // URL Params handling
   const { newsId } = useParams();
   const navigate = useNavigate();
 
-  // Handle Deep Linking
+  // Handle Deep Linking (Scroll only if not navigating away)
   useEffect(() => {
     if (newsId && news.length > 0) {
         const found = news.find(n => n.id === newsId);
@@ -36,11 +32,6 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
     navigate(`/news/${item.id}`);
   };
 
-  const handleCloseModal = () => {
-    setSelectedNews(null);
-    navigate('/tin-tuc', { replace: true, preventScrollReset: true });
-  };
-
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
       const { current } = scrollRef;
@@ -49,74 +40,8 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
     }
   };
 
-  // View All Overlay
-  const ViewAllOverlay = () => {
-    if (!isViewAllOpen) return null;
-    
-    React.useEffect(() => {
-        document.body.style.overflow = 'hidden';
-        return () => { document.body.style.overflow = ''; };
-    }, []);
-
-    return createPortal(
-        <div className="fixed inset-0 z-[9990] bg-brand-black overflow-y-auto animate-in fade-in duration-300">
-            <div className="container mx-auto px-6 py-12">
-                 <div className="flex justify-between items-center mb-12">
-                    <div>
-                        <h2 className="text-brand-yellow font-bold tracking-widest uppercase mb-2">Thư Viện Bài Viết</h2>
-                        <h3 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter">
-                            Tin Tức <span className="text-gray-600">Mới Nhất</span>
-                        </h3>
-                    </div>
-                    <button 
-                        onClick={() => setIsViewAllOpen(false)}
-                        className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-yellow hover:text-black transition-colors"
-                    >
-                        <X size={24} />
-                    </button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-20">
-                    {news.map((item, index) => (
-                        <div 
-                            key={item.id}
-                            className="group cursor-pointer flex flex-col bg-gray-900/30 border border-gray-800 rounded-xl overflow-hidden hover:border-brand-yellow/50 transition-all duration-300 animate-in slide-in-from-bottom-4 fade-in"
-                            style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'backwards' }}
-                            onClick={() => {
-                                setIsViewAllOpen(false);
-                                handleNewsClick(item);
-                            }}
-                        >
-                            <div className="relative h-48 overflow-hidden shrink-0">
-                                <div className="absolute top-4 left-4 bg-brand-yellow text-brand-black text-xs font-bold px-3 py-1 rounded z-10 uppercase tracking-wider">
-                                    {item.category}
-                                </div>
-                                <img 
-                                    src={item.imageUrl} 
-                                    alt={item.title} 
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                />
-                                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
-                            </div>
-                            <div className="p-6 flex-1 flex flex-col">
-                                <div className="flex items-center gap-2 text-gray-500 text-xs mb-3">
-                                    <Calendar size={12} />
-                                    <span>{new Date(item.date).toLocaleDateString('vi-VN')}</span>
-                                </div>
-                                <h4 className="text-lg font-bold text-white mb-3 group-hover:text-brand-yellow transition-colors line-clamp-2">
-                                    {item.title}
-                                </h4>
-                                <div className="mt-auto text-brand-yellow text-xs font-bold uppercase tracking-wider flex items-center gap-2">
-                                    Đọc Thêm <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform"/>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>,
-        document.body
-    );
+  const handleViewAll = () => {
+      navigate('/tin-tuc');
   };
 
   return (
@@ -141,7 +66,7 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
                             <button onClick={() => scroll('right')} className="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center hover:bg-white hover:text-black transition-colors"><ChevronRight size={20}/></button>
                         </div>
                         <button 
-                            onClick={() => setIsViewAllOpen(true)}
+                            onClick={handleViewAll}
                             className="text-white border-b border-brand-yellow pb-1 hover:text-brand-yellow transition-colors flex items-center gap-2 ml-4 uppercase text-sm font-bold tracking-wider"
                         >
                             Xem Tất Cả <ArrowUpRight size={16} />
@@ -204,8 +129,6 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
             </div>
         </div>
         </section>
-
-        <ViewAllOverlay />
     </>
   );
 };

@@ -33,6 +33,8 @@ const Team = lazy(() => import('./components/Team'));
 const CTASection = lazy(() => import('./components/CTASection'));
 const FeaturedProjects = lazy(() => import('./components/FeaturedProjects'));
 const NewsSection = lazy(() => import('./components/NewsSection'));
+const NewsPage = lazy(() => import('./components/NewsPage')); // NEW NEWS PAGE
+const ProjectsPage = lazy(() => import('./components/ProjectsPage')); // NEW PROJECTS PAGE
 const FAQ = lazy(() => import('./components/FAQ'));
 const TechStack = lazy(() => import('./components/TechStack'));
 const Pricing = lazy(() => import('./components/Pricing'));
@@ -316,7 +318,7 @@ const App: React.FC = () => {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   
-  // Modal state for ServiceDetail page usage
+  // Modal state for ServiceDetail/NewsPage page usage
   const [isContactOpen, setIsContactOpen] = useState(false);
 
   useEffect(() => {
@@ -369,10 +371,28 @@ const App: React.FC = () => {
         {/* Section URLs (Vietnamese Slugs) */}
         <Route path="/ve-chung-toi" element={<LandingPage {...landingProps} />} />
         <Route path="/giai-phap" element={<LandingPage {...landingProps} />} />
-        <Route path="/du-an" element={<LandingPage {...landingProps} />} />
-        <Route path="/tin-tuc" element={<LandingPage {...landingProps} />} />
         <Route path="/lien-he" element={<LandingPage {...landingProps} />} />
         <Route path="/bang-gia" element={<LandingPage {...landingProps} />} />
+        
+        {/* UPDATE: /du-an now points to dedicated Projects Page */}
+        <Route 
+            path="/du-an" 
+            element={
+                <Suspense fallback={<SectionLoader />}>
+                    <ProjectsPage projects={projects} onOpenAdmin={() => {}} />
+                </Suspense>
+            } 
+        />
+
+        {/* UPDATE: /tin-tuc now points to dedicated News Page */}
+        <Route 
+            path="/tin-tuc" 
+            element={
+                <Suspense fallback={<SectionLoader />}>
+                    <NewsPage news={news} onOpenAdmin={() => {}} />
+                </Suspense>
+            } 
+        />
         
         {/* NEW: SERVICE DETAIL ROUTE */}
         <Route 
@@ -415,7 +435,8 @@ const App: React.FC = () => {
         />
         
         <Route path="/admin-login" element={<AdminLogin onLogin={handleLogin} />} />
-        {/* UPDATED: Allows sub-routes for Admin Dashboard using Wildcard * */}
+        
+        {/* UPDATED: Admin Route uses Wildcard for sub-routing */}
         <Route 
             path="/admin/*" 
             element={isAuthenticated ? (
