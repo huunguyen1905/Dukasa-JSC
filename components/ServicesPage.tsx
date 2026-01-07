@@ -55,7 +55,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ services, onOpenAdmin }) =>
                           <div 
                             className={`flex flex-col lg:flex-row gap-12 lg:gap-24 items-center ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}
                           >
-                              {/* Image Side */}
+                              {/* Image Side - Clickable */}
                               <div className="w-full lg:w-1/2 group cursor-pointer" onClick={() => navigate(`/service/${service.id}`)}>
                                   <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-gray-800 shadow-2xl">
                                       <img 
@@ -76,21 +76,24 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ services, onOpenAdmin }) =>
                                   </div>
                               </div>
 
-                              {/* Content Side */}
-                              <div className="w-full lg:w-1/2">
+                              {/* Content Side - NOW CLICKABLE */}
+                              <div 
+                                className="w-full lg:w-1/2 cursor-pointer group" 
+                                onClick={() => navigate(`/service/${service.id}`)}
+                              >
                                   <div className="flex items-center gap-4 mb-6">
                                       <span className="text-brand-yellow font-mono text-xl font-bold">0{index + 1}</span>
                                       <span className="h-[1px] w-12 bg-gray-800"></span>
-                                      <div className="p-2 bg-gray-900 rounded-lg border border-gray-800 text-brand-yellow">
+                                      <div className="p-2 bg-gray-900 rounded-lg border border-gray-800 text-brand-yellow group-hover:bg-brand-yellow group-hover:text-black transition-colors">
                                           <Layers size={18} />
                                       </div>
                                   </div>
 
-                                  <h3 className="text-3xl md:text-5xl font-black text-white uppercase mb-6 leading-[1.1] tracking-tight">
+                                  <h3 className="text-3xl md:text-5xl font-black text-white uppercase mb-6 leading-[1.1] tracking-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">
                                       {service.title}
                                   </h3>
                                   
-                                  <p className="text-gray-400 text-lg leading-relaxed mb-8 border-l-2 border-brand-yellow/50 pl-6">
+                                  <p className="text-gray-400 text-lg leading-relaxed mb-8 border-l-2 border-brand-yellow/50 pl-6 group-hover:border-brand-yellow transition-colors">
                                       {service.description}
                                   </p>
                                   
@@ -103,10 +106,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ services, onOpenAdmin }) =>
                                   </div>
 
                                   <button 
-                                      onClick={() => navigate(`/service/${service.id}`)}
-                                      className="group flex items-center gap-3 bg-white text-black px-8 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-brand-yellow transition-all shadow-lg hover:shadow-brand-yellow/20"
+                                      className="group/btn flex items-center gap-3 bg-white text-black px-8 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-brand-yellow transition-all shadow-lg hover:shadow-brand-yellow/20"
                                   >
-                                      Xem Chi Tiết <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                      Xem Chi Tiết <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                                   </button>
                               </div>
                           </div>

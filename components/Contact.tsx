@@ -1,232 +1,147 @@
 
-import React, { useState } from 'react';
-import { MapPin, Phone, Mail, Send, Clock, CheckCircle, Users, ExternalLink, ArrowRight } from 'lucide-react';
+import React from 'react';
+import { MapPin, Phone, Mail, ArrowUpRight, Clock, Globe, MessageSquare } from 'lucide-react';
 import FadeIn from './FadeIn';
-import { createLead } from '../services/supabaseService';
-import { Lead } from '../types';
 
 const Contact: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    const combinedDetails = `
-      Nguồn: Form Liên Hệ (Footer Section)
-      Lời nhắn: ${formData.message}
-    `;
-
-    try {
-        const newLead: Lead = {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            details: combinedDetails,
-            createdAt: new Date().toISOString()
-        };
-
-        await createLead(newLead);
-        
-        setIsSuccess(true);
-        setFormData({ name: '', email: '', phone: '', message: '' });
-        
-        setTimeout(() => setIsSuccess(false), 5000);
-    } catch (error: any) {
-        console.error("Lỗi gửi form:", error);
-        alert(`Có lỗi xảy ra: ${error.message || 'Vui lòng thử lại sau.'}`);
-    } finally {
-        setIsSubmitting(false);
-    }
+  // Trigger global modal open (assuming standard button interaction)
+  const openGlobalModal = () => {
+      const btn = document.querySelector('button[aria-label="Nhận Tư Vấn"]') as HTMLButtonElement; // Fallback trigger
+      if(btn) btn.click();
+      // Or if you have a custom event/ID
+      const trigger = document.getElementById('contact-trigger');
+      if(trigger) trigger.click();
   };
 
   return (
-    <section id="lien-he" className="bg-[#050505] py-32 border-t border-white/5 relative overflow-hidden">
+    <section id="lien-he" className="relative min-h-[85vh] flex items-center py-20 overflow-hidden bg-black group">
       
-      {/* Background Ambience */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-yellow/5 rounded-full blur-[200px] pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-900/5 rounded-full blur-[150px] pointer-events-none"></div>
+      {/* 1. FULL SCREEN CINEMATIC MAP */}
+      <div className="absolute inset-0 z-0 pointer-events-none md:pointer-events-auto">
+         <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.326746200236!2d106.690553314749!3d10.78626699231494!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317528d2d6c06a7f%3A0x634260d1396c429d!2zOCBUaOG6oWNoIFRo4buLIFRoYW5oLCBUw6JuIMSQ4buLbmgsIFF14bqtbiAxLCBUaMOgbmggcGjhu5EgSOG7kyBDaMOtIE1pbmgsIFZpZXRuYW0!5e0!3m2!1sen!2s"
+            width="100%" 
+            height="100%" 
+            style={{ 
+                border: 0, 
+                filter: 'grayscale(100%) invert(100%) contrast(80%) brightness(0.7)' 
+            }} 
+            allowFullScreen={true} 
+            loading="lazy" 
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Office Map"
+            className="w-full h-full opacity-50 group-hover:opacity-80 transition-opacity duration-1000 ease-in-out"
+        ></iframe>
+        
+        {/* Cinematic Vignette Overlay to blend map with site */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-transparent pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none"></div>
+      </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <FadeIn>
-            <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8 border-b border-gray-800 pb-12">
-                <div>
-                    <h2 className="text-brand-yellow font-bold tracking-[0.2em] uppercase text-xs mb-4 flex items-center gap-2">
-                        <span className="w-8 h-[1px] bg-brand-yellow"></span> Contact Us
-                    </h2>
-                    <h3 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-none">
-                        Khởi Tạo <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-500 to-white">Vị Thế Mới.</span>
-                    </h3>
-                </div>
-                <div className="text-right hidden md:block">
-                    <p className="text-gray-400 text-sm max-w-xs leading-relaxed">
-                        Sẵn sàng bứt phá? Hãy để lại thông tin, chiến lược gia của DUHAVA sẽ liên hệ trong vòng 30 phút.
-                    </p>
-                </div>
-            </div>
-        </FadeIn>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
-            {/* LEFT COLUMN: Luxury Minimalist Form */}
-            <div className="lg:col-span-7">
-                <FadeIn delay={100}>
-                    {isSuccess ? (
-                        <div className="h-full flex flex-col justify-center items-center text-center p-12 border border-brand-yellow/30 bg-brand-yellow/5 rounded-3xl animate-in zoom-in duration-500">
-                            <div className="w-24 h-24 bg-brand-yellow rounded-full flex items-center justify-center mb-8 shadow-[0_0_40px_rgba(250,204,21,0.3)]">
-                                <CheckCircle size={40} className="text-black" />
-                            </div>
-                            <h4 className="text-3xl font-black text-white uppercase mb-4 tracking-tight">Yêu Cầu Đã Gửi</h4>
-                            <p className="text-gray-400 text-lg mb-8 max-w-md">
-                                Cảm ơn bạn đã chọn DUHAVA. Đội ngũ chuyên gia đang phân tích yêu cầu và sẽ phản hồi sớm nhất.
-                            </p>
-                            <button 
-                                onClick={() => setIsSuccess(false)}
-                                className="text-brand-yellow font-bold uppercase tracking-widest text-sm border-b border-brand-yellow pb-1 hover:text-white hover:border-white transition-colors"
-                            >
-                                Gửi yêu cầu khác
-                            </button>
+            {/* LEFT: Contact Info Panel */}
+            <div className="lg:col-span-6">
+                <FadeIn>
+                    <div className="mb-12">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-yellow/10 border border-brand-yellow/20 text-brand-yellow text-[10px] font-bold uppercase tracking-widest mb-6 backdrop-blur-md">
+                            <Globe size={12} className="animate-spin-slow" />
+                            <span>Global Headquarters</span>
                         </div>
-                    ) : (
-                        <form onSubmit={handleSubmit} className="space-y-12">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                                <div className="group relative">
-                                    <input 
-                                        required
-                                        type="text" 
-                                        value={formData.name}
-                                        onChange={e => setFormData({...formData, name: e.target.value})}
-                                        className="peer w-full bg-transparent border-b border-gray-800 py-4 text-white text-lg focus:border-brand-yellow focus:outline-none transition-colors placeholder-transparent"
-                                        placeholder="Name"
-                                        id="name"
-                                    />
-                                    <label htmlFor="name" className="absolute left-0 -top-3.5 text-gray-500 text-xs uppercase font-bold tracking-widest transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-600 peer-placeholder-shown:top-4 peer-focus:-top-3.5 peer-focus:text-brand-yellow peer-focus:text-xs">
-                                        Họ và Tên *
-                                    </label>
-                                </div>
-                                <div className="group relative">
-                                    <input 
-                                        required
-                                        type="tel" 
-                                        value={formData.phone}
-                                        onChange={e => setFormData({...formData, phone: e.target.value})}
-                                        className="peer w-full bg-transparent border-b border-gray-800 py-4 text-white text-lg focus:border-brand-yellow focus:outline-none transition-colors placeholder-transparent"
-                                        placeholder="Phone"
-                                        id="phone"
-                                    />
-                                    <label htmlFor="phone" className="absolute left-0 -top-3.5 text-gray-500 text-xs uppercase font-bold tracking-widest transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-600 peer-placeholder-shown:top-4 peer-focus:-top-3.5 peer-focus:text-brand-yellow peer-focus:text-xs">
-                                        Số Điện Thoại *
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <div className="group relative">
-                                <input 
-                                    required
-                                    type="email" 
-                                    value={formData.email}
-                                    onChange={e => setFormData({...formData, email: e.target.value})}
-                                    className="peer w-full bg-transparent border-b border-gray-800 py-4 text-white text-lg focus:border-brand-yellow focus:outline-none transition-colors placeholder-transparent"
-                                    placeholder="Email"
-                                    id="email"
-                                />
-                                <label htmlFor="email" className="absolute left-0 -top-3.5 text-gray-500 text-xs uppercase font-bold tracking-widest transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-600 peer-placeholder-shown:top-4 peer-focus:-top-3.5 peer-focus:text-brand-yellow peer-focus:text-xs">
-                                    Email Doanh Nghiệp *
-                                </label>
-                            </div>
-
-                            <div className="group relative">
-                                <textarea 
-                                    rows={3}
-                                    value={formData.message}
-                                    onChange={e => setFormData({...formData, message: e.target.value})}
-                                    className="peer w-full bg-transparent border-b border-gray-800 py-4 text-white text-lg focus:border-brand-yellow focus:outline-none transition-colors placeholder-transparent resize-none"
-                                    placeholder="Message"
-                                    id="message"
-                                />
-                                <label htmlFor="message" className="absolute left-0 -top-3.5 text-gray-500 text-xs uppercase font-bold tracking-widest transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-600 peer-placeholder-shown:top-4 peer-focus:-top-3.5 peer-focus:text-brand-yellow peer-focus:text-xs">
-                                    Nhu Cầu Của Bạn...
-                                </label>
-                            </div>
-
-                            <div className="pt-4">
-                                <button 
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className={`
-                                        group relative inline-flex items-center gap-4 px-10 py-5 bg-white text-black rounded-none text-sm font-black uppercase tracking-widest hover:bg-brand-yellow transition-all duration-300
-                                        ${isSubmitting ? 'opacity-70 cursor-wait' : ''}
-                                    `}
-                                >
-                                    {isSubmitting ? 'Đang Xử Lý...' : 'Gửi Yêu Cầu'} 
-                                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                                </button>
-                            </div>
-                        </form>
-                    )}
-                </FadeIn>
-            </div>
-
-            {/* RIGHT COLUMN: Info & Map */}
-            <div className="lg:col-span-5 flex flex-col justify-between h-full">
-                <FadeIn delay={200} direction="left">
-                    <div className="space-y-10 mb-12">
-                        <div className="group">
-                            <div className="flex items-center gap-3 text-brand-yellow mb-2">
-                                <MapPin size={18} />
-                                <span className="font-mono text-xs text-gray-500 uppercase tracking-wider group-hover:text-brand-yellow transition-colors">Văn Phòng Chính</span>
-                            </div>
-                            <p className="text-white text-xl font-bold leading-snug">
-                                Số 8 Thạch Thị Thanh,<br/>
-                                Phường Tân Định, Quận 1,<br/>
-                                TP. Hồ Chí Minh
+                        <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter leading-none mb-6">
+                            Kết Nối <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-white">Với DUHAVA</span>
+                        </h2>
+                        {/* High Contrast Description Box */}
+                        <div className="bg-black/80 border-l-4 border-brand-yellow p-6 rounded-r-xl backdrop-blur-md">
+                            <p className="text-white text-lg leading-relaxed font-medium">
+                                Sẵn sàng cho cú hích tăng trưởng? Ghé thăm văn phòng của chúng tôi hoặc đặt lịch tư vấn trực tuyến ngay hôm nay.
                             </p>
                         </div>
+                    </div>
 
-                        <div className="group">
-                            <div className="flex items-center gap-3 text-brand-yellow mb-2">
-                                <Phone size={18} />
-                                <span className="font-mono text-xs text-gray-500 uppercase tracking-wider group-hover:text-brand-yellow transition-colors">Hotline 24/7</span>
+                    {/* Contact Cards Grid */}
+                    <div className="space-y-6">
+                        {/* Address Card */}
+                        <div className="group bg-[#0A0A0A] border border-gray-800 p-6 rounded-2xl hover:border-brand-yellow/50 transition-all duration-300 shadow-2xl relative overflow-hidden">
+                            <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div className="flex items-start gap-4 relative z-10">
+                                <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-brand-yellow shrink-0 group-hover:bg-brand-yellow group-hover:text-black transition-colors">
+                                    <MapPin size={20} />
+                                </div>
+                                <div>
+                                    <h4 className="text-white font-black uppercase text-sm tracking-widest mb-2">Văn Phòng Chính</h4>
+                                    <p className="text-gray-200 text-base leading-snug font-medium">
+                                        Số 8 Thạch Thị Thanh, Phường Tân Định,<br/> Quận 1, TP. Hồ Chí Minh
+                                    </p>
+                                    <a href="https://maps.app.goo.gl/..." target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-xs font-black text-brand-yellow mt-4 uppercase tracking-wider hover:text-white transition-colors bg-brand-yellow/10 px-3 py-1.5 rounded-full">
+                                        Chỉ đường <ArrowUpRight size={14}/>
+                                    </a>
+                                </div>
                             </div>
-                            <p className="text-white text-3xl font-black tracking-tight">0906 291 941</p>
                         </div>
 
-                        <div className="group">
-                            <div className="flex items-center gap-3 text-brand-yellow mb-2">
-                                <Mail size={18} />
-                                <span className="font-mono text-xs text-gray-500 uppercase tracking-wider group-hover:text-brand-yellow transition-colors">Email</span>
-                            </div>
-                            <p className="text-white text-xl font-medium">duhavajsc@gmail.com</p>
+                        {/* Quick Contact Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <a href="tel:0906291941" className="group bg-[#0A0A0A] border border-gray-800 p-6 rounded-2xl hover:bg-brand-yellow hover:border-brand-yellow transition-all duration-300 cursor-pointer shadow-xl relative overflow-hidden">
+                                <div className="flex flex-col h-full justify-between relative z-10">
+                                    <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-white mb-4 group-hover:bg-black/20 group-hover:text-black transition-colors">
+                                        <Phone size={18} />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-gray-400 text-xs font-black uppercase tracking-widest mb-1 group-hover:text-black/70">Hotline 24/7</h4>
+                                        <p className="text-white font-black text-xl group-hover:text-black">0906 291 941</p>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <a href="mailto:duhavajsc@gmail.com" className="group bg-[#0A0A0A] border border-gray-800 p-6 rounded-2xl hover:bg-white hover:border-white transition-all duration-300 cursor-pointer shadow-xl relative overflow-hidden">
+                                <div className="flex flex-col h-full justify-between relative z-10">
+                                    <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-white mb-4 group-hover:bg-black/10 group-hover:text-black transition-colors">
+                                        <Mail size={18} />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-gray-400 text-xs font-black uppercase tracking-widest mb-1 group-hover:text-black/70">Email Hợp Tác</h4>
+                                        <p className="text-white font-bold text-sm truncate group-hover:text-black">duhavajsc@gmail.com</p>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </FadeIn>
+            </div>
 
-                <FadeIn delay={300} direction="left" className="flex-1 min-h-[350px]">
-                    <div className="w-full h-full rounded-none overflow-hidden border border-gray-800 relative group grayscale hover:grayscale-0 transition-all duration-700">
-                        {/* Map Overlay for Dark Mode styling */}
-                        <div className="absolute inset-0 bg-brand-yellow/0 group-hover:bg-brand-yellow/5 pointer-events-none z-10 transition-colors duration-300"></div>
+            {/* RIGHT: Quick Action Glass Card */}
+            <div className="lg:col-span-6 flex justify-center lg:justify-end">
+                <FadeIn delay={200} direction="left" className="w-full max-w-md">
+                    <div className="bg-[#050505] border border-gray-800 p-8 rounded-3xl relative overflow-hidden group shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+                        {/* Decor */}
+                        <div className="absolute -top-20 -right-20 w-48 h-48 bg-brand-yellow/10 rounded-full blur-3xl group-hover:bg-brand-yellow/20 transition-colors"></div>
                         
-                        <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.326746200236!2d106.690553314749!3d10.78626699231494!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317528d2d6c06a7f%3A0x634260d1396c429d!2zOCBUaOG6oWNoIFRo4buLIFRoYW5oLCBUw6JuIMSQ4buLbmgsIFF14bqtbiAxLCBUaMOgbmggcGjhu5EgSOG7kyBDaMOtIE1pbmgsIFZpZXRuYW0!5e0!3m2!1sen!2s"
-                            width="100%" 
-                            height="100%" 
-                            style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) contrast(90%)' }} 
-                            allowFullScreen={true} 
-                            loading="lazy" 
-                            referrerPolicy="no-referrer-when-downgrade"
-                            title="Office Map"
-                            className="opacity-80 hover:opacity-100 transition-opacity"
-                        ></iframe>
+                        <div className="relative z-10">
+                            <h3 className="text-2xl font-black text-white uppercase mb-4">Bạn có dự án mới?</h3>
+                            <p className="text-gray-200 text-sm mb-8 leading-relaxed font-medium">
+                                Đừng để ý tưởng mãi nằm trên giấy. Hãy chia sẻ với chúng tôi, các chuyên gia của DUHAVA sẽ giúp bạn hiện thực hóa nó.
+                            </p>
+
+                            <div className="space-y-4">
+                                <button 
+                                    onClick={openGlobalModal}
+                                    className="w-full py-4 bg-brand-yellow text-black font-black uppercase tracking-wider rounded-xl hover:bg-white transition-all shadow-[0_0_20px_rgba(250,204,21,0.3)] flex items-center justify-center gap-3"
+                                >
+                                    <MessageSquare size={18} /> Đăng Ký Tư Vấn
+                                </button>
+                                
+                                <div className="flex items-center justify-center gap-3 text-gray-400 text-xs py-2 bg-gray-900/50 rounded-lg">
+                                    <Clock size={14} className="text-brand-yellow" />
+                                    <span className="font-bold">Phản hồi nhanh trong vòng 30 phút</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </FadeIn>
             </div>
+
         </div>
       </div>
     </section>

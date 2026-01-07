@@ -137,19 +137,19 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                             {item.hasDropdown && <ChevronDown size={10} className="group-hover/item:rotate-180 transition-transform"/>}
                         </Link>
 
-                        {/* Mega Dropdown for Services */}
+                        {/* Mega Dropdown for Services - FIXED LINKING */}
                         {item.hasDropdown && (
-                            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-64 opacity-0 invisible group-hover/item:opacity-100 group-hover/item:visible transition-all duration-300 transform translate-y-2 group-hover/item:translate-y-0">
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-64 opacity-0 invisible group-hover/item:opacity-100 group-hover/item:visible transition-all duration-300 transform translate-y-2 group-hover/item:translate-y-0 z-[60]">
                                 <div className="bg-[#0A0A0A] border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9)] overflow-hidden p-2 backdrop-blur-3xl">
                                     {servicesSubMenu.map((sub, idx) => (
-                                        <div 
+                                        <Link 
                                             key={idx} 
-                                            onClick={() => navigate(sub.link)}
-                                            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 hover:text-white transition-all group/sub cursor-pointer"
+                                            to={sub.link}
+                                            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 hover:text-white transition-all group/sub cursor-pointer block"
                                         >
                                             <span className="text-brand-yellow bg-brand-yellow/5 p-1.5 rounded-lg group-hover/sub:bg-brand-yellow group-hover/sub:text-black transition-colors">{sub.icon}</span>
                                             <span className="text-xs font-bold uppercase tracking-wide">{sub.name}</span>
-                                        </div>
+                                        </Link>
                                     ))}
                                 </div>
                             </div>
@@ -197,7 +197,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
         </nav>
       </header>
 
-      {/* SEARCH OVERLAY - Same as before */}
+      {/* SEARCH OVERLAY */}
       <div 
         className={`fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl transition-all duration-500 flex flex-col items-center justify-center
             ${isSearchOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}
@@ -247,7 +247,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
          </div>
       </div>
 
-      {/* MOBILE MENU - Updated to use Link */}
+      {/* MOBILE MENU */}
       <>
         <div 
             className={`fixed inset-0 bg-black/80 backdrop-blur-sm z-[90] transition-opacity duration-500 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}

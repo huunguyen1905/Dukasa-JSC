@@ -1,190 +1,200 @@
 
-import React, { useEffect, useRef, useState } from 'react';
-import { Search, Map, Zap, TrendingUp, Clock, Hash, CheckCircle2, CircleDashed } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Map, Zap, TrendingUp, Clock, CheckCircle2, ArrowRight, ChevronRight, Layers } from 'lucide-react';
 import FadeIn from './FadeIn';
 
 const steps = [
   {
-    id: '01',
+    id: 0,
+    num: '01',
     title: 'Khám Phá & Thấu Hiểu',
     subtitle: 'Data Mining',
     icon: <Search className="w-6 h-6" />,
-    description: 'Đào sâu dữ liệu (Data Mining), nghiên cứu đối thủ và vẽ chân dung khách hàng mục tiêu để tìm ra "Long Mạch" cho thương hiệu.',
+    description: 'Chúng tôi không đoán mò. Mọi chiến lược bắt đầu bằng việc đào sâu dữ liệu (Data Mining), Audit sức khỏe thương hiệu và giải mã Insight khách hàng để tìm ra "điểm nghẽn" tăng trưởng.',
     duration: '1 - 2 Tuần',
-    tags: ['Market Audit', 'User Persona', 'SWOT']
+    deliverables: ['Brand Health Audit', 'Competitor Analysis', 'User Persona', 'SWOT Report']
   },
   {
-    id: '02',
+    id: 1,
+    num: '02',
     title: 'Chiến Lược May Đo',
-    subtitle: 'Strategic Roadmap',
+    subtitle: 'Strategy & Planning',
     icon: <Map className="w-6 h-6" />,
-    description: 'Thiết kế lộ trình tăng trưởng riêng biệt. Kết hợp đa kênh (Omnichannel) từ SEO, Ads đến Social để tối ưu hóa điểm chạm.',
+    description: 'Thiết kế lộ trình tăng trưởng độc bản. Kết hợp đa kênh (Omnichannel) từ SEO, Ads đến Social để vây hãm tâm trí khách hàng tại mọi điểm chạm, tối ưu hóa ngân sách.',
     duration: '1 Tuần',
-    tags: ['Media Planning', 'KPI Setting', 'Creative']
+    deliverables: ['Master Marketing Plan', 'Media Buying Plan', 'Content Direction', 'KPI Commitment']
   },
   {
-    id: '03',
+    id: 2,
+    num: '03',
     title: 'Thực Thi Thần Tốc',
     subtitle: 'High-Speed Execution',
     icon: <Zap className="w-6 h-6" />,
-    description: 'Triển khai chiến dịch với tốc độ và sự chính xác tuyệt đối. Hệ thống báo cáo Real-time giúp nắm bắt hiệu quả từng đồng chi phí.',
+    description: 'Triển khai chiến dịch với tốc độ ánh sáng. Đội ngũ In-house chuyên nghiệp đảm bảo mọi ấn phẩm (Content, Visual, Video) đều đạt chuẩn High-End và đúng tiến độ.',
     duration: '2 - 4 Tuần',
-    tags: ['Campaign Setup', 'A/B Testing', 'Tracking']
+    deliverables: ['Campaign Setup', 'Creative Production', 'A/B Testing', 'Real-time Dashboard']
   },
   {
-    id: '04',
+    id: 3,
+    num: '04',
     title: 'Tăng Trưởng & Mở Rộng',
     subtitle: 'Scale & Dominate',
     icon: <TrendingUp className="w-6 h-6" />,
-    description: 'Liên tục tối ưu hóa tỷ lệ chuyển đổi (CRO) và mở rộng quy mô (Scale-up) để nhân bản doanh thu bền vững.',
+    description: 'Không dừng lại ở KPI. Chúng tôi liên tục tối ưu hóa tỷ lệ chuyển đổi (CRO), mở rộng quy mô (Scale-up) và biến khách hàng tiềm năng thành khách hàng trung thành.',
     duration: 'Ongoing',
-    tags: ['CRO', 'Remarketing', 'Scale-up']
+    deliverables: ['Monthly Report', 'CRO Optimization', 'Remarketing Funnel', 'Scale-up Strategy']
   }
 ];
 
 const Process: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [activeStep, setActiveStep] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
+  // Auto-play feature (pauses on interaction)
   useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return;
-      
-      const { top, height } = containerRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      
-      // Calculate progress: 0 when top enters bottom of screen, 1 when bottom leaves top of screen
-      // Adjusted for a smoother "fill" experience that starts when the timeline is centered
-      const startOffset = windowHeight * 0.6;
-      const endOffset = windowHeight * 0.4;
-      
-      const scrollY = -top + startOffset;
-      const maxScroll = height - endOffset;
-      
-      let progress = scrollY / maxScroll;
-      progress = Math.max(0, Math.min(1, progress));
-      
-      setScrollProgress(progress * 100);
-    };
+    if (!isAutoPlaying) return;
+    const interval = setInterval(() => {
+      setActiveStep((prev) => (prev + 1) % steps.length);
+    }, 5000); // Change every 5 seconds
+    return () => clearInterval(interval);
+  }, [isAutoPlaying]);
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); 
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const handleStepClick = (index: number) => {
+    setActiveStep(index);
+    setIsAutoPlaying(false); // Stop auto-play when user interacts
+  };
+
+  const activeData = steps[activeStep];
 
   return (
-    <section className="bg-brand-black py-32 relative overflow-hidden">
+    <section className="bg-black py-24 relative overflow-hidden border-t border-gray-900">
       
-      {/* Background Tech Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none"></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-brand-black via-transparent to-brand-black pointer-events-none"></div>
+      {/* Tech Background Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+      
+      {/* Glow Effects */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-brand-yellow/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       <div className="container mx-auto px-6 relative z-10">
         
         {/* HEADER */}
-        <FadeIn>
-            <div className="text-center mb-24 max-w-3xl mx-auto">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-6">
-                    <span className="w-2 h-2 rounded-full bg-brand-yellow animate-pulse"></span>
-                    <span className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.2em]">Process Workflow</span>
-                </div>
-                <h3 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-tight mb-6">
-                    Lộ Trình <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-white">Thực Thi Chuẩn</span>
+        <div className="text-center mb-16">
+            <FadeIn>
+                <h2 className="text-brand-yellow font-bold tracking-[0.2em] uppercase text-xs mb-3 flex items-center justify-center gap-2">
+                    <Layers size={14} /> Workflow 4.0
+                </h2>
+                <h3 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter">
+                    Lộ Trình <span className="text-gray-600">Thực Thi</span>
                 </h3>
-                <p className="text-gray-400 text-lg leading-relaxed">
-                    Quy trình 4 bước khép kín biến mục tiêu kinh doanh thành kết quả thực tế. <br className="hidden md:block"/>Tối ưu hóa thời gian, minh bạch ngân sách và cam kết hiệu quả.
-                </p>
-            </div>
-        </FadeIn>
+            </FadeIn>
+        </div>
 
-        {/* TIMELINE CONTAINER */}
-        <div ref={containerRef} className="relative max-w-6xl mx-auto">
+        {/* --- INTERACTIVE DASHBOARD AREA --- */}
+        <div className="max-w-6xl mx-auto bg-gray-900/30 border border-gray-800 rounded-3xl overflow-hidden backdrop-blur-xl relative">
             
-            {/* CENTRAL LINE (Desktop) / LEFT LINE (Mobile) */}
-            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-[2px] bg-gray-800 transform md:-translate-x-1/2 h-full rounded-full">
-                {/* Progress Fill */}
-                <div 
-                    className="absolute top-0 left-0 w-full bg-gradient-to-b from-brand-yellow via-yellow-400 to-brand-yellow transition-all duration-300 ease-out shadow-[0_0_15px_#FACC15]"
-                    style={{ height: `${scrollProgress}%` }}
-                ></div>
-            </div>
-
-            {/* STEPS */}
-            <div className="space-y-12 md:space-y-24">
+            {/* 1. PROGRESS NAVIGATION BAR */}
+            <div className="flex flex-col md:flex-row border-b border-gray-800">
                 {steps.map((step, index) => {
-                    const isEven = index % 2 === 0;
-                    // Determine if this step is "active" based on scroll progress
-                    // Rough estimate: step 1 active at >10%, step 2 at >35%, etc.
-                    const threshold = (index / steps.length) * 100;
-                    const isActive = scrollProgress > threshold;
-
+                    const isActive = index === activeStep;
                     return (
-                        <div key={index} className={`relative flex flex-col md:flex-row items-center w-full ${isEven ? 'md:flex-row-reverse' : ''}`}>
+                        <button
+                            key={step.id}
+                            onClick={() => handleStepClick(index)}
+                            className={`
+                                flex-1 py-6 px-4 relative group transition-all duration-300 text-left md:text-center
+                                ${isActive ? 'bg-white/5' : 'hover:bg-white/5'}
+                            `}
+                        >
+                            {/* Active Indicator Line */}
+                            <div className={`absolute top-0 left-0 right-0 h-[2px] transition-all duration-500 ${isActive ? 'bg-brand-yellow shadow-[0_0_10px_#FACC15]' : 'bg-transparent'}`}></div>
                             
-                            {/* 1. CONTENT SIDE */}
-                            <div className="w-full md:w-[45%] pl-20 md:pl-0 md:pr-16 md:text-right group">
-                                <FadeIn delay={index * 100} direction={isEven ? 'left' : 'right'}>
-                                    <div className={`transition-all duration-500 ${isEven ? 'md:text-left md:pl-16 md:pr-0' : ''}`}>
-                                        <div className="flex items-center gap-3 mb-3 md:justify-end justify-start">
-                                            {isEven && <span className="hidden md:inline-block w-8 h-[1px] bg-brand-yellow/50"></span>}
-                                            <span className="text-brand-yellow font-mono text-xs font-bold uppercase tracking-widest">{step.subtitle}</span>
-                                            {!isEven && <span className="hidden md:inline-block w-8 h-[1px] bg-brand-yellow/50"></span>}
-                                        </div>
-                                        
-                                        <h4 className="text-2xl md:text-3xl font-black text-white uppercase mb-4 group-hover:text-brand-yellow transition-colors">
-                                            {step.title}
-                                        </h4>
-                                        
-                                        <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-6 border-l-2 border-gray-800 pl-4 md:border-l-0 md:border-r-2 md:pr-4 md:pl-0">
-                                            {isEven ? (
-                                                <span className="md:border-r-0 md:pr-0 md:border-l-2 md:border-gray-800 md:pl-4 block">{step.description}</span>
-                                            ) : (
-                                                step.description
-                                            )}
-                                        </p>
-
-                                        {/* Tags & Duration */}
-                                        <div className={`flex flex-wrap gap-2 ${isEven ? 'md:justify-start' : 'md:justify-end'}`}>
-                                            <span className="px-3 py-1 bg-gray-900 border border-gray-700 rounded text-[10px] font-bold text-white uppercase flex items-center gap-2">
-                                                <Clock size={12} className="text-brand-yellow"/> {step.duration}
-                                            </span>
-                                            {step.tags.map((tag, i) => (
-                                                <span key={i} className="px-3 py-1 bg-gray-900/50 border border-gray-800 rounded text-[10px] font-bold text-gray-500 uppercase">
-                                                    #{tag}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </FadeIn>
+                            <div className="flex md:flex-col items-center justify-start md:justify-center gap-3">
+                                <span className={`text-2xl font-black font-mono transition-colors ${isActive ? 'text-brand-yellow' : 'text-gray-600'}`}>
+                                    {step.num}
+                                </span>
+                                <span className={`text-xs font-bold uppercase tracking-wider transition-colors ${isActive ? 'text-white' : 'text-gray-500'}`}>
+                                    {step.subtitle}
+                                </span>
                             </div>
-
-                            {/* 2. CENTER NODE */}
-                            <div className="absolute left-8 md:left-1/2 transform -translate-x-1/2 flex items-center justify-center z-20">
-                                <div className={`
-                                    w-12 h-12 rounded-full border-4 flex items-center justify-center transition-all duration-500 bg-brand-black
-                                    ${isActive ? 'border-brand-yellow shadow-[0_0_20px_rgba(250,204,21,0.5)] scale-110' : 'border-gray-800 grayscale'}
-                                `}>
-                                    <div className={`text-brand-yellow transition-opacity duration-300 ${isActive ? 'opacity-100' : 'opacity-50'}`}>
-                                        {step.icon}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* 3. SPACER / ORNAMENT SIDE */}
-                            <div className="w-full md:w-[45%] hidden md:block">
-                                <div className={`absolute top-1/2 -translate-y-1/2 text-[120px] font-black text-gray-900 opacity-20 pointer-events-none select-none transition-all duration-700
-                                    ${isEven ? 'right-0 translate-x-20' : 'left-0 -translate-x-20'}
-                                    ${isActive ? 'opacity-40 scale-110 text-gray-800' : ''}
-                                `}>
-                                    {step.id}
-                                </div>
-                            </div>
-
-                        </div>
+                        </button>
                     );
                 })}
             </div>
+
+            {/* 2. CONTENT DISPLAY AREA */}
+            <div className="p-8 md:p-12 min-h-[400px] relative flex flex-col md:flex-row gap-12 items-center">
+                
+                {/* Background Number Watermark */}
+                <div className="absolute right-0 bottom-0 text-[200px] font-black text-white/5 leading-none pointer-events-none select-none -mb-10 -mr-10">
+                    {activeData.num}
+                </div>
+
+                {/* Left: Icon & Title */}
+                <div className="w-full md:w-1/3 relative z-10">
+                    <div key={activeData.id} className="animate-in slide-in-from-left-8 fade-in duration-500">
+                        <div className="w-16 h-16 bg-brand-yellow rounded-2xl flex items-center justify-center text-black mb-6 shadow-[0_0_30px_rgba(250,204,21,0.3)]">
+                            {activeData.icon}
+                        </div>
+                        <h4 className="text-3xl md:text-4xl font-black text-white uppercase leading-tight mb-2">
+                            {activeData.title}
+                        </h4>
+                        <div className="flex items-center gap-2 text-brand-yellow text-xs font-bold uppercase tracking-widest mt-4 bg-brand-yellow/10 px-3 py-1 rounded w-fit border border-brand-yellow/20">
+                            <Clock size={14} /> Thời gian: {activeData.duration}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Divider (Desktop) */}
+                <div className="hidden md:block w-[1px] h-40 bg-gray-800"></div>
+
+                {/* Right: Description & Deliverables */}
+                <div className="w-full md:w-2/3 relative z-10">
+                    <div key={activeData.id + '-content'} className="animate-in slide-in-from-right-8 fade-in duration-500 delay-100">
+                        <p className="text-gray-300 text-lg leading-relaxed mb-8 font-light">
+                            {activeData.description}
+                        </p>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {activeData.deliverables.map((item, idx) => (
+                                <div key={idx} className="flex items-center gap-3 bg-black/40 border border-white/5 p-3 rounded-xl">
+                                    <CheckCircle2 size={16} className="text-brand-yellow shrink-0" />
+                                    <span className="text-sm text-gray-400 font-medium">{item}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            {/* Navigation Controls (Bottom Right) */}
+            <div className="absolute bottom-6 right-6 z-20 flex gap-2">
+                <button 
+                    onClick={() => handleStepClick((activeStep - 1 + steps.length) % steps.length)}
+                    className="p-2 rounded-full border border-gray-700 text-gray-400 hover:text-white hover:border-white transition-colors"
+                >
+                    <ChevronRight size={20} className="rotate-180"/>
+                </button>
+                <button 
+                    onClick={() => handleStepClick((activeStep + 1) % steps.length)}
+                    className="p-2 rounded-full border border-gray-700 text-gray-400 hover:text-white hover:border-white transition-colors"
+                >
+                    <ChevronRight size={20} />
+                </button>
+            </div>
+
         </div>
+
+        {/* CTA */}
+        <div className="text-center mt-12">
+            <button 
+                onClick={() => (document.querySelector('button[aria-label="Nhận Tư Vấn"]') as HTMLElement)?.click()}
+                className="inline-flex items-center gap-2 text-gray-400 hover:text-brand-yellow transition-colors font-bold uppercase text-xs tracking-widest border-b border-gray-800 hover:border-brand-yellow pb-1"
+            >
+                Bắt đầu quy trình ngay <ArrowRight size={14} />
+            </button>
+        </div>
+
       </div>
     </section>
   );

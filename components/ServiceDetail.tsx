@@ -53,6 +53,16 @@ const RICH_CONTENT: Record<string, any> = {
             { step: "03", title: "Design System", desc: "Thiết kế Logo, Brand Guideline và ấn phẩm truyền thông." },
             { step: "04", title: "Launch", desc: "Tư vấn chiến lược tung thương hiệu ra thị trường." }
         ]
+    },
+    'svc-web': {
+        tagline: "Kiệt Tác Kỹ Thuật Số",
+        benefits: ["Tốc độ tải trang < 1s", "Chuẩn UX/UI Quốc tế", "Tương thích mọi thiết bị", "Bảo mật SSL Cao cấp"],
+        process: [
+            { step: "01", title: "Wireframe & UX", desc: "Phác thảo luồng người dùng để tối ưu hóa tỷ lệ chuyển đổi (CRO)." },
+            { step: "02", title: "Visual Design", desc: "Thiết kế giao diện đẹp mắt, nhất quán với nhận diện thương hiệu." },
+            { step: "03", title: "Development", desc: "Lập trình Frontend & Backend với công nghệ mới nhất (React, NextJS)." },
+            { step: "04", title: "Testing & Go-live", desc: "Kiểm thử đa nền tảng và bàn giao mã nguồn gốc." }
+        ]
     }
 };
 

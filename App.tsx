@@ -42,7 +42,6 @@ const TechStack = lazy(() => import('./components/TechStack'));
 const Pricing = lazy(() => import('./components/Pricing'));
 const Contact = lazy(() => import('./components/Contact'));
 const About = lazy(() => import('./components/About'));
-const ROICalculator = lazy(() => import('./components/ROICalculator'));
 const StrategyQuiz = lazy(() => import('./components/StrategyQuiz'));
 const PressSection = lazy(() => import('./components/PressSection'));
 const GrowthSection = lazy(() => import('./components/GrowthSection')); 
@@ -213,11 +212,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, proj
                 </Suspense>
             </ErrorBoundary>
             
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    <ROICalculator />
-                </Suspense>
-            </ErrorBoundary>
+            {/* ROI Calculator Removed */}
 
             <ErrorBoundary>
                 <Suspense fallback={<SectionLoader />}>
