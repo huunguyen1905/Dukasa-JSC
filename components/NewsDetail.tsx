@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, User, Clock, Share2, Facebook, Twitter, Linkedin, ArrowRight, Tag } from 'lucide-react';
 import { NewsItem } from '../types';
 import FadeIn from './FadeIn';
+import SEOHead from './SEOHead';
 
 interface NewsDetailProps {
   news: NewsItem[];
@@ -24,14 +25,12 @@ const NewsDetail: React.FC<NewsDetailProps> = ({ news, onCtaClick }) => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (article) {
-        document.title = `${article.title} - Tin Tức DUHAVA`;
-    }
-  }, [newsId, article]);
+  }, [newsId]);
 
   if (!article) {
       return (
           <div className="min-h-screen bg-brand-black flex items-center justify-center">
+              <SEOHead title="Bài viết không tồn tại" />
               <div className="text-center">
                   <h2 className="text-2xl text-white font-bold mb-4">Bài viết không tồn tại</h2>
                   <button onClick={() => navigate('/tin-tuc')} className="text-brand-yellow hover:underline">Về Trang Tin Tức</button>
@@ -42,6 +41,32 @@ const NewsDetail: React.FC<NewsDetailProps> = ({ news, onCtaClick }) => {
 
   return (
     <div className="bg-brand-black min-h-screen relative overflow-x-hidden selection:bg-brand-yellow selection:text-black">
+      <SEOHead 
+        title={`${article.title} - Tin Tức DUHAVA`}
+        description={article.summary}
+        image={article.imageUrl}
+        type="article"
+        schema={{
+            "@context": "https://schema.org",
+            "@type": "NewsArticle",
+            "headline": article.title,
+            "image": [article.imageUrl],
+            "datePublished": article.date,
+            "author": {
+                "@type": "Organization",
+                "name": "DUHAVA Editorial Team"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "DUHAVA Agency",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://duhava.com/logo.png"
+                }
+            },
+            "description": article.summary
+        }}
+      />
       
       {/* 1. PROGRESS BAR */}
       <div className="fixed top-0 left-0 w-full h-1 z-50 bg-gray-800">
@@ -98,7 +123,11 @@ const NewsDetail: React.FC<NewsDetailProps> = ({ news, onCtaClick }) => {
               {/* Featured Image */}
               <FadeIn delay={100}>
                   <div className="aspect-video w-full rounded-2xl overflow-hidden mb-16 border border-gray-800 shadow-2xl relative group">
-                      <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover" />
+                      <img 
+                        src={article.imageUrl} 
+                        alt={`${article.title} - Tin tức DUHAVA`}
+                        className="w-full h-full object-cover" 
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60"></div>
                   </div>
               </FadeIn>
@@ -127,7 +156,7 @@ const NewsDetail: React.FC<NewsDetailProps> = ({ news, onCtaClick }) => {
                           </p>
                           <img 
                             src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1000" 
-                            alt="Data Chart" 
+                            alt="Data Chart Analysis" 
                             className="rounded-xl border border-gray-800 my-8 w-full"
                           />
                           <h3 className="text-2xl font-bold text-white mt-8 mb-4">Các bước triển khai hiệu quả</h3>
@@ -190,7 +219,11 @@ const NewsDetail: React.FC<NewsDetailProps> = ({ news, onCtaClick }) => {
                             className="group cursor-pointer flex flex-col bg-gray-900/30 border border-gray-800 rounded-xl overflow-hidden hover:border-brand-yellow/50 transition-all duration-300"
                           >
                               <div className="relative h-48 overflow-hidden shrink-0">
-                                  <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                  <img 
+                                    src={item.imageUrl} 
+                                    alt={`${item.title} - Bài viết liên quan`}
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                                  />
                                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
                               </div>
                               <div className="p-6 flex-1 flex flex-col">

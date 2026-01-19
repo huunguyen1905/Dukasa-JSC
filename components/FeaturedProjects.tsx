@@ -1,6 +1,6 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
-import { ArrowUpRight, ArrowRight, Filter, Layers, Zap, Eye } from 'lucide-react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { ArrowUpRight, ArrowRight, Filter, Layers, Zap, Eye, ChevronRight, Hand } from 'lucide-react';
 import FadeIn from './FadeIn';
 import { Project } from '../types';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -12,6 +12,7 @@ interface FeaturedProjectsProps {
 const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [visibleCount, setVisibleCount] = useState(6); 
+  const scrollRef = useRef<HTMLDivElement>(null);
   
   // URL Params handling
   const { projectId } = useParams();
@@ -46,7 +47,6 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
   const visibleProjects = filteredProjects.slice(0, visibleCount);
 
   const handleViewAll = () => {
-      // Navigate to full page instead of loading more in-place
       navigate('/du-an');
   };
 
@@ -56,7 +56,7 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
   };
 
   return (
-    <section id="du-an" className="bg-brand-black py-32 border-t border-gray-900 relative">
+    <section id="du-an" className="bg-brand-black py-24 md:py-32 border-t border-gray-900 relative">
         {/* Ambient Background */}
         <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-gray-900 via-brand-black to-brand-black pointer-events-none"></div>
         <div className="absolute right-0 top-1/4 w-[500px] h-[500px] bg-brand-yellow/5 rounded-full blur-[120px] pointer-events-none"></div>
@@ -64,14 +64,14 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
         <div className="container mx-auto px-6 relative z-10">
             
             {/* 1. SECTION HEADER */}
-            <div className="flex flex-col lg:flex-row justify-between items-end mb-20 gap-10">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 md:mb-20 gap-6 md:gap-10">
                 <FadeIn>
                     <div className="relative">
                         <div className="absolute -left-6 top-0 w-1 h-full bg-brand-yellow hidden md:block"></div>
                         <h2 className="text-brand-yellow font-bold tracking-[0.2em] uppercase text-xs mb-3 flex items-center gap-2">
                             <Layers size={14} /> Selected Works
                         </h2>
-                        <h3 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter leading-[0.9]">
+                        <h3 className="text-4xl md:text-5xl lg:text-7xl font-black text-white uppercase tracking-tighter leading-[0.9]">
                             Dấu Ấn <br/>
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-400 to-gray-600">Kiến Tạo.</span>
                         </h3>
@@ -79,7 +79,7 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
                 </FadeIn>
                 
                 <FadeIn direction="left" delay={200}>
-                    <p className="text-gray-400 max-w-md text-base leading-relaxed text-right lg:text-left">
+                    <p className="text-gray-400 max-w-md text-sm md:text-base leading-relaxed text-left md:text-left">
                         Hơn 50+ thương hiệu đã bứt phá nhờ chiến lược số của DUHAVA. Mỗi dự án là một câu chuyện thành công độc bản.
                     </p>
                 </FadeIn>
@@ -111,60 +111,70 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
                 </div>
             </div>
 
-            {/* 3. CINEMATIC GRID */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {/* Mobile Scroll Hint */}
+            <div className="flex md:hidden justify-end mb-4 text-xs text-brand-yellow font-bold items-center gap-1 animate-pulse">
+                Vuốt khám phá <ChevronRight size={12}/>
+            </div>
+
+            {/* 3. CINEMATIC GRID (Responsive: Horizontal Snap on Mobile, Grid on Desktop) */}
+            <div 
+                className="flex overflow-x-auto snap-x snap-mandatory gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 -mx-6 px-6 md:mx-0 md:px-0 pb-8 hide-scrollbar scroll-smooth"
+                ref={scrollRef}
+            >
                 {visibleProjects.map((project, index) => (
-                    <FadeIn key={project.id} delay={(index % 3) * 100} className="h-full">
-                        <div 
-                            onClick={() => handleProjectClick(project)}
-                            className="group relative h-[450px] md:h-[550px] w-full cursor-pointer overflow-hidden rounded-3xl bg-gray-900 border border-gray-800 hover:border-brand-yellow/50 transition-all duration-500"
-                        >
-                            {/* Full Height Image */}
-                            <img 
-                                src={project.imageUrl} 
-                                alt={project.title} 
-                                loading="lazy"
-                                className="h-full w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 group-hover:rotate-1 filter brightness-[0.8] group-hover:brightness-100"
-                            />
-                            
-                            {/* Cinematic Vignette */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"></div>
-
-                            {/* Floating Stats Badge (Top Left) */}
-                            <div className="absolute top-6 left-6 z-20 opacity-0 transform -translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
-                                <div className="bg-brand-yellow text-black px-4 py-2 rounded-full font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2">
-                                    <Zap size={14} fill="black" /> {project.result}
-                                </div>
-                            </div>
-
-                            {/* Action Button (Center - appears on hover) */}
-                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out">
-                                <div className="w-20 h-20 bg-white/10 backdrop-blur-md border border-white/30 rounded-full flex items-center justify-center text-white">
-                                    <Eye size={32} />
-                                </div>
-                            </div>
-
-                            {/* Text Content (Bottom) */}
-                            <div className="absolute bottom-0 left-0 w-full p-8 z-20 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                                <div className="overflow-hidden mb-2">
-                                    <span className="text-brand-yellow text-[10px] font-bold uppercase tracking-[0.2em] block mb-2">
-                                        {project.category}
-                                    </span>
-                                </div>
+                    <div key={project.id} className="min-w-[85vw] md:min-w-0 snap-center h-full flex-shrink-0">
+                        <FadeIn delay={(index % 3) * 100} className="h-full">
+                            <div 
+                                onClick={() => handleProjectClick(project)}
+                                className="group relative h-[400px] md:h-[550px] w-full cursor-pointer overflow-hidden rounded-3xl bg-gray-900 border border-gray-800 hover:border-brand-yellow/50 transition-all duration-500"
+                            >
+                                {/* Full Height Image */}
+                                <img 
+                                    src={project.imageUrl} 
+                                    alt={project.title} 
+                                    loading="lazy"
+                                    className="h-full w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 group-hover:rotate-1 filter brightness-[0.8] group-hover:brightness-100"
+                                />
                                 
-                                <h3 className="text-3xl font-black text-white uppercase leading-none mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">
-                                    {project.title}
-                                </h3>
-                                
-                                <div className="h-[1px] w-12 bg-gray-600 group-hover:w-full group-hover:bg-brand-yellow transition-all duration-700 my-4"></div>
+                                {/* Cinematic Vignette */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"></div>
 
-                                <div className="flex justify-between items-center opacity-70 group-hover:opacity-100 transition-opacity">
-                                    <span className="text-xs font-bold text-gray-300 uppercase">{project.client}</span>
-                                    <ArrowUpRight size={20} className="text-white transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300"/>
+                                {/* Floating Stats Badge (Top Left) */}
+                                <div className="absolute top-6 left-6 z-20 opacity-100 md:opacity-0 transform md:-translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                                    <div className="bg-brand-yellow text-black px-4 py-2 rounded-full font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2">
+                                        <Zap size={14} fill="black" /> {project.result}
+                                    </div>
+                                </div>
+
+                                {/* Action Button (Center - appears on hover) */}
+                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out hidden md:flex">
+                                    <div className="w-20 h-20 bg-white/10 backdrop-blur-md border border-white/30 rounded-full flex items-center justify-center text-white">
+                                        <Eye size={32} />
+                                    </div>
+                                </div>
+
+                                {/* Text Content (Bottom) */}
+                                <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 z-20 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                                    <div className="overflow-hidden mb-2">
+                                        <span className="text-brand-yellow text-[10px] font-bold uppercase tracking-[0.2em] block mb-2">
+                                            {project.category}
+                                        </span>
+                                    </div>
+                                    
+                                    <h3 className="text-2xl md:text-3xl font-black text-white uppercase leading-none mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">
+                                        {project.title}
+                                    </h3>
+                                    
+                                    <div className="h-[1px] w-12 bg-gray-600 group-hover:w-full group-hover:bg-brand-yellow transition-all duration-700 my-4 hidden md:block"></div>
+
+                                    <div className="flex justify-between items-center opacity-100 md:opacity-70 group-hover:opacity-100 transition-opacity">
+                                        <span className="text-xs font-bold text-gray-300 uppercase">{project.client}</span>
+                                        <ArrowUpRight size={20} className="text-white transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300"/>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </FadeIn>
+                        </FadeIn>
+                    </div>
                 ))}
             </div>
 
@@ -177,7 +187,7 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
             )}
             
             {/* 4. View All Button (Navigates to separate page) */}
-            <div className="mt-24 text-center">
+            <div className="mt-12 md:mt-24 text-center">
                 <button 
                     onClick={handleViewAll}
                     className="relative overflow-hidden group bg-transparent border border-gray-700 text-white font-bold py-4 px-12 rounded-full hover:border-brand-yellow transition-colors"

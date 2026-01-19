@@ -1,3 +1,4 @@
+
 {
   "name": "copy-of-duhava-digital-agency",
   "private": true,
@@ -14,7 +15,8 @@
     "@google/genai": "^1.30.0",
     "lucide-react": "^0.554.0",
     "react-router-dom": "^7.9.6",
-    "@supabase/supabase-js": "^2.39.7"
+    "@supabase/supabase-js": "^2.39.7",
+    "react-helmet-async": "^2.0.4"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, ArrowRight, Search, ChevronDown, Zap, Globe, Layout, BarChart, TrendingUp, Phone } from 'lucide-react';
+import { Menu, X, ArrowRight, Search, ChevronDown, Zap, Globe, Layout, BarChart, TrendingUp } from 'lucide-react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 interface NavbarProps {
@@ -9,6 +9,9 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  // Use useRef for scroll position to prevent re-renders on every scroll event
+  const lastScrollY = useRef(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -39,14 +42,31 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
     }
   };
 
-  // Handle Scroll Effect only (Active state now depends on URL)
+  // Handle Scroll Effect & Smart Hide Logic
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      
+      // Scrolled state for style change
+      // Only update state if value changes to avoid re-renders
+      if (currentScrollY > 20 && !isScrolled) setIsScrolled(true);
+      if (currentScrollY <= 20 && isScrolled) setIsScrolled(false);
+
+      // Smart Hide Logic
+      if (currentScrollY > lastScrollY.current && currentScrollY > 100 && !isMobileMenuOpen) {
+          // Scrolling DOWN
+          setIsVisible(false);
+      } else {
+          // Scrolling UP
+          setIsVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
     };
-    window.addEventListener('scroll', handleScroll);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isMobileMenuOpen, isScrolled]);
 
   // Body lock for modals
   useEffect(() => {
@@ -82,13 +102,17 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-50 flex justify-center pointer-events-none transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]">
+      <header 
+        className={`fixed top-0 left-0 w-full z-50 flex justify-center pointer-events-none transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]
+            ${isVisible ? 'translate-y-0' : '-translate-y-full'}
+        `}
+      >
         <nav 
           aria-label="Main Navigation"
           className={`
             pointer-events-auto flex items-center justify-between transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]
             ${isScrolled 
-              ? 'mt-4 w-[90%] md:w-auto md:min-w-[850px] bg-black/60 backdrop-blur-xl border border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.5)] rounded-full py-2 pl-4 pr-2 md:py-3 md:px-8' 
+              ? 'mt-0 md:mt-4 w-full md:w-auto md:min-w-[850px] bg-black/90 md:bg-black/60 backdrop-blur-xl border-b md:border border-white/5 md:shadow-[0_8px_32px_rgba(0,0,0,0.5)] md:rounded-full py-4 px-6 md:py-3 md:px-8' 
               : 'w-full bg-transparent py-6 px-6 md:px-12 border-transparent mt-0'
             }
           `}
@@ -137,7 +161,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                             {item.hasDropdown && <ChevronDown size={10} className="group-hover/item:rotate-180 transition-transform"/>}
                         </Link>
 
-                        {/* Mega Dropdown for Services - FIXED LINKING */}
+                        {/* Mega Dropdown for Services */}
                         {item.hasDropdown && (
                             <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-64 opacity-0 invisible group-hover/item:opacity-100 group-hover/item:visible transition-all duration-300 transform translate-y-2 group-hover/item:translate-y-0 z-[60]">
                                 <div className="bg-[#0A0A0A] border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9)] overflow-hidden p-2 backdrop-blur-3xl">
@@ -283,13 +307,13 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                         key={item.id}
                         to={`/${item.id}`} 
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className={`group flex items-center gap-6 py-2 transition-all duration-500 delay-[${index * 100}ms]
+                        className={`group flex items-center gap-6 py-2 transition-all duration-500
                             ${isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}
                         `}
                         style={{ transitionDelay: `${index * 50}ms` }}
                     >
                         <span className="text-xs font-bold text-gray-700 group-hover:text-brand-yellow transition-colors font-mono">{item.num}</span>
-                        <span className={`text-4xl font-black uppercase transition-all
+                        <span className={`text-3xl sm:text-4xl font-black uppercase transition-all
                             ${isActive(item.id) ? 'text-brand-yellow' : 'text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-brand-yellow group-hover:to-white'}
                         `}>
                             {item.label}

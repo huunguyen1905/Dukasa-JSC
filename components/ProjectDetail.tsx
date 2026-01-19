@@ -5,6 +5,7 @@ import { ArrowLeft, Check, Zap, ArrowRight, Layers, Cpu, Globe, User, Calendar, 
 import { Project, Service } from '../types';
 import FadeIn from './FadeIn';
 import MagneticButton from './MagneticButton';
+import SEOHead from './SEOHead';
 
 interface ProjectDetailProps {
   projects: Project[];
@@ -21,7 +22,6 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, onCtaClick }) =
   useEffect(() => {
     window.scrollTo(0, 0);
     if (project) {
-        document.title = `${project.title} - Case Study DUHAVA`;
         const currentIndex = projects.findIndex(p => p.id === project.id);
         const nextIndex = (currentIndex + 1) % projects.length;
         setNextProject(projects[nextIndex]);
@@ -31,6 +31,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, onCtaClick }) =
   if (!project) {
       return (
           <div className="min-h-screen bg-brand-black flex items-center justify-center">
+              <SEOHead title="Dự án không tồn tại" />
               <div className="text-center">
                   <h2 className="text-2xl text-white font-bold mb-4">Dự án không tồn tại</h2>
                   <button onClick={() => navigate('/du-an')} className="text-brand-yellow hover:underline">Về Danh Sách Dự Án</button>
@@ -41,12 +42,37 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, onCtaClick }) =
 
   return (
     <div className="bg-brand-black min-h-screen relative overflow-x-hidden selection:bg-brand-yellow selection:text-black">
+      <SEOHead 
+        title={`${project.title} - Case Study | DUHAVA`}
+        description={`Khám phá cách DUHAVA giúp ${project.client} đạt ${project.result} với dịch vụ ${project.category}. ${project.description.substring(0, 100)}...`}
+        image={project.imageUrl}
+        schema={{
+            "@context": "https://schema.org",
+            "@type": "CreativeWork",
+            "name": project.title,
+            "creator": {
+                "@type": "Organization",
+                "name": "DUHAVA Agency"
+            },
+            "image": project.imageUrl,
+            "description": project.description,
+            "about": project.category,
+            "provider": {
+                "@type": "Organization",
+                "name": project.client
+            }
+        }}
+      />
       
       {/* 1. HERO SECTION */}
       <section className="relative h-[85vh] flex items-end pb-20 overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0 z-0">
-              <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover opacity-60 filter brightness-75 scale-105 animate-pulse-slow" />
+              <img 
+                src={project.imageUrl} 
+                alt={`${project.title} - Case Study bởi DUHAVA`}
+                className="w-full h-full object-cover opacity-60 filter brightness-75 scale-105 animate-pulse-slow" 
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/40 to-transparent"></div>
               <div className="absolute inset-0 bg-gradient-to-b from-brand-black/80 via-transparent to-transparent"></div>
           </div>
@@ -187,7 +213,11 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, onCtaClick }) =
             className="relative h-[60vh] flex items-center justify-center bg-gray-900 cursor-pointer group overflow-hidden border-t border-gray-800"
           >
               <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-700">
-                  <img src={nextProject.imageUrl} className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105" alt="Next" />
+                  <img 
+                    src={nextProject.imageUrl} 
+                    className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105" 
+                    alt={`Dự án tiếp theo: ${nextProject.title}`} 
+                  />
               </div>
               <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors"></div>
               

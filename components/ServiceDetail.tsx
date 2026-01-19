@@ -5,6 +5,7 @@ import { ArrowLeft, Check, Zap, ArrowRight, Layers, Cpu, Globe } from 'lucide-re
 import { Service, Project } from '../types';
 import FadeIn from './FadeIn';
 import MagneticButton from './MagneticButton';
+import SEOHead from './SEOHead';
 
 interface ServiceDetailProps {
   services: Service[];
@@ -79,14 +80,12 @@ const ServiceDetail: React.FC<ServiceDetailProps> = ({ services, projects, onCta
   const relatedProjects = useMemo(() => {
       if (!service) return [];
       
-      // Safety check: ensure title exists
       const safeServiceTitle = service.title || '';
       if (!safeServiceTitle) return [];
 
       const serviceKey = safeServiceTitle.split(' ')[0].toLowerCase();
 
       return projects.filter(p => {
-          // Safety check: ensure category exists
           const safeCategory = p.category || '';
           if (!safeCategory) return false;
 
@@ -99,14 +98,12 @@ const ServiceDetail: React.FC<ServiceDetailProps> = ({ services, projects, onCta
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (service) {
-        document.title = `${service.title} - Dịch Vụ DUHAVA`;
-    }
-  }, [id, service]);
+  }, [id]);
 
   if (!service) {
       return (
           <div className="min-h-screen bg-brand-black flex items-center justify-center">
+              <SEOHead title="Dịch vụ không tồn tại" />
               <div className="text-center">
                   <h2 className="text-2xl text-white font-bold mb-4">Dịch vụ không tồn tại</h2>
                   <button onClick={() => navigate('/')} className="text-brand-yellow hover:underline">Về Trang Chủ</button>
@@ -117,12 +114,36 @@ const ServiceDetail: React.FC<ServiceDetailProps> = ({ services, projects, onCta
 
   return (
     <div className="bg-brand-black min-h-screen relative overflow-x-hidden selection:bg-brand-yellow selection:text-black">
+      <SEOHead 
+        title={`${service.title} - Dịch Vụ Hàng Đầu`}
+        description={service.description}
+        image={service.imageUrl}
+        schema={{
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": service.title,
+            "description": service.description,
+            "provider": {
+                "@type": "Organization",
+                "name": "DUHAVA Agency"
+            },
+            "areaServed": "VN",
+            "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Digital Marketing Services"
+            }
+        }}
+      />
       
       {/* 1. HERO SECTION */}
       <section className="relative h-[80vh] flex items-center overflow-hidden">
           {/* Background Image with Parallax feel */}
           <div className="absolute inset-0 z-0">
-              <img src={service.imageUrl} alt={service.title} className="w-full h-full object-cover opacity-40 filter brightness-50" />
+              <img 
+                src={service.imageUrl} 
+                alt={`${service.title} - Dịch vụ Digital Marketing cao cấp`}
+                className="w-full h-full object-cover opacity-40 filter brightness-50" 
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/60 to-transparent"></div>
               <div className="absolute inset-0 bg-gradient-to-r from-brand-black via-transparent to-transparent"></div>
           </div>
@@ -140,10 +161,10 @@ const ServiceDetail: React.FC<ServiceDetailProps> = ({ services, projects, onCta
                       <span className="inline-block px-4 py-1.5 rounded-full border border-brand-yellow/30 bg-brand-yellow/10 text-brand-yellow text-xs font-black uppercase tracking-[0.2em] mb-6 backdrop-blur-md">
                           {content.tagline}
                       </span>
-                      <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white uppercase leading-none tracking-tighter mb-8 drop-shadow-2xl">
+                      <h1 className="text-4xl md:text-7xl lg:text-8xl font-black text-white uppercase leading-[1.1] md:leading-none tracking-tighter mb-8 drop-shadow-2xl">
                           {service.title}
                       </h1>
-                      <p className="text-xl md:text-2xl text-gray-300 font-light max-w-2xl leading-relaxed border-l-4 border-brand-yellow pl-6">
+                      <p className="text-lg md:text-2xl text-gray-300 font-light max-w-2xl leading-relaxed border-l-4 border-brand-yellow pl-6">
                           {service.description}
                       </p>
                   </div>
@@ -156,7 +177,7 @@ const ServiceDetail: React.FC<ServiceDetailProps> = ({ services, projects, onCta
           <div className="container mx-auto px-6">
               <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
                   {content.benefits.map((benefit: string, idx: number) => (
-                      <div key={idx} className="py-8 px-4 text-center group hover:bg-white/5 transition-colors">
+                      <div key={idx} className="py-6 md:py-8 px-4 text-center group hover:bg-white/5 transition-colors">
                           <Check size={24} className="text-brand-yellow mx-auto mb-3" />
                           <span className="text-white text-xs md:text-sm font-bold uppercase tracking-wide block">{benefit}</span>
                       </div>
@@ -166,23 +187,23 @@ const ServiceDetail: React.FC<ServiceDetailProps> = ({ services, projects, onCta
       </div>
 
       {/* 3. DEEP DIVE CONTENT */}
-      <section className="py-24 relative">
+      <section className="py-16 md:py-24 relative">
           <div className="container mx-auto px-6">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
                   
                   {/* Left: Sticky Methodology */}
                   <div className="lg:col-span-5">
-                      <div className="sticky top-32">
-                          <h3 className="text-4xl font-black text-white uppercase mb-8 leading-tight">
+                      <div className="lg:sticky lg:top-32">
+                          <h3 className="text-3xl md:text-4xl font-black text-white uppercase mb-8 leading-tight">
                               Quy Trình <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-white">Thực Thi Chuẩn</span>
                           </h3>
-                          <p className="text-gray-400 mb-12 text-lg">
+                          <p className="text-gray-400 mb-12 text-base md:text-lg">
                               Chúng tôi áp dụng mô hình Agile Marketing để đảm bảo tính linh hoạt và hiệu quả tối đa cho từng giai đoạn dự án.
                           </p>
                           <MagneticButton>
                             <button 
                                 onClick={onCtaClick}
-                                className="bg-white text-black font-black uppercase py-4 px-10 rounded-full hover:bg-brand-yellow transition-all shadow-xl flex items-center gap-3"
+                                className="bg-white text-black font-black uppercase py-4 px-10 rounded-full hover:bg-brand-yellow transition-all shadow-xl flex items-center gap-3 w-full md:w-auto justify-center"
                             >
                                 <Zap size={20} fill="black" /> Tư Vấn Ngay
                             </button>
@@ -194,16 +215,16 @@ const ServiceDetail: React.FC<ServiceDetailProps> = ({ services, projects, onCta
                   <div className="lg:col-span-7 space-y-4">
                       {content.process.map((step: any, idx: number) => (
                           <FadeIn key={idx} delay={idx * 100} direction="up">
-                              <div className="group bg-gray-900/50 border border-gray-800 p-8 rounded-2xl hover:border-brand-yellow/50 transition-all duration-300 hover:translate-x-2">
-                                  <div className="flex flex-col md:flex-row gap-6 items-start">
-                                      <div className="text-5xl font-black text-gray-800 group-hover:text-brand-yellow/20 transition-colors font-mono">
+                              <div className="group bg-gray-900/50 border border-gray-800 p-6 md:p-8 rounded-2xl hover:border-brand-yellow/50 transition-all duration-300 hover:translate-x-2">
+                                  <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-start">
+                                      <div className="text-4xl md:text-5xl font-black text-gray-800 group-hover:text-brand-yellow/20 transition-colors font-mono">
                                           {step.step}
                                       </div>
                                       <div>
-                                          <h4 className="text-2xl font-bold text-white mb-3 group-hover:text-brand-yellow transition-colors">
+                                          <h4 className="text-xl md:text-2xl font-bold text-white mb-3 group-hover:text-brand-yellow transition-colors">
                                               {step.title}
                                           </h4>
-                                          <p className="text-gray-400 leading-relaxed">
+                                          <p className="text-gray-400 leading-relaxed text-sm md:text-base">
                                               {step.desc}
                                           </p>
                                       </div>
@@ -221,7 +242,7 @@ const ServiceDetail: React.FC<ServiceDetailProps> = ({ services, projects, onCta
           <section className="py-24 border-t border-gray-900 bg-gray-900/20">
               <div className="container mx-auto px-6">
                   <div className="flex justify-between items-end mb-12">
-                      <h3 className="text-3xl font-black text-white uppercase">Dự Án Đã Triển Khai</h3>
+                      <h3 className="text-2xl md:text-3xl font-black text-white uppercase">Dự Án Đã Triển Khai</h3>
                       <button onClick={() => navigate('/du-an')} className="text-brand-yellow font-bold text-sm uppercase tracking-wider flex items-center gap-2 hover:underline">
                           Xem Tất Cả <ArrowRight size={16}/>
                       </button>
@@ -235,7 +256,11 @@ const ServiceDetail: React.FC<ServiceDetailProps> = ({ services, projects, onCta
                             className="group cursor-pointer"
                           >
                               <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-800 mb-6 border border-gray-800 group-hover:border-brand-yellow/30 transition-all">
-                                  <img src={p.imageUrl} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={p.title} />
+                                  <img 
+                                    src={p.imageUrl} 
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                                    alt={`${p.title} - ${p.category}`} 
+                                  />
                                   <div className="absolute top-4 right-4 bg-brand-black/80 backdrop-blur text-white px-3 py-1 rounded text-xs font-bold border border-white/10">
                                       {p.category}
                                   </div>
@@ -258,7 +283,7 @@ const ServiceDetail: React.FC<ServiceDetailProps> = ({ services, projects, onCta
               </h2>
               <button 
                 onClick={onCtaClick}
-                className="bg-black text-white text-xl font-bold py-5 px-12 rounded-full hover:scale-105 transition-transform shadow-2xl"
+                className="bg-black text-white text-lg md:text-xl font-bold py-5 px-12 rounded-full hover:scale-105 transition-transform shadow-2xl w-full md:w-auto"
               >
                   Bắt Đầu Dự Án Ngay
               </button>

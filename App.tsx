@@ -15,7 +15,8 @@ import MobileStickyBar from './components/MobileStickyBar';
 import ExitIntent from './components/ExitIntent'; 
 import ClientLogos from './components/ClientLogos';
 import PersonaTabs from './components/PersonaTabs';
-import WorldClassBackground from './components/WorldClassBackground'; // Import new background
+import WorldClassBackground from './components/WorldClassBackground'; 
+import SEOHead from './components/SEOHead';
 import { fetchServices, fetchProjects, fetchNews, fetchTeamMembers } from './services/supabaseService';
 import { Service, Project, NewsItem, TeamMember } from './types';
 import { ArrowLeft, Sparkles } from 'lucide-react';
@@ -36,7 +37,7 @@ const NewsSection = lazy(() => import('./components/NewsSection'));
 const NewsPage = lazy(() => import('./components/NewsPage')); 
 const ProjectsPage = lazy(() => import('./components/ProjectsPage')); 
 const ServicesPage = lazy(() => import('./components/ServicesPage')); 
-const AboutPage = lazy(() => import('./components/AboutPage')); // New Dedicated About Page
+const AboutPage = lazy(() => import('./components/AboutPage')); 
 const FAQ = lazy(() => import('./components/FAQ'));
 const TechStack = lazy(() => import('./components/TechStack'));
 const Pricing = lazy(() => import('./components/Pricing'));
@@ -52,387 +53,196 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
 
   return (
     <div className="min-h-screen bg-brand-black flex items-center justify-center p-4 relative cursor-default">
-      <button 
-        onClick={() => navigate('/')}
-        className="absolute top-8 left-8 flex items-center gap-2 text-gray-400 hover:text-brand-yellow transition-colors font-bold uppercase tracking-wider z-50 group"
-      >
-        <ArrowLeft size={24} className="group-hover:-translate-x-1 transition-transform" /> 
-        <span>Về Trang Chủ</span>
+      <SEOHead title="Đăng Nhập Quản Trị" description="Hệ thống quản trị DUHAVA Agency" />
+      <button onClick={() => navigate('/')} className="absolute top-8 left-8 text-white flex items-center gap-2 hover:text-brand-yellow transition-colors">
+        <ArrowLeft size={20} /> Quay lại
       </button>
-
-      <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800 w-full max-w-md text-center relative animate-in fade-in zoom-in duration-500 shadow-2xl z-10">
-        <div className="w-20 h-20 bg-brand-yellow/10 rounded-full flex items-center justify-center mx-auto mb-8 text-brand-yellow ring-1 ring-brand-yellow/30">
-           <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800 w-full max-w-md shadow-2xl">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-brand-yellow rounded-full flex items-center justify-center mx-auto mb-4">
+            <Sparkles className="text-black" size={32} />
+          </div>
+          <h2 className="text-2xl font-black text-white uppercase">DUHAVA ADMIN</h2>
+          <p className="text-gray-500 text-sm mt-2">Khu vực dành riêng cho quản trị viên</p>
         </div>
-        <h2 className="text-3xl font-black text-white mb-3 uppercase tracking-tight">Khu Vực Quản Trị</h2>
-        <p className="text-gray-500 text-sm mb-8">Hệ thống dành riêng cho quản trị viên DUHAVA</p>
-        <LoginForm onLogin={() => {
-            onLogin();
-            navigate('/admin/leads'); 
-        }} />
-      </div>
-    </div>
-  );
-};
-
-const LoginForm = ({ onLogin }: { onLogin: () => void }) => {
-    const [pass, setPass] = useState('');
-    const [error, setError] = useState(false);
-    const handleLogin = () => {
-        if (pass === 'Huu12345@') {
-            onLogin();
-        } else {
-            setError(true);
-            setPass('');
-        }
-    };
-    return (
-        <>
-            <input 
-            type="password" 
-            value={pass} 
-            onChange={(e) => { setPass(e.target.value); setError(false); }} 
-            onKeyDown={(e) => { if(e.key === 'Enter') handleLogin(); }}
-            placeholder="Nhập mật khẩu truy cập..."
-            className={`w-full bg-black border ${error ? 'border-red-500' : 'border-gray-700'} p-4 rounded-lg text-white mb-4 focus:border-brand-yellow outline-none transition-all focus:shadow-[0_0_20px_rgba(250,204,21,0.15)] placeholder-gray-600 text-center tracking-widest`}
-            autoFocus
-            />
-            {error && <p className="text-red-500 text-xs mb-4">Mật khẩu không chính xác</p>}
-            <button onClick={handleLogin} className="w-full bg-brand-yellow text-black font-black py-4 rounded-lg hover:bg-white transition-all shadow-lg hover:shadow-brand-yellow/20 transform hover:scale-[1.02] uppercase tracking-wide">Đăng Nhập Hệ Thống</button>
-        </>
-    )
-}
-
-interface LandingPageProps {
-    onUnlockAdmin: () => void;
-    services: Service[];
-    projects: Project[];
-    news: NewsItem[];
-    teamMembers: TeamMember[];
-}
-
-const LandingPage: React.FC<LandingPageProps> = ({ onUnlockAdmin, services, projects, news, teamMembers }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [isContactOpen, setIsContactOpen] = useState(false);
-  const [isQuizOpen, setIsQuizOpen] = useState(false); 
-
-  const handleOpenAdmin = () => {
-      onUnlockAdmin();
-      navigate('/admin-login');
-  };
-
-  useEffect(() => {
-      document.title = "DUHAVA - Thống Trị Thị Trường Số | Digital Marketing Agency";
-  }, []);
-
-  // Optimization: Only show top items on landing page
-  const featuredProjects = projects.slice(0, 3); // Show only top 3 for balanced grid
-  const latestNews = news.slice(0, 5); // Show only top 5
-
-  return (
-    <div className="bg-brand-black min-h-screen text-white font-sans selection:bg-brand-yellow selection:text-black md:cursor-none relative">
-      <CustomCursor />
-      <NoiseOverlay />
-      <WorldClassBackground />
-      
-      <Navbar onOpenContact={() => setIsContactOpen(true)} />
-      <ScrollProgress /> 
-      
-      <MobileStickyBar onCtaClick={() => setIsContactOpen(true)} />
-      <ExitIntent />
-
-      {/* Floating Strategy Finder */}
-      <div className="fixed bottom-8 left-8 z-[80] hidden md:block">
         <button 
-            onClick={() => setIsQuizOpen(true)}
-            className="group flex items-center gap-3 bg-gray-900 border border-brand-yellow/30 pl-4 pr-6 py-3 rounded-full hover:bg-brand-yellow hover:text-black hover:border-brand-yellow transition-all duration-300 shadow-2xl"
+          onClick={onLogin}
+          className="w-full bg-brand-yellow text-black font-black uppercase py-4 rounded-xl hover:bg-white transition-all shadow-[0_0_20px_rgba(250,204,21,0.3)]"
         >
-            <div className="w-8 h-8 bg-brand-yellow rounded-full flex items-center justify-center text-black group-hover:bg-black group-hover:text-brand-yellow transition-colors animate-pulse">
-                <Sparkles size={16} />
-            </div>
-            <div className="text-left">
-                <div className="text-[10px] uppercase font-bold text-gray-400 group-hover:text-black/60">Bạn cần tư vấn?</div>
-                <div className="text-sm font-black uppercase tracking-wide">Tìm Chiến Lược</div>
-            </div>
+          Xác Nhận Truy Cập
         </button>
       </div>
-      
-      <SmoothScroll>
-        <main>
-            <Hero onCtaClick={() => setIsContactOpen(true)} />
-            <ClientLogos />
-
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    <PersonaTabs onCtaClick={() => setIsContactOpen(true)} />
-                </Suspense>
-            </ErrorBoundary>
-
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    <About />
-                </Suspense>
-            </ErrorBoundary>
-
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    <Services services={services} onCtaClick={() => setIsContactOpen(true)} />
-                </Suspense>
-            </ErrorBoundary>
-            
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    {/* Pass only featured projects to landing page version */}
-                    <FeaturedProjects projects={featuredProjects} />
-                </Suspense>
-            </ErrorBoundary>
-            
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    <PressSection />
-                </Suspense>
-            </ErrorBoundary>
-
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    <TechStack />
-                </Suspense>
-            </ErrorBoundary>
-
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    <Process />
-                </Suspense>
-            </ErrorBoundary>
-            
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    <Pricing onCtaClick={() => setIsContactOpen(true)} />
-                </Suspense>
-            </ErrorBoundary>
-            
-            {/* ROI Calculator Removed */}
-
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    <Team members={teamMembers} />
-                </Suspense>
-            </ErrorBoundary>
-            
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    <GrowthSection />
-                </Suspense>
-            </ErrorBoundary>
-
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    <Testimonials />
-                </Suspense>
-            </ErrorBoundary>
-            
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    {/* Pass only latest news to landing page version */}
-                    <NewsSection news={latestNews} />
-                </Suspense>
-            </ErrorBoundary>
-
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    <FAQ />
-                </Suspense>
-            </ErrorBoundary>
-
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    <Contact />
-                </Suspense>
-            </ErrorBoundary>
-
-            <ErrorBoundary>
-                <Suspense fallback={<SectionLoader />}>
-                    <CTASection onCtaClick={() => setIsContactOpen(true)} />
-                </Suspense>
-            </ErrorBoundary>
-        </main>
-
-        <Footer onOpenAdmin={handleOpenAdmin} />
-      </SmoothScroll>
-      
-      <Suspense fallback={null}>
-        <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
-      </Suspense>
-      
-      <Suspense fallback={null}>
-        <StrategyQuiz 
-            isOpen={isQuizOpen} 
-            onClose={() => setIsQuizOpen(false)} 
-            onComplete={() => {
-                setIsQuizOpen(false);
-                setIsContactOpen(true);
-            }}
-        />
-      </Suspense>
     </div>
   );
 };
 
-const App: React.FC = () => {
+const LandingPage = ({ services, projects, news, team, onOpenContact, onOpenQuiz }) => (
+  <>
+    <SEOHead 
+      schema={{
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "DUHAVA Agency",
+        "url": "https://duhava.com",
+        "logo": "https://duhava.com/logo.png", 
+        "description": "Đối tác chiến lược giúp doanh nghiệp tăng trưởng đột phá thông qua dữ liệu và công nghệ Marketing hiện đại.",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+84-906-291-941",
+          "contactType": "customer service",
+          "areaServed": "VN",
+          "availableLanguage": ["Vietnamese", "English"]
+        },
+        "sameAs": [
+          "https://www.facebook.com/duhava",
+          "https://www.linkedin.com/company/duhava"
+        ]
+      }}
+    />
+    <Hero onCtaClick={onOpenContact} />
+    <ClientLogos />
+    <About />
+    <GrowthSection />
+    <Services services={services} onCtaClick={onOpenQuiz} />
+    <FeaturedProjects projects={projects} />
+    <PersonaTabs onCtaClick={onOpenContact} />
+    <Process />
+    <TechStack />
+    <Testimonials />
+    <PressSection />
+    <Pricing onCtaClick={onOpenContact} />
+    <NewsSection news={news} />
+    <Team members={team} />
+    <FAQ />
+    <CTASection onCtaClick={onOpenContact} />
+    <Contact />
+  </>
+);
+
+const AppContent = () => {
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  
+  // Data State
   const [services, setServices] = useState<Service[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-  
-  const [isContactOpen, setIsContactOpen] = useState(false);
+  const [team, setTeam] = useState<TeamMember[]>([]);
 
+  // Load Data
   useEffect(() => {
-    // Fetch data from Supabase on init
     const loadData = async () => {
-        try {
-            const [s, p, n, t] = await Promise.all([
-                fetchServices(),
-                fetchProjects(),
-                fetchNews(),
-                fetchTeamMembers()
-            ]);
-            setServices(s);
-            setProjects(p);
-            setNews(n);
-            setTeamMembers(t);
-        } catch (error) {
-            console.error("Failed to load initial data", error);
-        }
+        const [s, p, n, t] = await Promise.all([
+            fetchServices(),
+            fetchProjects(),
+            fetchNews(),
+            fetchTeamMembers()
+        ]);
+        setServices(s);
+        setProjects(p);
+        setNews(n);
+        setTeam(t);
     };
     loadData();
   }, []);
 
-  const handleLogin = () => {
-      setIsAuthenticated(true);
+  const handleAdminLogin = () => {
+    setIsAdmin(true);
+    // In a real app, use a secure auth token
+    localStorage.setItem('duhava_admin_session', 'true');
   };
 
   const handleLogout = () => {
-      setIsAuthenticated(false);
+    setIsAdmin(false);
+    localStorage.removeItem('duhava_admin_session');
   };
 
-  if (loading) {
-      return <Preloader onFinish={() => setLoading(false)} />;
-  }
-
-  const landingProps = {
-      onUnlockAdmin: () => {},
-      services,
-      projects,
-      news,
-      teamMembers
-  };
+  useEffect(() => {
+    const session = localStorage.getItem('duhava_admin_session');
+    if (session) setIsAdmin(true);
+  }, []);
 
   return (
     <>
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage {...landingProps} />} />
-        
-        {/* Support Section URLs - Now primarily for compatibility or if used as anchors. 
-            /lien-he still maps to Home with scroll, but we have a dedicated Contact section.
-        */}
-        <Route path="/lien-he" element={<LandingPage {...landingProps} />} />
-        
-        {/* Dedicated Pages */}
-        <Route 
-            path="/ve-chung-toi" 
-            element={
-                <Suspense fallback={<SectionLoader />}>
-                    <AboutPage />
-                </Suspense>
-            } 
-        />
+      {loading && <Preloader onFinish={() => setLoading(false)} />}
+      
+      {!loading && (
+        <div className={`transition-opacity duration-1000 ${loading ? 'opacity-0' : 'opacity-100'}`}>
+          <NoiseOverlay />
+          <CustomCursor />
+          <WorldClassBackground />
+          <ScrollProgress />
+          <MobileStickyBar onCtaClick={() => setIsContactOpen(true)} />
+          <ExitIntent />
 
-        <Route 
-            path="/giai-phap" 
-            element={
-                <Suspense fallback={<SectionLoader />}>
-                    <ServicesPage services={services} onOpenAdmin={() => {}} />
-                </Suspense>
-            } 
-        />
+          <Routes>
+            {/* Admin Routes */}
+            <Route path="/admin-login" element={isAdmin ? <Navigate to="/admin" /> : <AdminLogin onLogin={handleAdminLogin} />} />
+            <Route path="/admin/*" element={isAdmin ? <AdminDashboard onLogout={handleLogout} /> : <Navigate to="/admin-login" />} />
 
-        <Route 
-            path="/du-an" 
-            element={
-                <Suspense fallback={<SectionLoader />}>
-                    <ProjectsPage projects={projects} onOpenAdmin={() => {}} />
-                </Suspense>
-            } 
-        />
+            {/* Public Routes */}
+            <Route path="/" element={
+              <>
+                <Navbar onOpenContact={() => setIsContactOpen(true)} />
+                <LandingPage 
+                    services={services} 
+                    projects={projects} 
+                    news={news} 
+                    team={team}
+                    onOpenContact={() => setIsContactOpen(true)}
+                    onOpenQuiz={() => setIsQuizOpen(true)}
+                />
+                <Footer onOpenAdmin={() => window.location.href = '/admin-login'} />
+              </>
+            } />
 
-        <Route 
-            path="/tin-tuc" 
-            element={
-                <Suspense fallback={<SectionLoader />}>
-                    <NewsPage news={news} onOpenAdmin={() => {}} />
+            {/* Detail Pages */}
+            <Route path="/service/:id" element={
+               <Suspense fallback={<SectionLoader/>}>
+                  <ServiceDetail services={services} projects={projects} onCtaClick={() => setIsContactOpen(true)} />
+               </Suspense>
+            } />
+            <Route path="/project/:projectId" element={
+                <Suspense fallback={<SectionLoader/>}>
+                   <ProjectDetail projects={projects} onCtaClick={() => setIsContactOpen(true)} />
                 </Suspense>
-            } 
-        />
-        
-        {/* Details */}
-        <Route 
-            path="/service/:id" 
-            element={
-                <Suspense fallback={<SectionLoader />}>
-                    <ServiceDetail 
-                        services={services} 
-                        projects={projects} 
-                        onCtaClick={() => setIsContactOpen(true)} 
-                    />
+            } />
+            <Route path="/news/:newsId" element={
+                <Suspense fallback={<SectionLoader/>}>
+                   <NewsDetail news={news} onCtaClick={() => setIsContactOpen(true)} />
                 </Suspense>
-            } 
-        />
+            } />
 
-        <Route 
-            path="/project/:projectId" 
-            element={
-                <Suspense fallback={<SectionLoader />}>
-                    <ProjectDetail 
-                        projects={projects}
-                        onCtaClick={() => setIsContactOpen(true)} 
-                    />
-                </Suspense>
-            } 
-        />
+            {/* Dedicated Landing Pages */}
+            <Route path="/tin-tuc" element={<Suspense fallback={<SectionLoader/>}><NewsPage news={news} /></Suspense>} />
+            <Route path="/du-an" element={<Suspense fallback={<SectionLoader/>}><ProjectsPage projects={projects} /></Suspense>} />
+            <Route path="/giai-phap" element={<Suspense fallback={<SectionLoader/>}><ServicesPage services={services} /></Suspense>} />
+            <Route path="/ve-chung-toi" element={<Suspense fallback={<SectionLoader/>}><AboutPage /></Suspense>} />
+            
+            {/* Redirects for clean URLs or old links */}
+            <Route path="/lien-he" element={<Navigate to="/" replace state={{ scrollTo: 'lien-he' }} />} /> 
 
-        <Route 
-            path="/news/:newsId" 
-            element={
-                <Suspense fallback={<SectionLoader />}>
-                    <NewsDetail 
-                        news={news}
-                        onCtaClick={() => setIsContactOpen(true)} 
-                    />
-                </Suspense>
-            } 
-        />
-        
-        <Route path="/admin-login" element={<AdminLogin onLogin={handleLogin} />} />
-        
-        <Route 
-            path="/admin/*" 
-            element={isAuthenticated ? (
-                <Suspense fallback={<div className="min-h-screen bg-black flex items-center justify-center text-white"><SectionLoader/></div>}>
-                    <AdminDashboard onLogout={handleLogout} />
-                </Suspense>
-            ) : <Navigate to="/admin-login" />} 
-        />
-      </Routes>
-    </HashRouter>
-    
-    <Suspense fallback={null}>
-        <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
-    </Suspense>
+            {/* 404 */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+
+          <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
+          <StrategyQuiz isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} onComplete={() => { setIsQuizOpen(false); setIsContactOpen(true); }} />
+        </div>
+      )}
     </>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <HashRouter>
+      <ErrorBoundary>
+        <AppContent />
+      </ErrorBoundary>
+    </HashRouter>
   );
 };
 

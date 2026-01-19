@@ -23,8 +23,10 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
     canvas.width = width;
     canvas.height = height;
 
-    const particleCount = width < 768 ? 400 : 1000; 
-    const connectionDistance = 100;
+    // Mobile Optimization: Significantly reduce particles on small screens
+    const isMobile = width < 768;
+    const particleCount = isMobile ? 150 : 1000; 
+    const connectionDistance = isMobile ? 80 : 100;
     const mouseDistance = 200;
     
     const noise = (x: number, y: number, t: number) => {
@@ -96,19 +98,24 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
       
       particles.forEach(p => { p.update(mouse, time); p.draw(ctx); });
       ctx.strokeStyle = 'rgba(250, 204, 21, 0.15)'; ctx.lineWidth = 0.5;
-      for (let i = 0; i < particles.length; i++) {
-        const p1 = particles[i];
-        const dxMouse = mouse.x - p1.x; const dyMouse = mouse.y - p1.y;
-        if (Math.sqrt(dxMouse*dxMouse + dyMouse*dyMouse) > 300) continue;
-        for (let j = i + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          const dx = p1.x - p2.x; const dy = p1.y - p2.y;
-          const dist = dx * dx + dy * dy;
-          if (dist < connectionDistance * connectionDistance) {
-             ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+      
+      // Reduce connection calculations on mobile for performance
+      if (!isMobile) {
+          for (let i = 0; i < particles.length; i++) {
+            const p1 = particles[i];
+            const dxMouse = mouse.x - p1.x; const dyMouse = mouse.y - p1.y;
+            if (Math.sqrt(dxMouse*dxMouse + dyMouse*dyMouse) > 300) continue;
+            for (let j = i + 1; j < particles.length; j++) {
+              const p2 = particles[j];
+              const dx = p1.x - p2.x; const dy = p1.y - p2.y;
+              const dist = dx * dx + dy * dy;
+              if (dist < connectionDistance * connectionDistance) {
+                 ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+              }
+            }
           }
-        }
       }
+      
       requestAnimationFrame(animate);
     };
     animate();
