@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Service } from '../types';
 import { ArrowRight, CheckCircle2, Zap, ArrowUpRight } from 'lucide-react';
@@ -109,7 +108,7 @@ const Services: React.FC<ServicesProps> = ({ services, onCtaClick }) => {
                         return (
                             <div 
                                 key={service.id}
-                                ref={el => textRefs.current[index] = el}
+                                ref={(el) => { textRefs.current[index] = el; }}
                                 data-index={index}
                                 className={`
                                     min-h-[50vh] lg:min-h-[80vh] flex flex-col justify-center transition-all duration-500
