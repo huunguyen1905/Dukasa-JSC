@@ -109,7 +109,7 @@ const Services: React.FC<ServicesProps> = ({ services, onCtaClick }) => {
                         return (
                             <div 
                                 key={service.id}
-                                ref={el => { textRefs.current[index] = el; }}
+                                ref={el => textRefs.current[index] = el}
                                 data-index={index}
                                 className={`
                                     min-h-[50vh] lg:min-h-[80vh] flex flex-col justify-center transition-all duration-500
@@ -162,4 +162,36 @@ const Services: React.FC<ServicesProps> = ({ services, onCtaClick }) => {
                             return (
                                 <div 
                                     key={s.id}
-                                    className={`absolute inset-0 transition-all duration-700 ease-in-out ${idx === activeIndex ? 'opacity-100 scale-100 z-
+                                    className={`absolute inset-0 transition-all duration-700 ease-in-out ${idx === activeIndex ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-105 z-0'}`}
+                                >
+                                    <img 
+                                        src={cfg.img} 
+                                        alt={s.title}
+                                        className="w-full h-full object-cover"
+                                    />
+                                    {/* Overlays */}
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${cfg.gradient} mix-blend-overlay opacity-60`}></div>
+                                    <div className="absolute inset-0 bg-black/20"></div>
+                                    <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black via-transparent to-transparent opacity-80"></div>
+                                    
+                                    {/* Floating Badge inside Image */}
+                                    <div className="absolute bottom-8 left-8 z-20">
+                                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold uppercase tracking-widest">
+                                            <Zap size={14} className="text-brand-yellow" />
+                                            {cfg.subtitle}
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+
+         </div>
+       </div>
+    </section>
+  );
+};
+
+export default Services;
