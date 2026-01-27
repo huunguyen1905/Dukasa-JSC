@@ -47,6 +47,13 @@ const StrategyQuiz = lazy(() => import('./components/StrategyQuiz'));
 const PressSection = lazy(() => import('./components/PressSection'));
 const GrowthSection = lazy(() => import('./components/GrowthSection')); 
 
+// --- NEW COMPONENTS (A.I.D.A Structure) ---
+const CapabilitiesDeck = lazy(() => import('./components/CapabilitiesDeck'));
+const TrustBento = lazy(() => import('./components/TrustBento'));
+const GrowthEngine = lazy(() => import('./components/GrowthEngine'));
+const MarqueeSeparator = lazy(() => import('./components/MarqueeSeparator'));
+const RealResultsGallery = lazy(() => import('./components/RealResultsGallery'));
+
 // Admin Login Component
 const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
   const navigate = useNavigate();
@@ -99,23 +106,33 @@ const LandingPage = ({ services, projects, news, team, onOpenContact, onOpenQuiz
         ]
       }}
     />
+    
+    {/* 1. ATTENTION */}
     <Hero onCtaClick={onOpenContact} />
     <ClientLogos />
-    <About />
-    <GrowthSection />
-    <Services services={services} onCtaClick={onOpenQuiz} />
+
+    {/* 2. INTEREST */}
     <FeaturedProjects projects={projects} />
-    <PersonaTabs onCtaClick={onOpenContact} />
-    <Process />
-    <TechStack />
-    <Testimonials />
-    <PressSection />
-    <Pricing onCtaClick={onOpenContact} />
-    <NewsSection news={news} />
-    <Team members={team} />
+    
+    <MarqueeSeparator />
+
+    {/* 3. DESIRE (Logic & Emotion) */}
+    <GrowthEngine />
+    
+    {/* Updated Services Section (Replaces CapabilitiesDeck) */}
+    <Services services={services} onCtaClick={onOpenContact} />
+
+    {/* 4. TRUST (Social Proof) */}
+    <RealResultsGallery />
+
+    {/* 5. ACTION & ENGAGEMENT */}
+    {/* Only show 3 latest news items on Home */}
+    <NewsSection news={news.slice(0, 3)} /> 
+    
     <FAQ />
-    <CTASection onCtaClick={onOpenContact} />
-    <Contact />
+    <div id="lien-he">
+      <CTASection onCtaClick={onOpenContact} />
+    </div>
   </>
 );
 
@@ -219,7 +236,9 @@ const AppContent = () => {
             <Route path="/tin-tuc" element={<Suspense fallback={<SectionLoader/>}><NewsPage news={news} /></Suspense>} />
             <Route path="/du-an" element={<Suspense fallback={<SectionLoader/>}><ProjectsPage projects={projects} /></Suspense>} />
             <Route path="/giai-phap" element={<Suspense fallback={<SectionLoader/>}><ServicesPage services={services} /></Suspense>} />
-            <Route path="/ve-chung-toi" element={<Suspense fallback={<SectionLoader/>}><AboutPage /></Suspense>} />
+            
+            {/* Updated About Page to receive Team data */}
+            <Route path="/ve-chung-toi" element={<Suspense fallback={<SectionLoader/>}><AboutPage team={team} /></Suspense>} />
             
             {/* Redirects for clean URLs or old links */}
             <Route path="/lien-he" element={<Navigate to="/" replace state={{ scrollTo: 'lien-he' }} />} /> 

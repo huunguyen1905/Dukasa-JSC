@@ -7,8 +7,15 @@ import WorldClassBackground from './WorldClassBackground';
 import FadeIn from './FadeIn';
 import { Target, Eye, Zap, Award, Users, Globe, ArrowRight, History } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Team from './Team';
+import TechStack from './TechStack';
+import { TeamMember } from '../types';
 
-const AboutPage: React.FC = () => {
+interface AboutPageProps {
+    team?: TeamMember[];
+}
+
+const AboutPage: React.FC<AboutPageProps> = ({ team = [] }) => {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -142,6 +149,12 @@ const AboutPage: React.FC = () => {
             </div>
         </div>
       </section>
+
+      {/* 4. TEAM SECTION (Moved from Landing Page) */}
+      <Team members={team} />
+
+      {/* 5. TECH STACK (Moved from Landing Page) */}
+      <TechStack />
 
       {/* CTA */}
       <section className="py-20 bg-brand-yellow text-center relative overflow-hidden">

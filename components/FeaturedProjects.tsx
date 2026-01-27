@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { ArrowUpRight, ArrowRight, Filter, Layers, Zap, Eye, ChevronRight, Hand } from 'lucide-react';
+import { ArrowRight, Filter, Layers, Zap, Eye, ChevronRight, ChevronLeft } from 'lucide-react';
 import FadeIn from './FadeIn';
 import { Project } from '../types';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -11,8 +11,13 @@ interface FeaturedProjectsProps {
 
 const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
   const [activeCategory, setActiveCategory] = useState('All');
-  const [visibleCount, setVisibleCount] = useState(6); 
-  const scrollRef = useRef<HTMLDivElement>(null);
+  
+  // Refs for Scroll-jacking
+  const containerRef = useRef<HTMLElement>(null); // The tall parent container
+  const stickyRef = useRef<HTMLDivElement>(null); // The sticky viewport
+  const trackRef = useRef<HTMLDivElement>(null); // The moving track
+  
+  const [scrollProgress, setScrollProgress] = useState(0);
   
   // URL Params handling
   const { projectId } = useParams();
@@ -32,6 +37,50 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
     }
   }, [projectId, projects]);
 
+  // SCROLL JACKING LOGIC
+  useEffect(() => {
+    const handleScroll = () => {
+        if (!containerRef.current || !trackRef.current || !stickyRef.current) return;
+
+        // Only enable scroll-jacking on Desktop (> 1024px)
+        if (window.innerWidth < 1024) {
+            trackRef.current.style.transform = 'translateX(0px)';
+            return;
+        }
+
+        const containerTop = containerRef.current.offsetTop;
+        const containerHeight = containerRef.current.offsetHeight;
+        const viewportHeight = window.innerHeight;
+        const scrollY = window.scrollY;
+
+        // Calculate how much we need to scroll horizontally
+        // Total horizontal width - 1 viewport width (so we stop at the right edge)
+        // Add some padding-right (e.g. 200px) so the last item isn't flush against the edge
+        const maxTranslate = trackRef.current.scrollWidth - window.innerWidth + 200; 
+        
+        // The distance user scrolls vertically to move the whole horizontal track
+        const scrollDist = containerHeight - viewportHeight;
+
+        let progress = (scrollY - containerTop) / scrollDist;
+        
+        // Clamp progress between 0 and 1
+        progress = Math.max(0, Math.min(progress, 1));
+        
+        setScrollProgress(progress * 100);
+
+        const translateX = maxTranslate * progress;
+        trackRef.current.style.transform = `translateX(-${translateX}px)`;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleScroll);
+
+    return () => {
+        window.removeEventListener('scroll', handleScroll);
+        window.removeEventListener('resize', handleScroll);
+    };
+  }, [activeCategory, projects]); // Re-calc if category changes
+
   const handleProjectClick = (project: Project) => {
       navigate(`/project/${project.id}`);
   };
@@ -43,160 +92,198 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
         : projects.filter(p => p.category === activeCategory);
   }, [activeCategory, projects]);
 
-  // Use visibleCount only for this preview section
-  const visibleProjects = filteredProjects.slice(0, visibleCount);
-
   const handleViewAll = () => {
       navigate('/du-an');
   };
 
   const handleCategoryChange = (cat: string) => {
       setActiveCategory(cat);
-      setVisibleCount(6); 
+      // When filtering, reset transform effectively by scrolling up slightly if needed, 
+      // but simpler to just let the user scroll.
   };
 
   return (
-    <section id="du-an" className="bg-brand-black py-24 md:py-32 border-t border-gray-900 relative">
-        {/* Ambient Background */}
-        <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-gray-900 via-brand-black to-brand-black pointer-events-none"></div>
-        <div className="absolute right-0 top-1/4 w-[500px] h-[500px] bg-brand-yellow/5 rounded-full blur-[120px] pointer-events-none"></div>
+    // Set height to 400vh on Desktop to create "scroll room". Normal height on mobile.
+    <section 
+        id="du-an" 
+        ref={containerRef}
+        className="bg-brand-black relative h-auto lg:h-[400vh] border-t border-gray-900"
+    >
+        {/* Sticky Viewport: This stays fixed while parent scrolls */}
+        <div 
+            ref={stickyRef}
+            className="lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden flex flex-col justify-center py-24 md:py-0"
+        >
+            {/* Ambient Background (Fixed inside sticky) */}
+            <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-gray-900 via-brand-black to-brand-black pointer-events-none z-0"></div>
+            <div className="absolute right-0 top-1/4 w-[500px] h-[500px] bg-brand-yellow/5 rounded-full blur-[120px] pointer-events-none z-0"></div>
 
-        <div className="container mx-auto px-6 relative z-10">
-            
-            {/* 1. SECTION HEADER */}
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 md:mb-20 gap-6 md:gap-10">
-                <FadeIn>
-                    <div className="relative">
-                        <div className="absolute -left-6 top-0 w-1 h-full bg-brand-yellow hidden md:block"></div>
-                        <h2 className="text-brand-yellow font-bold tracking-[0.2em] uppercase text-xs mb-3 flex items-center gap-2">
-                            <Layers size={14} /> Selected Works
-                        </h2>
-                        <h3 className="text-4xl md:text-5xl lg:text-7xl font-black text-white uppercase tracking-tighter leading-[0.9]">
-                            Dấu Ấn <br/>
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-400 to-gray-600">Kiến Tạo.</span>
-                        </h3>
-                    </div>
-                </FadeIn>
+            <div className="container mx-auto px-6 relative z-10 w-full">
                 
-                <FadeIn direction="left" delay={200}>
-                    <p className="text-gray-400 max-w-md text-sm md:text-base leading-relaxed text-left md:text-left">
-                        Hơn 50+ thương hiệu đã bứt phá nhờ chiến lược số của DUHAVA. Mỗi dự án là một câu chuyện thành công độc bản.
-                    </p>
-                </FadeIn>
-            </div>
-
-            {/* 2. STICKY FILTER BAR */}
-            <div className="sticky top-20 z-40 mb-12 -mx-6 md:mx-0">
-                <div className="bg-brand-black/80 backdrop-blur-xl border-y border-white/10 py-4 px-6 md:rounded-full md:border md:inline-block md:w-auto overflow-x-auto hide-scrollbar">
-                    <div className="flex items-center gap-2 md:gap-4 w-max">
+                {/* 1. SECTION HEADER */}
+                <div className="flex flex-col lg:flex-row justify-between items-end mb-12 gap-6 md:gap-10">
+                    <FadeIn>
+                        <div className="relative">
+                            <div className="absolute -left-6 top-0 w-1 h-full bg-brand-yellow hidden md:block"></div>
+                            <h2 className="text-brand-yellow font-bold tracking-[0.2em] uppercase text-xs mb-3 flex items-center gap-2">
+                                <Layers size={14} /> Selected Works
+                            </h2>
+                            <h3 className="text-4xl md:text-5xl lg:text-7xl font-black text-white uppercase tracking-tighter leading-[0.9]">
+                                Dấu Ấn <br/>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-400 to-gray-600">Kiến Tạo.</span>
+                            </h3>
+                        </div>
+                    </FadeIn>
+                    
+                    {/* Filter Bar - Desktop Right Aligned */}
+                    <div className="hidden lg:flex items-center gap-2">
                         {categories.map((cat, idx) => (
                             <button
                                 key={cat}
                                 onClick={() => handleCategoryChange(cat)}
                                 className={`
-                                    relative px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300
+                                    relative px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 border
                                     ${activeCategory === cat 
-                                        ? 'text-black bg-brand-yellow shadow-[0_0_20px_rgba(250,204,21,0.4)]' 
-                                        : 'text-gray-400 hover:text-white hover:bg-white/10'
+                                        ? 'text-black bg-brand-yellow border-brand-yellow shadow-[0_0_20px_rgba(250,204,21,0.4)]' 
+                                        : 'text-gray-400 border-gray-800 hover:text-white hover:border-gray-600'
                                     }
                                 `}
                             >
                                 {cat}
-                                {activeCategory === cat && (
-                                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black"></span>
-                                )}
                             </button>
                         ))}
                     </div>
                 </div>
-            </div>
 
-            {/* Mobile Scroll Hint */}
-            <div className="flex md:hidden justify-end mb-4 text-xs text-brand-yellow font-bold items-center gap-1 animate-pulse">
-                Vuốt khám phá <ChevronRight size={12}/>
-            </div>
-
-            {/* 3. CINEMATIC GRID (Responsive: Horizontal Snap on Mobile, Grid on Desktop) */}
-            <div 
-                className="flex overflow-x-auto snap-x snap-mandatory gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 -mx-6 px-6 md:mx-0 md:px-0 pb-8 hide-scrollbar scroll-smooth"
-                ref={scrollRef}
-            >
-                {visibleProjects.map((project, index) => (
-                    <div key={project.id} className="min-w-[85vw] md:min-w-0 snap-center h-full flex-shrink-0">
-                        <FadeIn delay={(index % 3) * 100} className="h-full">
-                            <div 
-                                onClick={() => handleProjectClick(project)}
-                                className="group relative h-[400px] md:h-[550px] w-full cursor-pointer overflow-hidden rounded-3xl bg-gray-900 border border-gray-800 hover:border-brand-yellow/50 transition-all duration-500"
+                {/* Mobile Filter Bar (Overflow Scroll) */}
+                <div className="lg:hidden mb-12 overflow-x-auto hide-scrollbar -mx-6 px-6">
+                    <div className="flex items-center gap-2 w-max">
+                        {categories.map((cat, idx) => (
+                            <button
+                                key={cat}
+                                onClick={() => handleCategoryChange(cat)}
+                                className={`
+                                    relative px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 border
+                                    ${activeCategory === cat 
+                                        ? 'text-black bg-brand-yellow border-brand-yellow' 
+                                        : 'text-gray-400 border-gray-800 hover:text-white hover:border-gray-600'
+                                    }
+                                `}
                             >
-                                {/* Full Height Image */}
-                                <img 
-                                    src={project.imageUrl} 
-                                    alt={project.title} 
-                                    loading="lazy"
-                                    className="h-full w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 group-hover:rotate-1 filter brightness-[0.8] group-hover:brightness-100"
-                                />
-                                
-                                {/* Cinematic Vignette */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"></div>
-
-                                {/* Floating Stats Badge (Top Left) */}
-                                <div className="absolute top-6 left-6 z-20 opacity-100 md:opacity-0 transform md:-translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
-                                    <div className="bg-brand-yellow text-black px-4 py-2 rounded-full font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2">
-                                        <Zap size={14} fill="black" /> {project.result}
-                                    </div>
-                                </div>
-
-                                {/* Action Button (Center - appears on hover) */}
-                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out hidden md:flex">
-                                    <div className="w-20 h-20 bg-white/10 backdrop-blur-md border border-white/30 rounded-full flex items-center justify-center text-white">
-                                        <Eye size={32} />
-                                    </div>
-                                </div>
-
-                                {/* Text Content (Bottom) */}
-                                <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 z-20 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                                    <div className="overflow-hidden mb-2">
-                                        <span className="text-brand-yellow text-[10px] font-bold uppercase tracking-[0.2em] block mb-2">
-                                            {project.category}
-                                        </span>
-                                    </div>
-                                    
-                                    <h3 className="text-2xl md:text-3xl font-black text-white uppercase leading-none mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">
-                                        {project.title}
-                                    </h3>
-                                    
-                                    <div className="h-[1px] w-12 bg-gray-600 group-hover:w-full group-hover:bg-brand-yellow transition-all duration-700 my-4 hidden md:block"></div>
-
-                                    <div className="flex justify-between items-center opacity-100 md:opacity-70 group-hover:opacity-100 transition-opacity">
-                                        <span className="text-xs font-bold text-gray-300 uppercase">{project.client}</span>
-                                        <ArrowUpRight size={20} className="text-white transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </FadeIn>
+                                {cat}
+                            </button>
+                        ))}
                     </div>
-                ))}
-            </div>
-
-            {/* Empty State */}
-            {filteredProjects.length === 0 && (
-                <div className="text-center py-32 border border-dashed border-gray-800 rounded-3xl bg-gray-900/20">
-                    <Filter className="mx-auto text-gray-600 mb-4" size={48} />
-                    <h4 className="text-xl font-bold text-gray-400">Không tìm thấy dự án nào trong mục này.</h4>
                 </div>
-            )}
-            
-            {/* 4. View All Button (Navigates to separate page) */}
-            <div className="mt-12 md:mt-24 text-center">
-                <button 
-                    onClick={handleViewAll}
-                    className="relative overflow-hidden group bg-transparent border border-gray-700 text-white font-bold py-4 px-12 rounded-full hover:border-brand-yellow transition-colors"
-                >
-                    <div className="absolute inset-0 bg-brand-yellow transition-transform duration-500 origin-left scale-x-0 group-hover:scale-x-100"></div>
-                    <span className="relative z-10 flex items-center gap-3 uppercase tracking-widest text-xs group-hover:text-black transition-colors">
-                        Xem Tất Cả Dự Án <ArrowRight size={16} />
-                    </span>
-                </button>
+
+                {/* 2. CINEMATIC TRACK */}
+                <div className="relative w-full">
+                    {/* 
+                        Desktop: Flex row that transforms X.
+                        Mobile: Overflow-x auto standard scroll.
+                    */}
+                    <div 
+                        ref={trackRef}
+                        className="flex flex-col md:flex-row gap-8 lg:gap-16 lg:w-max lg:will-change-transform lg:transition-transform lg:duration-100 lg:ease-linear md:overflow-x-auto md:snap-x md:snap-mandatory md:pb-8 md:hide-scrollbar md:-mx-6 md:px-6 lg:mx-0 lg:px-0 lg:overflow-visible"
+                    >
+                        {filteredProjects.map((project, index) => (
+                            <div key={project.id} className="snap-center shrink-0 w-full md:w-[45vw] lg:w-[40vw] xl:w-[35vw]">
+                                <FadeIn delay={index * 100} className="h-full">
+                                    <div 
+                                        onClick={() => handleProjectClick(project)}
+                                        className="relative aspect-[4/3] lg:aspect-[16/10] rounded-none md:rounded-3xl overflow-hidden bg-gray-900 border-y md:border border-gray-800 cursor-pointer group transition-all duration-500 hover:shadow-[0_0_50px_rgba(250,204,21,0.1)]"
+                                    >
+                                        {/* Full Cover Image */}
+                                        <img 
+                                            src={project.imageUrl} 
+                                            alt={project.title} 
+                                            loading="lazy"
+                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 filter brightness-[0.8] group-hover:brightness-100"
+                                        />
+                                        
+                                        {/* Cinematic Overlay */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500"></div>
+
+                                        {/* Number Index */}
+                                        <div className="absolute top-6 left-6 z-20 text-white/20 font-black text-6xl leading-none group-hover:text-brand-yellow/20 transition-colors pointer-events-none">
+                                            0{index + 1}
+                                        </div>
+
+                                        {/* Top Right Tag (Result) */}
+                                        <div className="absolute top-6 right-6 z-20">
+                                            <span className="bg-brand-yellow text-black px-4 py-2 rounded-full text-[10px] md:text-xs font-black uppercase tracking-wider shadow-lg flex items-center gap-2 transform translate-y-[-10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                                                <Zap size={12} fill="black" /> {project.result}
+                                            </span>
+                                        </div>
+
+                                        {/* Center Action (Hover) */}
+                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10">
+                                            <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md border border-white/30 flex items-center justify-center text-white scale-0 group-hover:scale-100 transition-transform duration-500 delay-100">
+                                                <Eye size={32} />
+                                            </div>
+                                        </div>
+
+                                        {/* Bottom Content */}
+                                        <div className="absolute bottom-0 left-0 w-full p-8 md:p-10 z-20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                            <div className="overflow-hidden">
+                                                <span className="inline-block text-brand-yellow text-[10px] font-bold uppercase tracking-[0.2em] mb-3 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 delay-100">
+                                                    {project.category}
+                                                </span>
+                                            </div>
+                                            
+                                            <h3 className="text-3xl md:text-5xl font-black text-white uppercase leading-none mb-2">
+                                                {project.title}
+                                            </h3>
+                                            
+                                            <div className="h-[1px] w-0 group-hover:w-full bg-brand-yellow transition-all duration-700 ease-out mb-4 opacity-50"></div>
+
+                                            <p className="text-gray-400 text-xs md:text-sm font-bold uppercase tracking-wider group-hover:text-white transition-colors">
+                                                Client: {project.client}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </FadeIn>
+                            </div>
+                        ))}
+
+                        {/* View All Card (Appears at end of scroll) */}
+                        <div className="snap-center shrink-0 w-full md:w-[30vw] lg:w-[25vw] flex items-center justify-center">
+                             <div className="text-center group cursor-pointer" onClick={handleViewAll}>
+                                <div className="w-24 h-24 rounded-full border border-gray-700 flex items-center justify-center mx-auto mb-6 group-hover:bg-brand-yellow group-hover:border-brand-yellow group-hover:text-black transition-all duration-300">
+                                    <ArrowRight size={40} className="group-hover:-rotate-45 transition-transform duration-300"/>
+                                </div>
+                                <h4 className="text-2xl font-black text-white uppercase mb-2">Khám Phá <br/>Toàn Bộ</h4>
+                                <span className="text-gray-500 text-xs font-bold uppercase tracking-widest group-hover:text-brand-yellow transition-colors">View All Projects</span>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 3. PROGRESS BAR & NAV (Fixed at bottom of sticky container) */}
+                <div className="flex items-center gap-8 mt-12 border-t border-white/5 pt-8">
+                    {/* Progress Bar (Desktop Only) */}
+                    <div className="hidden lg:block w-full h-[2px] bg-gray-800 rounded-full overflow-hidden relative max-w-md">
+                        <div 
+                            className="absolute top-0 left-0 h-full bg-brand-yellow transition-all duration-100 ease-out"
+                            style={{ width: `${scrollProgress}%` }}
+                        ></div>
+                    </div>
+
+                    <div className="hidden lg:flex items-center gap-4 ml-auto">
+                        <span className="text-gray-500 text-xs font-bold uppercase tracking-widest">
+                            Scroll Down to Explore
+                        </span>
+                        <div className="w-px h-8 bg-gray-800"></div>
+                        <span className="text-white text-xs font-bold uppercase tracking-widest">
+                            {filteredProjects.length} Projects
+                        </span>
+                    </div>
+                    
+                    {/* Mobile Hint */}
+                    <div className="lg:hidden w-full text-center text-gray-500 text-[10px] font-bold uppercase tracking-widest animate-pulse">
+                        Vuốt sang để xem thêm
+                    </div>
+                </div>
             </div>
         </div>
     </section>

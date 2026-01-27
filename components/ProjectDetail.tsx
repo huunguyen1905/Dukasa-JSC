@@ -44,7 +44,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, onCtaClick }) =
     <div className="bg-brand-black min-h-screen relative overflow-x-hidden selection:bg-brand-yellow selection:text-black">
       <SEOHead 
         title={`${project.title} - Case Study | DUHAVA`}
-        description={`Khám phá cách DUHAVA giúp ${project.client} đạt ${project.result} với dịch vụ ${project.category}. ${project.description.substring(0, 100)}...`}
+        description={`Khám phá cách DUHAVA giúp ${project.client} đạt ${project.result} với dịch vụ ${project.category}. ${(project.description || '').substring(0, 100)}...`}
         image={project.imageUrl}
         schema={{
             "@context": "https://schema.org",
@@ -90,7 +90,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, onCtaClick }) =
               </div>
           </div>
 
-          <div className="container mx-auto px-6 relative z-10">
+          <div className="container mx-auto px-6 relative z-10 pt-32">
               <FadeIn>
                   <div className="max-w-5xl">
                       <div className="flex flex-wrap gap-4 mb-6">
@@ -101,7 +101,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, onCtaClick }) =
                               {project.category}
                           </span>
                       </div>
-                      <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white uppercase leading-[0.9] tracking-tighter mb-8 drop-shadow-2xl">
+                      <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white uppercase leading-[1.1] tracking-tighter mb-8 drop-shadow-2xl">
                           {project.title}
                       </h1>
                   </div>
