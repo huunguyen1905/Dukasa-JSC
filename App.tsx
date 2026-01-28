@@ -49,12 +49,11 @@ const Contact = lazy(() => import('./components/Contact'));
 const About = lazy(() => import('./components/About'));
 const StrategyQuiz = lazy(() => import('./components/StrategyQuiz'));
 const PressSection = lazy(() => import('./components/PressSection'));
-const GrowthSection = lazy(() => import('./components/GrowthSection')); 
 
 // --- NEW COMPONENTS (A.I.D.A Structure) ---
 const CapabilitiesDeck = lazy(() => import('./components/CapabilitiesDeck'));
 const TrustBento = lazy(() => import('./components/TrustBento'));
-const GrowthEngine = lazy(() => import('./components/GrowthEngine'));
+// Removed GrowthEngine component
 const MarqueeSeparator = lazy(() => import('./components/MarqueeSeparator'));
 const RealResultsGallery = lazy(() => import('./components/RealResultsGallery'));
 
@@ -120,8 +119,7 @@ const LandingPage = ({ services, projects, news, team, onOpenContact, onOpenQuiz
     
     <MarqueeSeparator />
 
-    {/* 3. DESIRE (Logic & Emotion) */}
-    <GrowthEngine />
+    {/* 3. DESIRE (Logic & Emotion) - Growth Engine Removed */}
     
     {/* Updated Services Section (Replaces CapabilitiesDeck) */}
     <Services services={services} onCtaClick={onOpenContact} />

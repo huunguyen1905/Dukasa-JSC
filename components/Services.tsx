@@ -55,8 +55,10 @@ const Services: React.FC<ServicesProps> = ({ services, onCtaClick }) => {
   useEffect(() => {
     const observerOptions = {
         root: null,
-        rootMargin: "-40% 0px -40% 0px", // Trigger when element is in the middle 20% of screen
-        threshold: 0
+        // Expanded rootMargin to make text stay active longer and trigger earlier
+        // -20% top and bottom means the "active zone" is the middle 60% of the screen
+        rootMargin: "-20% 0px -20% 0px", 
+        threshold: 0.1
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -119,12 +121,15 @@ const Services: React.FC<ServicesProps> = ({ services, onCtaClick }) => {
                                 ref={(el) => { textRefs.current[index] = el; }}
                                 data-index={index}
                                 className={`
-                                    min-h-[50vh] lg:min-h-[80vh] flex flex-col justify-center transition-all duration-500
-                                    ${isActive ? 'opacity-100 blur-0' : 'lg:opacity-30 lg:blur-[1px]'}
+                                    min-h-[50vh] lg:min-h-[80vh] flex flex-col justify-center transition-all duration-500 ease-out
+                                    ${isActive 
+                                        ? 'opacity-100 translate-x-0' 
+                                        : 'lg:opacity-50 lg:translate-x-4' // Increased opacity for inactive items, removed blur for clarity
+                                    }
                                 `}
                             >
-                                <span className="text-brand-yellow font-mono text-xl font-bold mb-4 block">0{index + 1}</span>
-                                <h4 className="text-3xl md:text-5xl font-black text-white uppercase mb-6 leading-tight">
+                                <span className={`font-mono text-xl font-bold mb-4 block transition-colors ${isActive ? 'text-brand-yellow' : 'text-gray-600'}`}>0{index + 1}</span>
+                                <h4 className={`text-3xl md:text-5xl font-black uppercase mb-6 leading-tight transition-colors ${isActive ? 'text-white' : 'text-gray-500'}`}>
                                     {config.title}
                                 </h4>
                                 <p className="text-gray-300 text-lg leading-relaxed mb-8 max-w-md font-light">
@@ -134,7 +139,7 @@ const Services: React.FC<ServicesProps> = ({ services, onCtaClick }) => {
                                 <div className="grid grid-cols-1 gap-3 mb-8">
                                     {config.features.map((feat, idx) => (
                                         <div key={idx} className="flex items-center gap-3 text-white/80">
-                                            <CheckCircle2 size={16} className="text-brand-yellow shrink-0" />
+                                            <CheckCircle2 size={16} className={`${isActive ? 'text-brand-yellow' : 'text-gray-600'} shrink-0`} />
                                             <span className="text-sm font-medium">{feat}</span>
                                         </div>
                                     ))}
@@ -143,7 +148,12 @@ const Services: React.FC<ServicesProps> = ({ services, onCtaClick }) => {
                                 <div className="flex items-center gap-4">
                                     <button 
                                         onClick={() => navigate(`/service/${service.id}`)}
-                                        className="group flex items-center gap-2 bg-white text-black px-6 py-3 rounded-full font-bold uppercase tracking-widest hover:bg-brand-yellow transition-all shadow-lg text-xs"
+                                        className={`group flex items-center gap-2 px-6 py-3 rounded-full font-bold uppercase tracking-widest transition-all shadow-lg text-xs
+                                            ${isActive 
+                                                ? 'bg-white text-black hover:bg-brand-yellow' 
+                                                : 'bg-transparent border border-gray-700 text-gray-500 hover:text-white hover:border-white'
+                                            }
+                                        `}
                                     >
                                         Chi Tiết <ArrowUpRight size={14} className="group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
                                     </button>
@@ -157,7 +167,8 @@ const Services: React.FC<ServicesProps> = ({ services, onCtaClick }) => {
             {/* RIGHT: STICKY IMAGE STAGE (Desktop Only) */}
             <div className="hidden lg:block lg:w-1/2 relative">
                 <div className="sticky top-0 h-screen flex items-center justify-center py-20 pl-12">
-                    <div className="relative w-full h-full max-h-[80vh] rounded-[2rem] overflow-hidden shadow-2xl border border-white/10 bg-gray-900">
+                    {/* ENFORCED ASPECT RATIO 4:3 */}
+                    <div className="relative w-full aspect-[4/3] rounded-[2rem] overflow-hidden shadow-2xl border border-white/10 bg-gray-900">
                         {services.map((s, idx) => {
                             const cfg = SERVICE_CONFIG[s.id] || { 
                                 title: s.title,
