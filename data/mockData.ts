@@ -1,3 +1,4 @@
+
 import { Service, Project, NewsItem, TeamMember } from '../types';
 
 export const MOCK_SERVICES: Service[] = [
@@ -28,6 +29,35 @@ export const MOCK_SERVICES: Service[] = [
     description: 'Thống trị Google bền vững. Đưa từ khóa thương hiệu lên Top 1, phủ sóng mọi điểm chạm khách hàng, tăng trưởng Traffic tự nhiên (Organic) và uy tín doanh nghiệp dài hạn.',
     icon: 'Search',
     imageUrl: 'https://images.unsplash.com/photo-1572021335469-31706a17aaef?auto=format&fit=crop&q=80&w=1000'
+  },
+  // --- NEW SERVICES ---
+  {
+    id: 'chatbot-ai',
+    title: 'Chatbot AI Tự Động',
+    description: 'Nhân viên số trực 24/7, tự động chốt đơn và chăm sóc khách hàng đa kênh. Giảm tải 80% khối lượng công việc cho đội ngũ telesale.',
+    icon: 'Bot',
+    imageUrl: 'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?auto=format&fit=crop&q=80&w=1000'
+  },
+  {
+    id: 'digital-transformation',
+    title: 'Chuyển Đổi Số',
+    description: 'Số hóa quy trình vận hành, CRM, HRM để doanh nghiệp chạy tự động. Loại bỏ giấy tờ, tối ưu hóa luồng công việc và quản trị dữ liệu tập trung.',
+    icon: 'Database',
+    imageUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=1000'
+  },
+  {
+    id: 'ai-training',
+    title: 'Đào Tạo AI Inhouse',
+    description: 'Huấn luyện đội ngũ nhân sự làm chủ công cụ AI (ChatGPT, Midjourney) để tăng hiệu suất làm việc gấp 10 lần. Chuyển giao quy trình ứng dụng thực chiến.',
+    icon: 'BrainCircuit',
+    imageUrl: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1000'
+  },
+  {
+    id: 'automation',
+    title: 'Tự Động Hóa (Automation)',
+    description: 'Kết nối các ứng dụng (Zapier, Make), tự động hóa luồng công việc (Workflow) để loại bỏ tác vụ thủ công lặp lại. "Set and Forget".',
+    icon: 'Workflow',
+    imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1000'
   }
 ];
 

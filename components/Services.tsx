@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Service } from '../types';
 import { ArrowRight, CheckCircle2, Zap, ArrowUpRight } from 'lucide-react';
@@ -11,6 +12,7 @@ interface ServicesProps {
 
 // Configuration for the Premium "Cinematic" look
 const SERVICE_CONFIG: Record<string, { title: string, subtitle: string, features: string[], img: string, gradient: string }> = {
+  // Existing Services
   'svc-branding': {
     title: 'Brand DNA & Strategy',
     subtitle: 'Định Vị Độc Bản',
@@ -38,6 +40,35 @@ const SERVICE_CONFIG: Record<string, { title: string, subtitle: string, features
     features: ['Technical SEO Audit', 'Keyword Monopoly', 'Sustainable Traffic', 'Content Architecture'],
     img: 'https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=2000&auto=format&fit=crop',
     gradient: 'from-indigo-500/20 to-cyan-500/20'
+  },
+  // New Services
+  'chatbot-ai': {
+    title: 'AI Conversationalist',
+    subtitle: 'Trợ Lý Ảo 24/7',
+    features: ['Auto Lead Qualification', 'Natural Language Processing', 'Multi-Platform (FB/Web/Zalo)', 'Instant Response'],
+    img: 'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?q=80&w=2000&auto=format&fit=crop',
+    gradient: 'from-blue-600/20 to-cyan-400/20'
+  },
+  'digital-transformation': {
+    title: 'Digital Core Ops',
+    subtitle: 'Số Hóa Vận Hành',
+    features: ['ERP & CRM Systems', 'Paperless Workflow', 'Data Centralization', 'Business Intelligence'],
+    img: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2000&auto=format&fit=crop',
+    gradient: 'from-cyan-500/20 to-blue-500/20'
+  },
+  'ai-training': {
+    title: 'AI Workforce',
+    subtitle: 'Nâng Cao Năng Lực',
+    features: ['Prompt Engineering', 'AI Tools Mastery', 'Workflow Optimization', 'Custom Training Programs'],
+    img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2000&auto=format&fit=crop',
+    gradient: 'from-purple-600/20 to-pink-500/20'
+  },
+  'automation': {
+    title: 'Workflow Automation',
+    subtitle: 'Tự Động Hóa',
+    features: ['Zapier/Make Integration', 'Auto Email/SMS Sequences', 'Task Automation', 'Cross-Platform Sync'],
+    img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2000&auto=format&fit=crop',
+    gradient: 'from-orange-500/20 to-yellow-500/20'
   }
 };
 
@@ -102,7 +133,13 @@ const Services: React.FC<ServicesProps> = ({ services, onCtaClick }) => {
 
                 <div className="space-y-12 lg:space-y-0">
                     {services.map((service, index) => {
-                        const config = SERVICE_CONFIG[service.id] || { title: service.title, subtitle: 'Service', features: [] };
+                        const config = SERVICE_CONFIG[service.id] || { 
+                            title: service.title, 
+                            subtitle: 'Service', 
+                            features: ['Comprehensive Solution', 'Expert Support'],
+                            img: service.imageUrl,
+                            gradient: 'from-gray-500/20 to-gray-500/20'
+                        };
                         const isActive = activeIndex === index;
 
                         return (
@@ -156,7 +193,7 @@ const Services: React.FC<ServicesProps> = ({ services, onCtaClick }) => {
                                 subtitle: 'Service', 
                                 features: [],
                                 img: s.imageUrl, 
-                                gradient: '' 
+                                gradient: 'from-gray-500/20 to-gray-500/20' 
                             };
                             return (
                                 <div 

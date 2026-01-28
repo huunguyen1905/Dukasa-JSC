@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, ArrowRight, Search, ChevronDown, Zap, Globe, Layout, BarChart, TrendingUp } from 'lucide-react';
+import { Menu, X, ArrowRight, Search, ChevronDown, Zap, Globe, Layout, BarChart, TrendingUp, Bot, Database, BrainCircuit, Workflow } from 'lucide-react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 interface NavbarProps {
@@ -90,6 +90,10 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
       { name: 'Web & App Design', icon: <Layout size={16}/>, link: '/service/svc-web' },
       { name: 'Performance Ads', icon: <Globe size={16}/>, link: '/service/svc-ads' },
       { name: 'SEO Tổng Thể', icon: <BarChart size={16}/>, link: '/service/svc-seo' },
+      { name: 'Chatbot AI Auto', icon: <Bot size={16}/>, link: '/service/chatbot-ai' },
+      { name: 'Số Hóa Doanh Nghiệp', icon: <Database size={16}/>, link: '/service/digital-transformation' },
+      { name: 'Đào Tạo AI Inhouse', icon: <BrainCircuit size={16}/>, link: '/service/ai-training' },
+      { name: 'Tự Động Hóa (Automation)', icon: <Workflow size={16}/>, link: '/service/automation' },
   ];
 
   const popularSearches = ["Báo giá Website", "Dịch vụ SEO", "Tuyển dụng", "Branding"];

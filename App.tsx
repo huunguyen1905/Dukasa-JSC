@@ -24,6 +24,10 @@ import { ArrowLeft, Sparkles } from 'lucide-react';
 // Lazy Load Heavy Components
 const Services = lazy(() => import('./components/Services'));
 const ServiceDetail = lazy(() => import('./components/ServiceDetail')); 
+const ChatbotLanding = lazy(() => import('./components/ChatbotLanding')); 
+const DigitalTransformationLanding = lazy(() => import('./components/DigitalTransformationLanding')); 
+const AITrainingLanding = lazy(() => import('./components/AITrainingLanding'));
+const AutomationLanding = lazy(() => import('./components/AutomationLanding')); // New Import
 const ProjectDetail = lazy(() => import('./components/ProjectDetail')); 
 const NewsDetail = lazy(() => import('./components/NewsDetail')); 
 const ContactModal = lazy(() => import('./components/ContactModal'));
@@ -216,6 +220,46 @@ const AppContent = () => {
             } />
 
             {/* Detail Pages */}
+            <Route path="/service/chatbot-ai" element={
+               <Suspense fallback={<SectionLoader/>}>
+                  <>
+                    <Navbar onOpenContact={() => setIsContactOpen(true)} />
+                    <ChatbotLanding onCtaClick={() => setIsContactOpen(true)} />
+                    <Footer onOpenAdmin={() => window.location.href = '/admin-login'} />
+                  </>
+               </Suspense>
+            } />
+
+            <Route path="/service/digital-transformation" element={
+               <Suspense fallback={<SectionLoader/>}>
+                  <>
+                    <Navbar onOpenContact={() => setIsContactOpen(true)} />
+                    <DigitalTransformationLanding onCtaClick={() => setIsContactOpen(true)} />
+                    <Footer onOpenAdmin={() => window.location.href = '/admin-login'} />
+                  </>
+               </Suspense>
+            } />
+
+            <Route path="/service/ai-training" element={
+               <Suspense fallback={<SectionLoader/>}>
+                  <>
+                    <Navbar onOpenContact={() => setIsContactOpen(true)} />
+                    <AITrainingLanding onCtaClick={() => setIsContactOpen(true)} />
+                    <Footer onOpenAdmin={() => window.location.href = '/admin-login'} />
+                  </>
+               </Suspense>
+            } />
+
+            <Route path="/service/automation" element={
+               <Suspense fallback={<SectionLoader/>}>
+                  <>
+                    <Navbar onOpenContact={() => setIsContactOpen(true)} />
+                    <AutomationLanding onCtaClick={() => setIsContactOpen(true)} />
+                    <Footer onOpenAdmin={() => window.location.href = '/admin-login'} />
+                  </>
+               </Suspense>
+            } />
+            
             <Route path="/service/:id" element={
                <Suspense fallback={<SectionLoader/>}>
                   <ServiceDetail services={services} projects={projects} onCtaClick={() => setIsContactOpen(true)} />

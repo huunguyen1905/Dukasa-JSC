@@ -5,7 +5,7 @@ import { MOCK_TEAM, MOCK_SERVICES, MOCK_PROJECTS, MOCK_NEWS } from '../data/mock
 
 // --- Local Storage Keys ---
 const LS_KEYS = {
-    SERVICES: 'duhava_ls_services',
+    SERVICES: 'duhava_ls_services_v3', // Bump version to force refresh
     PROJECTS: 'duhava_ls_projects',
     NEWS: 'duhava_ls_news',
     TEAM: 'duhava_ls_team',
@@ -144,9 +144,14 @@ async function fetchWithFallback<T>(
     try {
         const { data, error } = await supabase.from(tableName).select('*').order('created_at', { ascending: true });
         if (error) throw error;
-        return (data || []).map(mapper);
+        // Merge strategy: If DB is empty, use Mock data. If DB has data, prefer DB.
+        if (!data || data.length === 0) {
+             // console.warn(`[Supabase] Table ${tableName} is empty. Using Mock Data.`);
+             return mockData;
+        }
+        return data.map(mapper);
     } catch (error: any) {
-        console.warn(`[Supabase Offline] Fetching ${tableName} from LocalStorage.`);
+        console.warn(`[Supabase Offline] Fetching ${tableName} from LocalStorage/Mock.`);
         const local = localStorage.getItem(lsKey);
         if (local) {
             return JSON.parse(local);
@@ -207,7 +212,41 @@ async function deleteWithFallback(
 
 // --- Services Operations ---
 
-export const fetchServices = () => fetchWithFallback('services', LS_KEYS.SERVICES, mapService, MOCK_SERVICES);
+// SPECIAL: Customized fetchServices to ALWAYS merge MOCK_SERVICES (the new ones) 
+// with whatever is in the Database. This ensures Chatbot, AI, etc always show up.
+export const fetchServices = async (): Promise<Service[]> => {
+    let services: Service[] = [];
+    
+    // 1. Try Fetch from DB
+    try {
+        const { data, error } = await supabase.from('services').select('*').order('created_at', { ascending: true });
+        if (!error && data && data.length > 0) {
+            services = data.map(mapService);
+        }
+    } catch (e) {
+        console.warn("DB Fetch failed, checking LocalStorage");
+    }
+
+    // 2. Fallback to LocalStorage if DB failed/empty
+    if (services.length === 0) {
+        const local = localStorage.getItem(LS_KEYS.SERVICES);
+        if (local) {
+            services = JSON.parse(local);
+        }
+    }
+
+    // 3. SMART MERGE: Ensure MOCK_SERVICES (especially new ones) are present
+    // If a service ID in MOCK_SERVICES is missing from the fetched list, add it.
+    const currentIds = new Set(services.map(s => s.id));
+    const missingServices = MOCK_SERVICES.filter(m => !currentIds.has(m.id));
+    
+    const finalServices = [...services, ...missingServices];
+
+    // 4. Update LocalStorage with the complete list
+    localStorage.setItem(LS_KEYS.SERVICES, JSON.stringify(finalServices));
+
+    return finalServices;
+};
 
 export const upsertService = (service: Partial<Service>) => upsertWithFallback(
     'services', LS_KEYS.SERVICES, service, 
