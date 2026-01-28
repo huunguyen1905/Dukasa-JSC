@@ -9,17 +9,25 @@ const ScrollProgress: React.FC = () => {
   useEffect(() => {
     const updateScrollCompletion = () => {
       const currentProgress = window.scrollY;
-      const scrollHeight = document.body.scrollHeight - window.innerHeight;
+      // Use documentElement for better cross-browser compatibility and accuracy
+      // Fallback to body if documentElement is 0 (rare but possible)
+      const scrollHeight = (document.documentElement.scrollHeight || document.body.scrollHeight) - window.innerHeight;
       
-      if (scrollHeight) {
-        setCompletion(Number((currentProgress / scrollHeight).toFixed(2)) * 100);
+      let progress = 0;
+      if (scrollHeight > 0) {
+        progress = (currentProgress / scrollHeight) * 100;
+        // Clamp value between 0 and 100 to prevent rendering artifacts or Infinity
+        progress = Math.min(100, Math.max(0, progress));
       }
 
-      // Show button after scrolling down 300px
+      setCompletion(Number(progress.toFixed(2)));
       setIsVisible(currentProgress > 300);
     };
 
     window.addEventListener('scroll', updateScrollCompletion);
+    // Initial check
+    updateScrollCompletion();
+    
     return () => window.removeEventListener('scroll', updateScrollCompletion);
   }, []);
 
@@ -30,7 +38,9 @@ const ScrollProgress: React.FC = () => {
     });
   };
 
-  const strokeDashoffset = 100 - completion;
+  // Ensure strokeDashoffset is strictly a number to prevent React errors
+  const safeCompletion = isNaN(completion) ? 0 : completion;
+  const strokeDashoffset = 100 - safeCompletion;
 
   return (
     <div 

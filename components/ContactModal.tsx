@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Send, Check, Zap, ShieldCheck } from 'lucide-react';
+import { X, Send, Check, ShieldCheck } from 'lucide-react';
 import { createLead } from '../services/supabaseService';
 import { Lead } from '../types';
 
@@ -71,33 +71,36 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-6">
       <div className="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity duration-300" onClick={onClose}></div>
       
-      <div className="relative bg-gray-900 w-full max-w-4xl rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col md:flex-row animate-in zoom-in-95 duration-300 border border-gray-800">
+      {/* Added max-h and overflow-y-auto to fix mobile height issues */}
+      <div className="relative bg-gray-900 w-full max-w-4xl rounded-2xl md:rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col md:flex-row animate-in zoom-in-95 duration-300 border border-gray-800 max-h-[90vh] md:max-h-none overflow-y-auto md:overflow-visible">
         
         {/* Close Button */}
-        <button onClick={onClose} className="absolute top-4 right-4 z-50 p-2 rounded-full bg-black/20 text-gray-400 hover:text-white hover:bg-black/50 transition-colors">
+        <button onClick={onClose} className="absolute top-3 right-3 md:top-4 md:right-4 z-50 p-2 rounded-full bg-black/20 text-gray-400 hover:text-white hover:bg-black/50 transition-colors">
             <X size={20} />
         </button>
 
         {/* Left Side: Visual / Value Prop */}
-        <div className="md:w-5/12 bg-brand-yellow p-10 flex flex-col justify-between relative overflow-hidden">
+        {/* Reduced padding on mobile (p-6) vs desktop (p-10) */}
+        <div className="md:w-5/12 bg-brand-yellow p-6 md:p-10 flex flex-col justify-between relative overflow-hidden shrink-0">
              {/* Decor Patterns */}
              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-multiply"></div>
              <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-white/20 rounded-full blur-2xl"></div>
 
              <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-6">
+                <div className="flex items-center gap-2 mb-4 md:mb-6">
                     <div className="w-8 h-8 bg-black rounded flex items-center justify-center text-brand-yellow font-black">D</div>
                     <span className="font-black text-black tracking-tighter uppercase">Duhava Agency</span>
                 </div>
-                <h3 className="text-3xl md:text-4xl font-black text-black uppercase leading-none mb-4">
+                <h3 className="text-2xl md:text-4xl font-black text-black uppercase leading-none mb-2 md:mb-4">
                     Tư Vấn <br/>Chiến Lược
                 </h3>
-                <p className="text-black/80 font-medium text-sm leading-relaxed">
+                <p className="text-black/80 font-medium text-xs md:text-sm leading-relaxed">
                     Để lại thông tin để nhận cuộc gọi tư vấn trực tiếp từ chuyên gia của chúng tôi trong vòng 30 phút.
                 </p>
              </div>
 
-             <div className="relative z-10 mt-10 space-y-3">
+             {/* Hidden on mobile to save space for form input */}
+             <div className="relative z-10 mt-6 md:mt-10 space-y-3 hidden md:block">
                 <div className="flex items-center gap-3 text-black/70 text-sm font-bold">
                     <Check size={16} strokeWidth={3} /> Bảo mật thông tin 100%
                 </div>
@@ -111,7 +114,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Right Side: Simple Form */}
-        <div className="md:w-7/12 p-8 md:p-12 bg-brand-dark relative">
+        <div className="md:w-7/12 p-6 md:p-12 bg-brand-dark relative">
             {isSuccess ? (
                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 bg-brand-dark z-20 animate-in fade-in">
                     <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center text-green-500 mb-6 ring-1 ring-green-500/30">
@@ -121,21 +124,21 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                     <p className="text-gray-400 text-sm">Cảm ơn {formData.name}!<br/>Chúng tôi sẽ liên hệ lại qua số {formData.phone} sớm nhất.</p>
                 </div>
             ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col h-full justify-center space-y-6">
+                <form onSubmit={handleSubmit} className="flex flex-col h-full justify-center space-y-4 md:space-y-6">
                     <div>
-                        <h4 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                            <span className="w-1 h-6 bg-brand-yellow rounded-full"></span>
+                        <h4 className="text-lg md:text-xl font-bold text-white mb-4 md:mb-6 flex items-center gap-2">
+                            <span className="w-1 h-5 md:h-6 bg-brand-yellow rounded-full"></span>
                             Thông Tin Liên Hệ
                         </h4>
                         
-                        <div className="space-y-4">
+                        <div className="space-y-3 md:space-y-4">
                             <div className="group relative">
                                 <input 
                                     required
                                     type="text" 
                                     value={formData.name}
                                     onChange={e => setFormData({...formData, name: e.target.value})}
-                                    className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-5 py-4 text-white focus:border-brand-yellow focus:bg-gray-800 focus:outline-none transition-all placeholder-gray-600 font-medium"
+                                    className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 md:px-5 md:py-4 text-white focus:border-brand-yellow focus:bg-gray-800 focus:outline-none transition-all placeholder-gray-600 font-medium text-sm md:text-base"
                                     placeholder="Họ và tên của bạn"
                                 />
                             </div>
@@ -145,7 +148,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                                     type="tel" 
                                     value={formData.phone}
                                     onChange={e => setFormData({...formData, phone: e.target.value})}
-                                    className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-5 py-4 text-white focus:border-brand-yellow focus:bg-gray-800 focus:outline-none transition-all placeholder-gray-600 font-medium"
+                                    className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 md:px-5 md:py-4 text-white focus:border-brand-yellow focus:bg-gray-800 focus:outline-none transition-all placeholder-gray-600 font-medium text-sm md:text-base"
                                     placeholder="Số điện thoại (Zalo)"
                                 />
                             </div>
@@ -155,7 +158,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                                     type="email" 
                                     value={formData.email}
                                     onChange={e => setFormData({...formData, email: e.target.value})}
-                                    className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-5 py-4 text-white focus:border-brand-yellow focus:bg-gray-800 focus:outline-none transition-all placeholder-gray-600 font-medium"
+                                    className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 md:px-5 md:py-4 text-white focus:border-brand-yellow focus:bg-gray-800 focus:outline-none transition-all placeholder-gray-600 font-medium text-sm md:text-base"
                                     placeholder="Email doanh nghiệp (nếu có)"
                                 />
                             </div>
@@ -175,11 +178,11 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                         type="submit"
                         disabled={isSubmitting}
                         className={`
-                            w-full bg-white text-black font-black uppercase py-4 rounded-xl hover:bg-brand-yellow transition-all shadow-lg flex items-center justify-center gap-2 mt-4
+                            w-full bg-white text-black font-black uppercase py-3 md:py-4 rounded-xl hover:bg-brand-yellow transition-all shadow-lg flex items-center justify-center gap-2 mt-2 md:mt-4 text-sm md:text-base
                             ${isSubmitting ? 'opacity-70 cursor-wait' : 'hover:scale-[1.02]'}
                         `}
                     >
-                        {isSubmitting ? 'Đang Xử Lý...' : 'Gửi Thông Tin Ngay'} <Send size={18} />
+                        {isSubmitting ? 'Đang Xử Lý...' : 'Gửi Thông Tin Ngay'} <Send size={16} className="md:w-5 md:h-5" />
                     </button>
                     
                     <p className="text-center text-[10px] text-gray-600">
