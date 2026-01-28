@@ -193,19 +193,23 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
                                         onClick={() => handleProjectClick(project)}
                                         className="relative aspect-[4/3] lg:aspect-[16/10] rounded-none md:rounded-3xl overflow-hidden bg-gray-900 border-y md:border border-gray-800 cursor-pointer group transition-all duration-500 hover:shadow-[0_0_50px_rgba(250,204,21,0.1)]"
                                     >
-                                        {/* Full Cover Image */}
+                                        {/* Full Cover Image - UPGRADED: Brighter, Grayscale to Color Effect */}
                                         <img 
                                             src={project.imageUrl} 
                                             alt={project.title} 
                                             loading="lazy"
-                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 filter brightness-[0.8] group-hover:brightness-100"
+                                            className="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out 
+                                            group-hover:scale-105 
+                                            filter grayscale-[20%] contrast-[0.95] brightness-[0.95] 
+                                            group-hover:grayscale-0 group-hover:contrast-100 group-hover:brightness-110"
                                         />
                                         
-                                        {/* Cinematic Overlay - Darker gradient for better text contrast in Quiet Luxury mode */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90 group-hover:opacity-80 transition-opacity duration-500"></div>
+                                        {/* Cinematic Overlay - UPGRADED: Cleaner gradient, mostly bottom focus */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-70 transition-opacity duration-500"></div>
+                                        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-transparent opacity-60 pointer-events-none"></div>
 
                                         {/* Number Index - Subtle */}
-                                        <div className="absolute top-6 left-6 z-20 text-white/10 font-black text-6xl leading-none group-hover:text-brand-yellow/10 transition-colors pointer-events-none">
+                                        <div className="absolute top-6 left-6 z-20 text-white/20 font-black text-6xl leading-none group-hover:text-brand-yellow/20 transition-colors pointer-events-none">
                                             0{index + 1}
                                         </div>
 
@@ -218,7 +222,7 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
 
                                         {/* Center Action (Hover) */}
                                         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10">
-                                            <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md border border-white/30 flex items-center justify-center text-white scale-0 group-hover:scale-100 transition-transform duration-500 delay-100">
+                                            <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md border border-white/30 flex items-center justify-center text-white scale-0 group-hover:scale-100 transition-transform duration-500 delay-100 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
                                                 <Eye size={32} />
                                             </div>
                                         </div>
@@ -228,13 +232,13 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
                                             
                                             {/* Category Badge - Reveal on Hover */}
                                             <div className="mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-75 transform translate-y-2 group-hover:translate-y-0">
-                                                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 bg-black/30 backdrop-blur-md text-brand-yellow text-[10px] font-bold uppercase tracking-[0.2em]">
+                                                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 bg-black/30 backdrop-blur-md text-brand-yellow text-[10px] font-bold uppercase tracking-[0.2em] shadow-sm">
                                                     {project.category}
                                                 </span>
                                             </div>
                                             
                                             {/* Title - Smaller, elegant font weight */}
-                                            <h3 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-widest leading-tight mb-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                                            <h3 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-widest leading-tight mb-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out drop-shadow-md">
                                                 {project.title}
                                             </h3>
                                             
@@ -242,8 +246,8 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
                                             <div className="h-[1px] w-12 group-hover:w-24 bg-white/30 group-hover:bg-brand-yellow transition-all duration-700 ease-out mb-4"></div>
 
                                             {/* Client Info */}
-                                            <p className="text-gray-400 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-150 transform translate-y-2 group-hover:translate-y-0">
-                                                Client: <span className="text-white">{project.client}</span>
+                                            <p className="text-gray-300 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-150 transform translate-y-2 group-hover:translate-y-0">
+                                                Client: <span className="text-white drop-shadow-sm">{project.client}</span>
                                             </p>
                                         </div>
                                     </div>
