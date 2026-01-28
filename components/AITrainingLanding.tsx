@@ -329,7 +329,7 @@ const AITrainingLanding: React.FC<AITrainingLandingProps> = ({ onCtaClick }) => 
                           <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl">
                               <h4 className="text-white font-bold uppercase mb-4 flex items-center gap-2"><Monitor size={18} className="text-blue-400"/> Hình Thức Đào Tạo</h4>
                               <ul className="space-y-3 text-sm text-gray-400">
-                                  <li className="flex items-start gap-2"><span className="text-white font-bold">• Onsite:</span> Giảng viên đến trực tiếp văn phòng (Nhóm &gt;8 người).</li>
+                                  <li className="flex items-start gap-2"><span className="text-white font-bold">• Onsite:</span> Giảng viên đến trực tiếp văn phòng (Nhóm >8 người).</li>
                                   <li className="flex items-start gap-2"><span className="text-white font-bold">• Online:</span> Qua Zoom/Meet, linh hoạt thời gian.</li>
                                   <li className="flex items-start gap-2"><span className="text-white font-bold">• Hybrid:</span> Kết hợp theo yêu cầu.</li>
                               </ul>

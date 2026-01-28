@@ -5,7 +5,7 @@ import { MOCK_TEAM, MOCK_SERVICES, MOCK_PROJECTS, MOCK_NEWS } from '../data/mock
 
 // --- Local Storage Keys ---
 const LS_KEYS = {
-    SERVICES: 'duhava_ls_services_v3', // Bump version to force refresh
+    SERVICES: 'duhava_ls_services_v4', // Bump version to force refresh
     PROJECTS: 'duhava_ls_projects',
     NEWS: 'duhava_ls_news',
     TEAM: 'duhava_ls_team',

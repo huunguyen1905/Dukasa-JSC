@@ -12,35 +12,6 @@ interface ServicesProps {
 
 // Configuration for the Premium "Cinematic" look
 const SERVICE_CONFIG: Record<string, { title: string, subtitle: string, features: string[], img: string, gradient: string }> = {
-  // Existing Services
-  'svc-branding': {
-    title: 'Brand DNA & Strategy',
-    subtitle: 'Định Vị Độc Bản',
-    features: ['Brand Identity System', 'Visual Storytelling', 'Market Positioning', 'Brand Guidelines'],
-    img: 'https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2000&auto=format&fit=crop',
-    gradient: 'from-blue-500/20 to-purple-500/20'
-  },
-  'svc-web': {
-    title: 'Digital Experience',
-    subtitle: 'Kiến Tạo Trải Nghiệm',
-    features: ['High-Performance UX/UI', 'WebGL & 3D Interactions', 'Conversion Optimization', 'Mobile-First Design'],
-    img: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2000&auto=format&fit=crop',
-    gradient: 'from-emerald-500/20 to-teal-500/20'
-  },
-  'svc-ads': {
-    title: 'Growth Engine',
-    subtitle: 'Bứt Phá Doanh Số',
-    features: ['Multi-channel Funnel', 'Data-Driven Targeting', 'Real-time ROI Tracking', 'Scale-up Strategy'],
-    img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop',
-    gradient: 'from-orange-500/20 to-red-500/20'
-  },
-  'svc-seo': {
-    title: 'Search Dominance',
-    subtitle: 'Thống Trị Tìm Kiếm',
-    features: ['Technical SEO Audit', 'Keyword Monopoly', 'Sustainable Traffic', 'Content Architecture'],
-    img: 'https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=2000&auto=format&fit=crop',
-    gradient: 'from-indigo-500/20 to-cyan-500/20'
-  },
   // New Services
   'chatbot-ai': {
     title: 'AI Conversationalist',

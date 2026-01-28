@@ -24,46 +24,6 @@ const RICH_CONTENT: Record<string, any> = {
             { step: "03", title: "Thực Thi", desc: "Triển khai với đội ngũ chuyên gia hàng đầu." },
             { step: "04", title: "Tối Ưu", desc: "Đo lường và tinh chỉnh real-time để đạt KPI." }
         ]
-    },
-    'svc-seo': {
-        tagline: "Thống Trị Tìm Kiếm",
-        benefits: ["Lên Top bền vững", "Traffic tự nhiên chất lượng", "Tăng uy tín thương hiệu", "Tiết kiệm chi phí Ads"],
-        process: [
-            { step: "01", title: "Audit Website", desc: "Kiểm tra sức khỏe website tổng thể với 200+ tiêu chí Google." },
-            { step: "02", title: "Keyword Research", desc: "Nghiên cứu bộ từ khóa chuyển đổi cao (Buying Keywords)." },
-            { step: "03", title: "On-page & Off-page", desc: "Tối ưu nội dung và xây dựng hệ thống backlink chất lượng." },
-            { step: "04", title: "Reporting", desc: "Báo cáo thứ hạng từ khóa định kỳ hàng tuần." }
-        ]
-    },
-    'svc-ads': {
-        tagline: "Bùng Nổ Doanh Số",
-        benefits: ["Ra đơn ngay lập tức", "Target đúng đối tượng", "Kiểm soát ngân sách", "Báo cáo minh bạch"],
-        process: [
-            { step: "01", title: "Setup Tài Khoản", desc: "Thiết lập Business Manager và Pixel theo chuẩn." },
-            { step: "02", title: "A/B Testing", desc: "Thử nghiệm đa dạng mẫu quảng cáo để tìm ra mẫu tốt nhất." },
-            { step: "03", title: "Scale Up", desc: "Mở rộng ngân sách vào các nhóm hiệu quả để vít số." },
-            { step: "04", title: "Remarketing", desc: "Tiếp thị lại tệp khách hàng tiềm năng để chốt đơn." }
-        ]
-    },
-    'svc-branding': {
-        tagline: "Định Vị Độc Bản",
-        benefits: ["Khác biệt hóa thương hiệu", "Tăng giá trị cảm nhận", "Đồng bộ nhận diện", "Dễ dàng nhượng quyền"],
-        process: [
-            { step: "01", title: "Brand Audit", desc: "Nghiên cứu cốt lõi thương hiệu và archetype." },
-            { step: "02", title: "Concept", desc: "Sáng tạo ý tưởng chủ đạo (Big Idea) và Key Visual." },
-            { step: "03", title: "Design System", desc: "Thiết kế Logo, Brand Guideline và ấn phẩm truyền thông." },
-            { step: "04", title: "Launch", desc: "Tư vấn chiến lược tung thương hiệu ra thị trường." }
-        ]
-    },
-    'svc-web': {
-        tagline: "Kiệt Tác Kỹ Thuật Số",
-        benefits: ["Tốc độ tải trang < 1s", "Chuẩn UX/UI Quốc tế", "Tương thích mọi thiết bị", "Bảo mật SSL Cao cấp"],
-        process: [
-            { step: "01", title: "Wireframe & UX", desc: "Phác thảo luồng người dùng để tối ưu hóa tỷ lệ chuyển đổi (CRO)." },
-            { step: "02", title: "Visual Design", desc: "Thiết kế giao diện đẹp mắt, nhất quán với nhận diện thương hiệu." },
-            { step: "03", title: "Development", desc: "Lập trình Frontend & Backend với công nghệ mới nhất (React, NextJS)." },
-            { step: "04", title: "Testing & Go-live", desc: "Kiểm thử đa nền tảng và bàn giao mã nguồn gốc." }
-        ]
     }
 };
 

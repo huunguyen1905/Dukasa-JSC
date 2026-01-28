@@ -3,35 +3,6 @@ import { Service, Project, NewsItem, TeamMember } from '../types';
 
 export const MOCK_SERVICES: Service[] = [
   {
-    id: 'svc-branding',
-    title: 'Định Vị Thương Hiệu Độc Bản',
-    description: 'Không chỉ là Logo. Chúng tôi xây dựng "linh hồn" cho doanh nghiệp. Từ chiến lược Brand Key, Key Visual đến Tone of Voice, biến thương hiệu của bạn thành biểu tượng không thể thay thế.',
-    icon: 'Sparkles',
-    imageUrl: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=1000'
-  },
-  {
-    id: 'svc-web',
-    title: 'Thiết Kế Web High-End',
-    description: 'Website là bộ mặt số của doanh nghiệp. Chúng tôi thiết kế giao diện chuẩn quốc tế, tích hợp hiệu ứng 3D/WebGL mượt mà, tối ưu trải nghiệm người dùng để tối đa hóa tỷ lệ chuyển đổi.',
-    icon: 'Monitor',
-    imageUrl: 'https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&q=80&w=1000'
-  },
-  {
-    id: 'svc-ads',
-    title: 'Performance Marketing',
-    description: 'Chúng tôi không đốt tiền quảng cáo. Chúng tôi đầu tư để sinh lời. Chiến lược đa kênh (Facebook, TikTok, Google) nhắm đúng đối tượng, tối ưu chi phí (CPA) thấp nhất với ROI cao nhất.',
-    icon: 'TrendingUp',
-    imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1000'
-  },
-  {
-    id: 'svc-seo',
-    title: 'SEO Tổng Thể',
-    description: 'Thống trị Google bền vững. Đưa từ khóa thương hiệu lên Top 1, phủ sóng mọi điểm chạm khách hàng, tăng trưởng Traffic tự nhiên (Organic) và uy tín doanh nghiệp dài hạn.',
-    icon: 'Search',
-    imageUrl: 'https://images.unsplash.com/photo-1572021335469-31706a17aaef?auto=format&fit=crop&q=80&w=1000'
-  },
-  // --- NEW SERVICES ---
-  {
     id: 'chatbot-ai',
     title: 'Chatbot AI Tự Động',
     description: 'Nhân viên số trực 24/7, tự động chốt đơn và chăm sóc khách hàng đa kênh. Giảm tải 80% khối lượng công việc cho đội ngũ telesale.',

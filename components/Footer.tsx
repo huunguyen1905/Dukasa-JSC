@@ -64,11 +64,10 @@ const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
           <div className="lg:col-span-2 md:col-span-4">
              <h4 className="text-xl font-bold uppercase mb-8 text-brand-yellow">Dịch Vụ</h4>
              <ul className="space-y-4 text-gray-400">
-                <li><a href="/giai-phap" onClick={handleNav('/giai-phap')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>SEO Ranking</a></li>
-                <li><a href="/giai-phap" onClick={handleNav('/giai-phap')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Google Ads</a></li>
-                <li><a href="/giai-phap" onClick={handleNav('/giai-phap')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Social Media</a></li>
-                <li><a href="/giai-phap" onClick={handleNav('/giai-phap')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Branding</a></li>
-                <li><a href="/giai-phap" onClick={handleNav('/giai-phap')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Web Design</a></li>
+                <li><a href="/service/chatbot-ai" onClick={handleNav('/service/chatbot-ai')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Chatbot AI</a></li>
+                <li><a href="/service/digital-transformation" onClick={handleNav('/service/digital-transformation')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Chuyển Đổi Số</a></li>
+                <li><a href="/service/ai-training" onClick={handleNav('/service/ai-training')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Đào Tạo AI</a></li>
+                <li><a href="/service/automation" onClick={handleNav('/service/automation')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-0.5 bg-brand-yellow transition-all duration-300"></span>Automation</a></li>
              </ul>
           </div>
 

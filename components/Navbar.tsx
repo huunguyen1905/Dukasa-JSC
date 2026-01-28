@@ -86,10 +86,6 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
 
   // Updated Submenu
   const servicesSubMenu = [
-      { name: 'Branding Identity', icon: <Zap size={16}/>, link: '/service/svc-branding' },
-      { name: 'Web & App Design', icon: <Layout size={16}/>, link: '/service/svc-web' },
-      { name: 'Performance Ads', icon: <Globe size={16}/>, link: '/service/svc-ads' },
-      { name: 'SEO Tổng Thể', icon: <BarChart size={16}/>, link: '/service/svc-seo' },
       { name: 'Chatbot AI Auto', icon: <Bot size={16}/>, link: '/service/chatbot-ai' },
       { name: 'Số Hóa Doanh Nghiệp', icon: <Database size={16}/>, link: '/service/digital-transformation' },
       { name: 'Đào Tạo AI Inhouse', icon: <BrainCircuit size={16}/>, link: '/service/ai-training' },
