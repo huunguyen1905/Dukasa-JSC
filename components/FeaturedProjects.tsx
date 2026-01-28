@@ -201,11 +201,11 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
                                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 filter brightness-[0.8] group-hover:brightness-100"
                                         />
                                         
-                                        {/* Cinematic Overlay */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500"></div>
+                                        {/* Cinematic Overlay - Darker gradient for better text contrast in Quiet Luxury mode */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90 group-hover:opacity-80 transition-opacity duration-500"></div>
 
-                                        {/* Number Index */}
-                                        <div className="absolute top-6 left-6 z-20 text-white/20 font-black text-6xl leading-none group-hover:text-brand-yellow/20 transition-colors pointer-events-none">
+                                        {/* Number Index - Subtle */}
+                                        <div className="absolute top-6 left-6 z-20 text-white/10 font-black text-6xl leading-none group-hover:text-brand-yellow/10 transition-colors pointer-events-none">
                                             0{index + 1}
                                         </div>
 
@@ -223,22 +223,27 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
                                             </div>
                                         </div>
 
-                                        {/* Bottom Content */}
-                                        <div className="absolute bottom-0 left-0 w-full p-8 md:p-10 z-20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                            <div className="overflow-hidden">
-                                                <span className="inline-block text-brand-yellow text-[10px] font-bold uppercase tracking-[0.2em] mb-3 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 delay-100">
+                                        {/* Bottom Content - QUIET LUXURY STYLE */}
+                                        <div className="absolute bottom-0 left-0 w-full p-8 md:p-10 z-20 flex flex-col justify-end">
+                                            
+                                            {/* Category Badge - Reveal on Hover */}
+                                            <div className="mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-75 transform translate-y-2 group-hover:translate-y-0">
+                                                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 bg-black/30 backdrop-blur-md text-brand-yellow text-[10px] font-bold uppercase tracking-[0.2em]">
                                                     {project.category}
                                                 </span>
                                             </div>
                                             
-                                            <h3 className="text-3xl md:text-5xl font-black text-white uppercase leading-none mb-2">
+                                            {/* Title - Smaller, elegant font weight */}
+                                            <h3 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-widest leading-tight mb-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
                                                 {project.title}
                                             </h3>
                                             
-                                            <div className="h-[1px] w-0 group-hover:w-full bg-brand-yellow transition-all duration-700 ease-out mb-4 opacity-50"></div>
+                                            {/* Minimalist Divider */}
+                                            <div className="h-[1px] w-12 group-hover:w-24 bg-white/30 group-hover:bg-brand-yellow transition-all duration-700 ease-out mb-4"></div>
 
-                                            <p className="text-gray-400 text-xs md:text-sm font-bold uppercase tracking-wider group-hover:text-white transition-colors">
-                                                Client: {project.client}
+                                            {/* Client Info */}
+                                            <p className="text-gray-400 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-150 transform translate-y-2 group-hover:translate-y-0">
+                                                Client: <span className="text-white">{project.client}</span>
                                             </p>
                                         </div>
                                     </div>
