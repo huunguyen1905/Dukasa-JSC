@@ -13,15 +13,15 @@ interface SEOHeadProps {
 }
 
 const SEOHead: React.FC<SEOHeadProps> = ({
-  title = "DUHAVA - Định Hình Tương Lai Số | Digital Marketing Agency",
-  description = "DUHAVA Agency cung cấp giải pháp Digital Marketing tổng thể: SEO, Quảng cáo đa kênh, Branding và Thiết kế Website cao cấp. Giúp doanh nghiệp bứt phá doanh thu.",
-  keywords = "Digital Marketing Agency, Dịch vụ SEO, Quảng cáo Facebook, Google Ads, Thiết kế Website, Branding, DUHAVA",
-  image = "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=1200",
+  title = "DUHAVA - Định Hình Tương Lai Số",
+  description = "DUHAVA - Chuyên triển khai Chatbot AI, Tự động hóa quy trình, Hệ thống số hóa & Đào tạo AI cho doanh nghiệp tại TP.HCM. Giải pháp công nghệ tăng hiệu quả kinh doanh.",
+  keywords = "Chatbot AI, Tự động hóa doanh nghiệp, Automation, Đào tạo AI, Chuyển đổi số, Digital Marketing, DUHAVA, Giải pháp công nghệ TP.HCM",
+  image = "https://i.imgur.com/Gzu37oF.jpeg",
   url = typeof window !== 'undefined' ? window.location.href : 'https://duhava.com',
   type = 'website',
   schema
 }) => {
-  const siteTitle = title.includes("DUHAVA") ? title : `${title} | DUHAVA Agency`;
+  const siteTitle = title.includes("DUHAVA") ? title : `${title} | DUHAVA - Định Hình Tương Lai Số`;
 
   return (
     <Helmet>
@@ -37,6 +37,8 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       <meta property="og:title" content={siteTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={image} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
