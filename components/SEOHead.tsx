@@ -13,7 +13,7 @@ interface SEOHeadProps {
 }
 
 const SEOHead: React.FC<SEOHeadProps> = ({
-  title = "DUHAVA - Thống Trị Thị Trường Số | Digital Marketing Agency",
+  title = "DUHAVA - Định Hình Tương Lai Số | Digital Marketing Agency",
   description = "DUHAVA Agency cung cấp giải pháp Digital Marketing tổng thể: SEO, Quảng cáo đa kênh, Branding và Thiết kế Website cao cấp. Giúp doanh nghiệp bứt phá doanh thu.",
   keywords = "Digital Marketing Agency, Dịch vụ SEO, Quảng cáo Facebook, Google Ads, Thiết kế Website, Branding, DUHAVA",
   image = "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=1200",
