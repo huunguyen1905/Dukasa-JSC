@@ -59,8 +59,8 @@ const NewsPage: React.FC<NewsPageProps> = ({ news, onOpenAdmin }) => {
           </div>
       </section>
 
-      {/* FILTER & SEARCH BAR */}
-      <section className="sticky top-20 z-40 bg-brand-black/80 backdrop-blur-xl border-b border-white/5 py-4">
+      {/* FILTER & SEARCH BAR (Updated: Relative on Mobile, Sticky on Desktop) */}
+      <section className="relative md:sticky md:top-20 z-40 bg-brand-black/80 backdrop-blur-xl border-b border-white/5 py-4">
           <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
               {/* Categories */}
               <div className="flex overflow-x-auto hide-scrollbar gap-2 w-full md:w-auto pb-2 md:pb-0">

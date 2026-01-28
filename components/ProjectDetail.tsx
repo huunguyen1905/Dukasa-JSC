@@ -1,10 +1,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Check, Zap, ArrowRight, Layers, Cpu, Globe, User, Calendar, Trophy, ExternalLink } from 'lucide-react';
-import { Project, Service } from '../types';
+import { ArrowLeft, Check, Zap, ArrowRight, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { Project } from '../types';
 import FadeIn from './FadeIn';
-import MagneticButton from './MagneticButton';
 import SEOHead from './SEOHead';
 
 interface ProjectDetailProps {
@@ -16,6 +15,8 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, onCtaClick }) =
   const { projectId } = useParams();
   const navigate = useNavigate();
   const [nextProject, setNextProject] = useState<Project | null>(null);
+  const [isTechOpen, setIsTechOpen] = useState(false);
+  const [showStickyBar, setShowStickyBar] = useState(false);
   
   const project = projects.find(p => p.id === projectId);
 
@@ -27,6 +28,15 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, onCtaClick }) =
         setNextProject(projects[nextIndex]);
     }
   }, [projectId, project, projects]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+        // Show sticky bar after scrolling past 100px
+        setShowStickyBar(window.scrollY > 100);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   if (!project) {
       return (
@@ -41,67 +51,49 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, onCtaClick }) =
   }
 
   return (
-    <div className="bg-brand-black min-h-screen relative overflow-x-hidden selection:bg-brand-yellow selection:text-black">
+    <div className="bg-brand-black min-h-screen relative overflow-x-hidden selection:bg-brand-yellow selection:text-black pb-24 md:pb-0">
       <SEOHead 
         title={`${project.title} - Case Study | DUHAVA`}
-        description={`Khám phá cách DUHAVA giúp ${project.client} đạt ${project.result} với dịch vụ ${project.category}. ${(project.description || '').substring(0, 100)}...`}
+        description={`Khám phá cách DUHAVA giúp ${project.client} đạt ${project.result}.`}
         image={project.imageUrl}
-        schema={{
-            "@context": "https://schema.org",
-            "@type": "CreativeWork",
-            "name": project.title,
-            "creator": {
-                "@type": "Organization",
-                "name": "DUHAVA Agency"
-            },
-            "image": project.imageUrl,
-            "description": project.description,
-            "about": project.category,
-            "provider": {
-                "@type": "Organization",
-                "name": project.client
-            }
-        }}
       />
       
-      {/* 1. HERO SECTION */}
-      <section className="relative h-[85vh] flex items-end pb-20 overflow-hidden">
+      {/* 1. HERO SECTION - IMMERSIVE STORY (Mobile Optimized) */}
+      <section className="relative h-[90vh] md:h-[85vh] flex items-end pb-12 md:pb-20 overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0 z-0">
               <img 
                 src={project.imageUrl} 
-                alt={`${project.title} - Case Study bởi DUHAVA`}
-                className="w-full h-full object-cover opacity-60 filter brightness-75 scale-105 animate-pulse-slow" 
+                alt={`${project.title} - Case Study`}
+                className="w-full h-full object-cover opacity-80 md:opacity-60 filter brightness-75 md:brightness-75 scale-105 animate-pulse-slow" 
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/40 to-transparent"></div>
-              <div className="absolute inset-0 bg-gradient-to-b from-brand-black/80 via-transparent to-transparent"></div>
+              {/* Stronger gradient on mobile for text readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/20 to-transparent opacity-100 md:opacity-80"></div>
           </div>
 
           {/* Navigation */}
-          <div className="absolute top-24 left-0 w-full z-50 px-6 md:px-12 flex justify-between items-center">
+          <div className="absolute top-6 left-0 w-full z-50 px-4 md:px-12 flex justify-between items-center">
                <button 
                 onClick={() => navigate('/du-an')}
-                className="group flex items-center gap-3 text-white/70 hover:text-white transition-colors uppercase text-xs font-bold tracking-widest bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 hover:border-brand-yellow"
+                className="group flex items-center gap-2 text-white/80 hover:text-white transition-colors uppercase text-[10px] md:text-xs font-bold tracking-widest bg-black/40 backdrop-blur-md px-3 py-2 md:px-4 md:py-2 rounded-full border border-white/10"
               >
-                  <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform"/> Quay lại Thư Viện
+                  <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform"/> Quay lại
               </button>
-              <div className="text-brand-yellow font-mono text-xs font-bold tracking-widest hidden md:block">
-                  CASE STUDY / {project.category.toUpperCase()}
-              </div>
           </div>
 
           <div className="container mx-auto px-6 relative z-10 pt-32">
               <FadeIn>
                   <div className="max-w-5xl">
-                      <div className="flex flex-wrap gap-4 mb-6">
-                          <span className="inline-block px-4 py-1.5 rounded-full bg-brand-yellow text-brand-black text-xs font-black uppercase tracking-wider shadow-[0_0_20px_rgba(250,204,21,0.4)]">
+                      <div className="flex flex-wrap gap-3 mb-4 md:mb-6">
+                          <span className="inline-block px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-brand-yellow text-brand-black text-[10px] md:text-xs font-black uppercase tracking-wider shadow-[0_0_20px_rgba(250,204,21,0.4)]">
                               {project.client}
                           </span>
-                          <span className="inline-block px-4 py-1.5 rounded-full border border-white/20 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+                          <span className="inline-block px-3 py-1 md:px-4 md:py-1.5 rounded-full border border-white/20 text-white text-[10px] md:text-xs font-bold uppercase tracking-wider backdrop-blur-md bg-black/20">
                               {project.category}
                           </span>
                       </div>
-                      <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white uppercase leading-[1.1] tracking-tighter mb-8 drop-shadow-2xl">
+                      {/* Compact Typography for Mobile */}
+                      <h1 className="text-3xl md:text-6xl lg:text-7xl font-black text-white uppercase leading-tight md:leading-[1.1] tracking-tighter mb-4 md:mb-8 drop-shadow-2xl">
                           {project.title}
                       </h1>
                   </div>
@@ -109,90 +101,97 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, onCtaClick }) =
           </div>
       </section>
 
-      {/* 2. KEY METRICS STRIP */}
-      <div className="border-y border-white/10 bg-gray-900/50 backdrop-blur-xl relative z-20">
-          <div className="container mx-auto px-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
-                  <div className="py-8 px-6 group hover:bg-white/5 transition-colors">
-                      <span className="text-gray-500 text-xs font-bold uppercase tracking-widest block mb-2">Kết Quả (Key Result)</span>
+      {/* 2. KEY METRICS STRIP - SWIPEABLE ON MOBILE */}
+      <div className="border-y border-white/10 bg-gray-900/50 backdrop-blur-xl relative z-20 overflow-x-auto hide-scrollbar">
+          <div className="container mx-auto px-6 min-w-max md:min-w-0">
+              <div className="flex md:grid md:grid-cols-3 divide-x divide-white/10">
+                  <div className="py-6 px-6 md:py-8 w-64 md:w-auto flex-shrink-0 group hover:bg-white/5 transition-colors">
+                      <span className="text-gray-500 text-[10px] md:text-xs font-bold uppercase tracking-widest block mb-1 md:mb-2">Kết Quả (ROI)</span>
                       <span className="text-2xl md:text-3xl font-black text-brand-yellow">{project.result}</span>
                   </div>
-                  <div className="py-8 px-6 group hover:bg-white/5 transition-colors">
-                      <span className="text-gray-500 text-xs font-bold uppercase tracking-widest block mb-2">Dịch Vụ</span>
+                  <div className="py-6 px-6 md:py-8 w-64 md:w-auto flex-shrink-0 group hover:bg-white/5 transition-colors">
+                      <span className="text-gray-500 text-[10px] md:text-xs font-bold uppercase tracking-widest block mb-1 md:mb-2">Dịch Vụ</span>
                       <span className="text-white font-bold text-sm md:text-base">{project.category}</span>
                   </div>
-                  <div className="py-8 px-6 group hover:bg-white/5 transition-colors">
-                      <span className="text-gray-500 text-xs font-bold uppercase tracking-widest block mb-2">Khách Hàng</span>
+                  <div className="py-6 px-6 md:py-8 w-64 md:w-auto flex-shrink-0 group hover:bg-white/5 transition-colors">
+                      <span className="text-gray-500 text-[10px] md:text-xs font-bold uppercase tracking-widest block mb-1 md:mb-2">Khách Hàng</span>
                       <span className="text-white font-bold text-sm md:text-base">{project.client}</span>
-                  </div>
-                  <div className="py-8 px-6 group hover:bg-white/5 transition-colors flex items-center justify-center">
-                      <button onClick={onCtaClick} className="w-full h-full flex items-center justify-center gap-2 text-white hover:text-brand-yellow font-bold uppercase text-xs tracking-widest transition-colors">
-                          Xem Website <ExternalLink size={16} />
-                      </button>
                   </div>
               </div>
           </div>
       </div>
 
       {/* 3. CASE STUDY CONTENT */}
-      <section className="py-24 relative">
+      <section className="py-16 md:py-24 relative">
           <div className="container mx-auto px-6">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
                   
                   {/* Left: Project Description */}
                   <div className="lg:col-span-8">
                       <FadeIn>
-                        <h3 className="text-3xl font-black text-white uppercase mb-8 flex items-center gap-3">
-                            <span className="w-12 h-[2px] bg-brand-yellow"></span> Câu Chuyện Dự Án
+                        <h3 className="text-2xl md:text-3xl font-black text-white uppercase mb-6 flex items-center gap-3">
+                            <span className="w-8 md:w-12 h-[2px] bg-brand-yellow"></span> Câu Chuyện
                         </h3>
-                        <div className="prose prose-invert prose-lg max-w-none text-gray-300 leading-relaxed font-light">
+                        {/* Optimized Typography for Mobile Reading */}
+                        <div className="prose prose-invert prose-sm md:prose-lg max-w-none text-gray-300 leading-relaxed font-light">
                             <p className="whitespace-pre-line">{project.description}</p>
+                            
+                            <h4 className="text-white font-bold text-lg md:text-xl mt-8 mb-4">Thách Thức</h4>
                             <p>
-                                Trong bối cảnh thị trường cạnh tranh khốc liệt, {project.client} đã tìm đến DUHAVA với mong muốn tạo ra một cú hích đột phá về mặt hình ảnh và hiệu suất kinh doanh. 
-                                Chúng tôi đã tiếp cận bài toán này bằng tư duy "Data-Driven Creativity" - Sáng tạo dựa trên dữ liệu.
+                                Thị trường bão hòa, khách hàng khó tính. {project.client} cần một cú hích để vượt qua đối thủ và chiếm lĩnh tâm trí người tiêu dùng.
                             </p>
-                            <h4 className="text-white font-bold text-xl mt-8 mb-4">Thách Thức</h4>
-                            <p>
-                                Thị trường đã bão hòa với các thông điệp truyền thông cũ kỹ. Khách hàng mục tiêu ngày càng khó tính và có xu hướng lờ đi các quảng cáo truyền thống. 
-                                Yêu cầu đặt ra là phải xây dựng một trải nghiệm số (Digital Experience) hoàn toàn mới lạ để thu hút và giữ chân họ.
-                            </p>
-                            <h4 className="text-white font-bold text-xl mt-8 mb-4">Giải Pháp Của DUHAVA</h4>
-                            <ul className="list-none pl-0 space-y-4">
+                            
+                            <h4 className="text-white font-bold text-lg md:text-xl mt-8 mb-4">Giải Pháp</h4>
+                            <ul className="list-none pl-0 space-y-3 md:space-y-4">
                                 <li className="flex items-start gap-3">
-                                    <Check className="text-brand-yellow mt-1 shrink-0" size={20}/>
-                                    <span>Tái định vị thương hiệu với ngôn ngữ thiết kế hiện đại, tối giản nhưng sang trọng.</span>
+                                    <Check className="text-brand-yellow mt-1 shrink-0" size={18}/>
+                                    <span>Tái định vị thương hiệu hiện đại, sang trọng.</span>
                                 </li>
                                 <li className="flex items-start gap-3">
-                                    <Check className="text-brand-yellow mt-1 shrink-0" size={20}/>
-                                    <span>Xây dựng hệ thống Website/Landing Page tối ưu hóa UX/UI để tăng tỷ lệ chuyển đổi (CRO).</span>
+                                    <Check className="text-brand-yellow mt-1 shrink-0" size={18}/>
+                                    <span>Website/Landing Page tối ưu UX/UI tăng chuyển đổi.</span>
                                 </li>
                                 <li className="flex items-start gap-3">
-                                    <Check className="text-brand-yellow mt-1 shrink-0" size={20}/>
-                                    <span>Triển khai chiến dịch Performance Marketing đa kênh nhắm mục tiêu chính xác vào tệp khách hàng tiềm năng.</span>
+                                    <Check className="text-brand-yellow mt-1 shrink-0" size={18}/>
+                                    <span>Performance Marketing đa kênh chính xác.</span>
                                 </li>
                             </ul>
                         </div>
                       </FadeIn>
                   </div>
 
-                  {/* Right: Sticky Sidebar */}
+                  {/* Right: Sticky Sidebar (Desktop) / Accordion (Mobile) */}
                   <div className="lg:col-span-4">
-                      <div className="sticky top-32 space-y-8">
-                          <div className="bg-gray-900 border border-gray-800 p-8 rounded-2xl">
-                              <h4 className="text-white font-bold uppercase mb-6 text-sm tracking-widest border-b border-gray-800 pb-4">Công Nghệ Sử Dụng</h4>
-                              <div className="flex flex-wrap gap-2">
-                                  {['ReactJS', 'NodeJS', 'Google Ads', 'Facebook Pixel', 'GA4', 'Figma'].map(tech => (
-                                      <span key={tech} className="px-3 py-1 bg-black border border-gray-700 rounded text-xs text-gray-400 font-mono">
-                                          {tech}
-                                      </span>
-                                  ))}
+                      <div className="lg:sticky lg:top-32 space-y-6 md:space-y-8">
+                          
+                          {/* Tech Stack Accordion for Mobile */}
+                          <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+                              <button 
+                                onClick={() => setIsTechOpen(!isTechOpen)}
+                                className="w-full flex justify-between items-center p-6 md:p-8 bg-gray-900 hover:bg-gray-800/50 transition-colors"
+                              >
+                                  <h4 className="text-white font-bold uppercase text-sm tracking-widest">Công Nghệ Sử Dụng</h4>
+                                  <div className="md:hidden">
+                                      {isTechOpen ? <ChevronUp size={18} className="text-brand-yellow"/> : <ChevronDown size={18} className="text-gray-500"/>}
+                                  </div>
+                              </button>
+                              
+                              <div className={`px-6 pb-6 md:px-8 md:pb-8 transition-all duration-300 ${isTechOpen ? 'block' : 'hidden md:block'}`}>
+                                  <div className="flex flex-wrap gap-2 pt-2 md:pt-0">
+                                      {['ReactJS', 'NodeJS', 'Google Ads', 'Pixel', 'GA4', 'Figma'].map(tech => (
+                                          <span key={tech} className="px-3 py-1 bg-black border border-gray-700 rounded text-xs text-gray-400 font-mono">
+                                              {tech}
+                                          </span>
+                                      ))}
+                                  </div>
                               </div>
                           </div>
 
-                          <div className="bg-brand-yellow p-8 rounded-2xl text-center relative overflow-hidden group">
+                          {/* Desktop CTA Card (Hidden on mobile to use sticky bar) */}
+                          <div className="hidden md:block bg-brand-yellow p-8 rounded-2xl text-center relative overflow-hidden group">
                               <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                               <h4 className="text-brand-black font-black text-2xl mb-2 uppercase leading-tight">Bạn muốn kết quả tương tự?</h4>
-                              <p className="text-brand-black/70 text-sm mb-6 font-medium">Hãy để DUHAVA giúp bạn bứt phá doanh số ngay hôm nay.</p>
+                              <p className="text-brand-black/70 text-sm mb-6 font-medium">Bứt phá doanh số ngay hôm nay.</p>
                               <button 
                                 onClick={onCtaClick}
                                 className="w-full bg-black text-white font-bold py-3 rounded-full hover:scale-105 transition-transform shadow-lg"
@@ -206,34 +205,56 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, onCtaClick }) =
           </div>
       </section>
 
-      {/* 4. NEXT PROJECT NAVIGATION */}
+      {/* 4. NEXT PROJECT - COMPACT CARD FOR MOBILE */}
       {nextProject && (
-          <section 
-            onClick={() => navigate(`/project/${nextProject.id}`)}
-            className="relative h-[60vh] flex items-center justify-center bg-gray-900 cursor-pointer group overflow-hidden border-t border-gray-800"
-          >
-              <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-700">
-                  <img 
-                    src={nextProject.imageUrl} 
-                    className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105" 
-                    alt={`Dự án tiếp theo: ${nextProject.title}`} 
-                  />
-              </div>
-              <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors"></div>
-              
-              <div className="relative z-10 text-center px-6">
-                  <span className="text-brand-yellow text-xs font-bold uppercase tracking-[0.3em] mb-4 block animate-in slide-in-from-bottom-4">Dự Án Tiếp Theo</span>
-                  <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter group-hover:scale-110 transition-transform duration-500">
-                      {nextProject.title}
-                  </h2>
-                  <div className="mt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform translate-y-4 group-hover:translate-y-0">
-                      <span className="inline-flex items-center gap-2 text-white border-b border-brand-yellow pb-1 font-bold uppercase tracking-widest text-sm">
-                          Xem Ngay <ArrowRight size={16}/>
-                      </span>
-                  </div>
-              </div>
+          <section className="px-4 pb-12 md:px-0 md:pb-0">
+            <div 
+                onClick={() => navigate(`/project/${nextProject.id}`)}
+                className="relative h-48 md:h-[60vh] flex items-center justify-center bg-gray-900 cursor-pointer group overflow-hidden border border-gray-800 md:border-t rounded-2xl md:rounded-none"
+            >
+                <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-700">
+                    <img 
+                        src={nextProject.imageUrl} 
+                        className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105" 
+                        alt={`Next: ${nextProject.title}`} 
+                    />
+                </div>
+                <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors rounded-2xl md:rounded-none"></div>
+                
+                <div className="relative z-10 text-center px-6">
+                    <span className="text-brand-yellow text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] mb-2 md:mb-4 block">Dự Án Tiếp Theo</span>
+                    <h2 className="text-2xl md:text-6xl font-black text-white uppercase tracking-tighter">
+                        {nextProject.title}
+                    </h2>
+                    <div className="mt-4 md:mt-8 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500">
+                        <span className="inline-flex items-center gap-2 text-white border-b border-brand-yellow pb-1 font-bold uppercase tracking-widest text-[10px] md:text-sm">
+                            Xem Ngay <ArrowRight size={14}/>
+                        </span>
+                    </div>
+                </div>
+            </div>
           </section>
       )}
+
+      {/* 5. STICKY MOBILE ACTION BAR */}
+      <div 
+        className={`fixed bottom-0 left-0 w-full bg-black/90 backdrop-blur-xl border-t border-gray-800 p-4 z-50 md:hidden transition-transform duration-300 ${showStickyBar ? 'translate-y-0' : 'translate-y-full'}`}
+      >
+          <div className="flex gap-3">
+              <button 
+                onClick={onCtaClick}
+                className="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wide flex items-center justify-center gap-2"
+              >
+                  Xem Website <ExternalLink size={14} />
+              </button>
+              <button 
+                onClick={onCtaClick}
+                className="flex-[2] bg-brand-yellow text-black font-black py-3 rounded-xl text-xs uppercase tracking-wide shadow-[0_0_20px_rgba(250,204,21,0.3)] flex items-center justify-center gap-2"
+              >
+                  <Zap size={14} fill="black" /> Tư Vấn Dự Án Này
+              </button>
+          </div>
+      </div>
 
     </div>
   );

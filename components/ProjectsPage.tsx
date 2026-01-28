@@ -59,8 +59,8 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ projects, onOpenAdmin }) =>
           </div>
       </section>
 
-      {/* CONTROLS BAR (Sticky) */}
-      <section className="sticky top-20 z-40 bg-brand-black/90 backdrop-blur-xl border-b border-white/5 py-4 transition-all">
+      {/* CONTROLS BAR (Updated: Relative on Mobile, Sticky on Desktop) */}
+      <section className="relative md:sticky md:top-20 z-40 bg-brand-black/90 backdrop-blur-xl border-b border-white/5 py-4 transition-all">
           <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
               
               {/* Categories */}
