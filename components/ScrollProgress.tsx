@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 
@@ -33,7 +34,7 @@ const ScrollProgress: React.FC = () => {
 
   return (
     <div 
-      className={`fixed bottom-24 md:bottom-8 right-4 md:right-8 z-[90] transition-all duration-500 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}`}
+      className={`fixed bottom-24 md:bottom-28 right-4 md:right-8 z-[90] transition-all duration-500 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}`}
     >
       <button 
         onClick={scrollToTop}

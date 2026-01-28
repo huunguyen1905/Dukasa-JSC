@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Phone, Zap } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 interface MobileStickyBarProps {
     onCtaClick: () => void;
@@ -8,6 +9,11 @@ interface MobileStickyBarProps {
 
 const MobileStickyBar: React.FC<MobileStickyBarProps> = ({ onCtaClick }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const location = useLocation();
+
+  // Hide sticky bar on Service Detail pages because they have their own specific CTAs
+  // Routes are defined as /service/chatbot-ai, /service/digital-transformation, etc.
+  const isServiceDetailPage = location.pathname.startsWith('/service/');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,6 +24,9 @@ const MobileStickyBar: React.FC<MobileStickyBarProps> = ({ onCtaClick }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // If we are on a service detail page, do not render this component
+  if (isServiceDetailPage) return null;
 
   return (
     <div className={`
