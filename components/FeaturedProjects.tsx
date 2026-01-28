@@ -135,14 +135,14 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
                         </div>
                     </FadeIn>
                     
-                    {/* Filter Bar - Desktop Right Aligned */}
-                    <div className="hidden lg:flex items-center gap-2">
+                    {/* Filter Bar - Desktop Right Aligned (SCROLLABLE) */}
+                    <div className="hidden lg:flex items-center gap-2 overflow-x-auto hide-scrollbar max-w-[60%] pb-2">
                         {categories.map((cat, idx) => (
                             <button
                                 key={cat}
                                 onClick={() => handleCategoryChange(cat)}
                                 className={`
-                                    relative px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 border
+                                    shrink-0 relative px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 border whitespace-nowrap
                                     ${activeCategory === cat 
                                         ? 'text-black bg-brand-yellow border-brand-yellow shadow-[0_0_20px_rgba(250,204,21,0.4)]' 
                                         : 'text-gray-400 border-gray-800 hover:text-white hover:border-gray-600'
@@ -163,7 +163,7 @@ const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects }) => {
                                 key={cat}
                                 onClick={() => handleCategoryChange(cat)}
                                 className={`
-                                    relative px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 border
+                                    relative px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 border whitespace-nowrap
                                     ${activeCategory === cat 
                                         ? 'text-black bg-brand-yellow border-brand-yellow' 
                                         : 'text-gray-400 border-gray-800 hover:text-white hover:border-gray-600'
