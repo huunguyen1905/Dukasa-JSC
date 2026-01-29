@@ -307,7 +307,7 @@ const AITrainingLanding: React.FC<AITrainingLandingProps> = ({ onCtaClick }) => 
                           </div>
                           
                           <div className="space-y-4 mb-8 flex-1 border-t border-gray-800 pt-6">
-                              <div className="flex gap-3 text-sm text-gray-300"><CheckCircle2 size={16} className="text-white shrink-0"/> Full lộ trình (Cơ bản -> Nâng cao)</div>
+                              <div className="flex gap-3 text-sm text-gray-300"><CheckCircle2 size={16} className="text-white shrink-0"/> Full lộ trình (Cơ bản &rarr; Nâng cao)</div>
                               <div className="flex gap-3 text-sm text-gray-300"><CheckCircle2 size={16} className="text-white shrink-0"/> Custom nội dung theo ngành</div>
                               <div className="flex gap-3 text-sm text-gray-300"><CheckCircle2 size={16} className="text-white shrink-0"/> Build Custom GPTs riêng</div>
                               <div className="flex gap-3 text-sm text-gray-300"><CheckCircle2 size={16} className="text-white shrink-0"/> Tư vấn chiến lược AI Automation</div>
