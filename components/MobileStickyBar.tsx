@@ -11,9 +11,9 @@ const MobileStickyBar: React.FC<MobileStickyBarProps> = ({ onCtaClick }) => {
   const [isVisible, setIsVisible] = useState(false);
   const location = useLocation();
 
-  // Hide sticky bar on Service Detail pages because they have their own specific CTAs
-  // Routes are defined as /service/chatbot-ai, /service/digital-transformation, etc.
+  // Hide sticky bar on Service Detail & Project Detail pages because they have their own specific CTAs
   const isServiceDetailPage = location.pathname.startsWith('/service/');
+  const isProjectDetailPage = location.pathname.startsWith('/project/');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,8 +25,8 @@ const MobileStickyBar: React.FC<MobileStickyBarProps> = ({ onCtaClick }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // If we are on a service detail page, do not render this component
-  if (isServiceDetailPage) return null;
+  // If we are on a detail page with its own CTA bar, do not render this global component
+  if (isServiceDetailPage || isProjectDetailPage) return null;
 
   return (
     <div className={`
