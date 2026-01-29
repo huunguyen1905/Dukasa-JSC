@@ -20,7 +20,8 @@ const AboutPage: React.FC<AboutPageProps> = ({ team = [] }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-brand-black min-h-screen text-white font-sans selection:bg-brand-yellow selection:text-black">
+    // FIX: Added overflow-x-hidden, w-full, max-w-[100vw] to prevent horizontal scroll
+    <div className="bg-brand-black min-h-screen text-white font-sans selection:bg-brand-yellow selection:text-black overflow-x-hidden w-full max-w-[100vw] relative">
       <WorldClassBackground />
       <Navbar onOpenContact={() => setIsContactOpen(true)} />
 
@@ -32,7 +33,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ team = [] }) => {
                     <Users size={12} />
                     <span>Who We Are</span>
                 </div>
-                <h1 className="text-4xl md:text-7xl font-black text-white uppercase tracking-tighter mb-6">
+                <h1 className="text-4xl md:text-7xl font-black text-white uppercase tracking-tighter mb-6 break-words">
                     Đế Chế <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-500 to-white">Sáng Tạo Số</span>
                 </h1>
                 <p className="text-gray-400 max-w-3xl mx-auto text-lg leading-relaxed font-light">
@@ -56,9 +57,9 @@ const AboutPage: React.FC<AboutPageProps> = ({ team = [] }) => {
                             <div className="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center text-brand-yellow shrink-0 border border-gray-800">
                                 <Target size={32} />
                             </div>
-                            <div>
+                            <div className="min-w-0 flex-1"> {/* min-w-0 prevents flex child from overflowing */}
                                 <h4 className="text-xl font-bold text-white mb-2 uppercase">Sứ Mệnh (Mission)</h4>
-                                <p className="text-gray-500 leading-relaxed text-sm">
+                                <p className="text-gray-500 leading-relaxed text-sm break-words">
                                     Trao quyền cho doanh nghiệp Việt Nam bằng vũ khí công nghệ hạng nặng. Giúp doanh nghiệp không chỉ cạnh tranh sòng phẳng mà còn thiết lập luật chơi mới trên thị trường.
                                 </p>
                             </div>
@@ -67,9 +68,9 @@ const AboutPage: React.FC<AboutPageProps> = ({ team = [] }) => {
                             <div className="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center text-blue-500 shrink-0 border border-gray-800">
                                 <Eye size={32} />
                             </div>
-                            <div>
+                            <div className="min-w-0 flex-1">
                                 <h4 className="text-xl font-bold text-white mb-2 uppercase">Tầm Nhìn (Vision)</h4>
-                                <p className="text-gray-500 leading-relaxed text-sm">
+                                <p className="text-gray-500 leading-relaxed text-sm break-words">
                                     Trở thành Top 1 Growth Agency tại Đông Nam Á vào năm 2028. Nơi hội tụ của những bộ óc sáng tạo nhất, định hình lại chuẩn mực ngành Digital Marketing.
                                 </p>
                             </div>
@@ -78,7 +79,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ team = [] }) => {
                 </FadeIn>
                 
                 <FadeIn direction="left" delay={200}>
-                    <div className="relative rounded-3xl overflow-hidden border border-gray-800 aspect-square">
+                    <div className="relative rounded-3xl overflow-hidden border border-gray-800 aspect-square w-full">
                         <img 
                             src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1000" 
                             alt="Team meeting" 
@@ -128,7 +129,8 @@ const AboutPage: React.FC<AboutPageProps> = ({ team = [] }) => {
                 </div>
              </FadeIn>
 
-             <div className="relative border-l border-gray-800 ml-4 md:ml-0 space-y-12 md:space-y-16">
+             {/* FIX: Removed ml-4 on mobile to prevent overflow, adjusted spacing */}
+             <div className="relative border-l border-gray-800 ml-2 md:ml-0 space-y-12 md:space-y-16">
                 {[
                     { year: "2018", title: "Khởi Nguyên", desc: "Thành lập DUHAVA với 5 thành viên cốt cán tại một văn phòng nhỏ ở Quận 3. Tập trung vào thị trường SEO ngách và Content Marketing." },
                     { year: "2020", title: "Bứt Phá", desc: "Mở rộng sang Performance Marketing. Đạt mốc 100 khách hàng SME đầu tiên bất chấp đại dịch Covid-19 nhờ các giải pháp chuyển đổi số kịp thời." },
@@ -141,8 +143,8 @@ const AboutPage: React.FC<AboutPageProps> = ({ team = [] }) => {
                         
                         <FadeIn delay={index * 100} direction="right">
                             <span className="text-brand-yellow font-mono text-xl font-black tracking-tighter mb-2 block">{item.year}</span>
-                            <h4 className="text-2xl font-bold text-white mb-3">{item.title}</h4>
-                            <p className="text-gray-400 text-sm md:text-base leading-relaxed bg-gray-900/50 p-6 rounded-xl border border-gray-800">{item.desc}</p>
+                            <h4 className="text-2xl font-bold text-white mb-3 break-words">{item.title}</h4>
+                            <p className="text-gray-400 text-sm md:text-base leading-relaxed bg-gray-900/50 p-6 rounded-xl border border-gray-800 w-full">{item.desc}</p>
                         </FadeIn>
                     </div>
                 ))}
@@ -157,13 +159,13 @@ const AboutPage: React.FC<AboutPageProps> = ({ team = [] }) => {
       <TechStack />
 
       {/* CTA REIMAGINED */}
-      <section className="py-16 md:py-20 bg-brand-yellow text-center relative overflow-hidden">
+      <section className="py-16 md:py-20 bg-brand-yellow text-center relative overflow-hidden w-full">
           {/* Decorative Pattern - Adds depth */}
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-multiply pointer-events-none"></div>
           <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/10 to-transparent md:hidden pointer-events-none"></div>
 
           <div className="container mx-auto px-6 relative z-10">
-              <h2 className="text-3xl md:text-6xl font-black text-brand-black uppercase mb-4 md:mb-8 leading-tight md:leading-none">
+              <h2 className="text-3xl md:text-6xl font-black text-brand-black uppercase mb-4 md:mb-8 leading-tight md:leading-none break-words">
                   Gia nhập đội ngũ?
               </h2>
               <p className="text-brand-black/80 font-bold text-base md:text-lg mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed">
