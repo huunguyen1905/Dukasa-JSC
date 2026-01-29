@@ -156,25 +156,31 @@ const AboutPage: React.FC<AboutPageProps> = ({ team = [] }) => {
       {/* 5. TECH STACK (Moved from Landing Page) */}
       <TechStack />
 
-      {/* CTA */}
-      <section className="py-20 bg-brand-yellow text-center relative overflow-hidden">
+      {/* CTA REIMAGINED */}
+      <section className="py-16 md:py-20 bg-brand-yellow text-center relative overflow-hidden">
+          {/* Decorative Pattern - Adds depth */}
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-multiply pointer-events-none"></div>
+          <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/10 to-transparent md:hidden pointer-events-none"></div>
+
           <div className="container mx-auto px-6 relative z-10">
-              <h2 className="text-4xl md:text-6xl font-black text-brand-black uppercase mb-8 leading-none">
+              <h2 className="text-3xl md:text-6xl font-black text-brand-black uppercase mb-4 md:mb-8 leading-tight md:leading-none">
                   Gia nhập đội ngũ?
               </h2>
-              <p className="text-brand-black/80 font-bold text-lg mb-10 max-w-2xl mx-auto">
+              <p className="text-brand-black/80 font-bold text-base md:text-lg mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed">
                   Chúng tôi luôn tìm kiếm những tài năng kiệt xuất để cùng nhau chinh phục những đỉnh cao mới.
               </p>
-              <div className="flex justify-center gap-4">
+              
+              {/* Button Group: Column on Mobile, Row on Desktop */}
+              <div className="flex flex-col md:flex-row justify-center gap-3 md:gap-4 w-full max-w-md mx-auto md:max-w-none">
                   <button 
                     onClick={() => navigate('/lien-he')}
-                    className="bg-black text-white font-bold py-4 px-10 rounded-full hover:scale-105 transition-transform shadow-xl"
+                    className="w-full md:w-auto bg-black text-white font-bold py-4 px-10 rounded-xl md:rounded-full hover:scale-105 transition-transform shadow-xl flex items-center justify-center gap-2"
                   >
-                      Ứng Tuyển Ngay
+                      Ứng Tuyển Ngay <ArrowRight size={18} className="md:hidden opacity-80" />
                   </button>
                   <button 
                     onClick={() => setIsContactOpen(true)}
-                    className="bg-transparent border-2 border-black text-black font-bold py-4 px-10 rounded-full hover:bg-black hover:text-white transition-colors"
+                    className="w-full md:w-auto bg-transparent border-2 border-black text-black font-bold py-4 px-10 rounded-xl md:rounded-full hover:bg-black hover:text-white transition-colors"
                   >
                       Liên Hệ Hợp Tác
                   </button>
