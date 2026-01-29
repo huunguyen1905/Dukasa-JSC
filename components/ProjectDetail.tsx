@@ -236,22 +236,22 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, onCtaClick }) =
           </section>
       )}
 
-      {/* 5. STICKY MOBILE ACTION BAR */}
+      {/* 5. STICKY MOBILE ACTION BAR (OPTIMIZED) */}
       <div 
-        className={`fixed bottom-0 left-0 w-full bg-black/90 backdrop-blur-xl border-t border-gray-800 p-4 z-50 md:hidden transition-transform duration-300 ${showStickyBar ? 'translate-y-0' : 'translate-y-full'}`}
+        className={`fixed bottom-0 left-0 w-full bg-black/90 backdrop-blur-xl border-t border-gray-800 px-3 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] z-50 md:hidden transition-transform duration-300 ${showStickyBar ? 'translate-y-0' : 'translate-y-full'}`}
       >
-          <div className="flex gap-3">
+          <div className="flex gap-2 items-center">
               <button 
                 onClick={onCtaClick}
-                className="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wide flex items-center justify-center gap-2"
+                className="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 rounded-lg text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 whitespace-nowrap active:scale-95 transition-transform"
               >
-                  Xem Website <ExternalLink size={14} />
+                  Xem Website <ExternalLink size={12} />
               </button>
               <button 
                 onClick={onCtaClick}
-                className="flex-[2] bg-brand-yellow text-black font-black py-3 rounded-xl text-xs uppercase tracking-wide shadow-[0_0_20px_rgba(250,204,21,0.3)] flex items-center justify-center gap-2"
+                className="flex-[1.4] bg-brand-yellow text-black font-black py-3 rounded-lg text-[10px] uppercase tracking-wider shadow-[0_0_15px_rgba(250,204,21,0.2)] flex items-center justify-center gap-2 whitespace-nowrap active:scale-95 transition-transform"
               >
-                  <Zap size={14} fill="black" /> Tư Vấn Dự Án Này
+                  <Zap size={12} fill="black" /> Tư Vấn Dự Án
               </button>
           </div>
       </div>
