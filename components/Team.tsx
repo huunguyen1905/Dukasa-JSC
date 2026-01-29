@@ -37,16 +37,16 @@ const Team: React.FC<TeamProps> = ({ members = [] }) => {
 
         {/* 
             Grid Layout Decision:
-            - Mobile: 1 column (Focus on individual connection)
+            - Mobile: 2 columns (Compact view to reduce vertical scroll)
             - Tablet: 2 columns
             - Desktop: 4 columns (Overview of the core team)
         */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
           {members.map((member, index) => (
             <FadeIn key={member.id} delay={index * 100} direction="up">
                 <div className="group relative cursor-pointer h-full">
                     {/* Image Container - The Card Body */}
-                    <div className="relative overflow-hidden rounded-lg aspect-[3/4] bg-gray-900 border border-gray-800 group-hover:border-brand-yellow/50 transition-colors duration-500">
+                    <div className="relative overflow-hidden rounded-xl aspect-[3/4] bg-gray-900 border border-gray-800 group-hover:border-brand-yellow/50 transition-colors duration-500">
                         {/* 
                            Design Decision: Grayscale by default, Color on Hover 
                            This creates a "Cinematic Reveal" effect.
@@ -58,19 +58,19 @@ const Team: React.FC<TeamProps> = ({ members = [] }) => {
                         />
                         
                         {/* Gradient Overlay for Text Readability */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/20 to-transparent opacity-90 group-hover:opacity-60 transition-opacity duration-500"></div>
                         
                         {/* Content Overlay - Positioned at bottom */}
-                        <div className="absolute bottom-0 left-0 w-full p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                        <div className="absolute bottom-0 left-0 w-full p-4 md:p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
                             
                             {/* Name & Role */}
-                            <div className="mb-4">
-                                <h4 className="text-2xl font-black text-white mb-1 uppercase leading-none group-hover:text-brand-yellow transition-colors">{member.name}</h4>
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest border-l-2 border-brand-yellow pl-2">{member.role}</p>
+                            <div className="mb-2 md:mb-4">
+                                <h4 className="text-lg md:text-2xl font-black text-white mb-1 uppercase leading-none group-hover:text-brand-yellow transition-colors truncate">{member.name}</h4>
+                                <p className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest border-l-2 border-brand-yellow pl-2 truncate">{member.role}</p>
                             </div>
 
-                            {/* Bio Reveal - Slides up / Fades in */}
-                            <div className="h-0 group-hover:h-auto overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+                            {/* Bio Reveal - Slides up / Fades in (Hidden on mobile to keep it clean) */}
+                            <div className="hidden md:block h-0 group-hover:h-auto overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
                                 <p className="text-sm text-gray-300 font-light leading-relaxed line-clamp-3 mb-4 border-t border-gray-700/50 pt-3">
                                     {member.bio}
                                 </p>

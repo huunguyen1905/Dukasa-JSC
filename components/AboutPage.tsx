@@ -45,7 +45,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ team = [] }) => {
       {/* 1. VISION & MISSION - FULL DETAIL */}
       <section className="py-24 px-6 relative">
         <div className="container mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-24 items-center">
                 <FadeIn>
                     <h2 className="text-3xl font-black text-white uppercase mb-6">Sứ Mệnh & Tầm Nhìn</h2>
                     <p className="text-gray-400 text-lg mb-8 leading-relaxed">
@@ -105,7 +105,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ team = [] }) => {
                         { icon: Users, title: "Con Người", desc: "Khách hàng là trung tâm. Đội ngũ nhân sự là tài sản quý giá nhất." },
                         { icon: Globe, title: "Toàn Cầu", desc: "Tư duy không biên giới. Áp dụng tiêu chuẩn quốc tế vào thị trường nội địa." }
                     ].map((val, idx) => (
-                        <div key={idx} className="bg-brand-black border border-gray-800 p-8 rounded-2xl hover:border-brand-yellow/50 transition-all group">
+                        <div key={idx} className="bg-brand-black border border-gray-800 p-6 md:p-8 rounded-2xl hover:border-brand-yellow/50 transition-all group">
                             <val.icon className="text-gray-500 group-hover:text-brand-yellow transition-colors mb-6" size={40} strokeWidth={1.5} />
                             <h4 className="text-white font-bold uppercase mb-4 text-lg">{val.title}</h4>
                             <p className="text-gray-500 text-sm leading-relaxed">{val.desc}</p>
@@ -128,21 +128,21 @@ const AboutPage: React.FC<AboutPageProps> = ({ team = [] }) => {
                 </div>
              </FadeIn>
 
-             <div className="relative border-l border-gray-800 ml-4 md:ml-0 space-y-16">
+             <div className="relative border-l border-gray-800 ml-4 md:ml-0 space-y-12 md:space-y-16">
                 {[
                     { year: "2018", title: "Khởi Nguyên", desc: "Thành lập DUHAVA với 5 thành viên cốt cán tại một văn phòng nhỏ ở Quận 3. Tập trung vào thị trường SEO ngách và Content Marketing." },
                     { year: "2020", title: "Bứt Phá", desc: "Mở rộng sang Performance Marketing. Đạt mốc 100 khách hàng SME đầu tiên bất chấp đại dịch Covid-19 nhờ các giải pháp chuyển đổi số kịp thời." },
                     { year: "2022", title: "Khẳng Định", desc: "Trở thành Google Partner Premium. Quy mô nhân sự đạt 50+ chuyên gia. Mở rộng văn phòng sang Singapore để tiếp cận khách hàng quốc tế." },
                     { year: "2024", title: "Vươn Tầm", desc: "Ra mắt hệ sinh thái DUHAVA Group bao gồm Tech-hub và Academy. Tích hợp AI vào quy trình vận hành để tối ưu hiệu suất." }
                 ].map((item, index) => (
-                    <div key={index} className="relative pl-12 md:pl-20 group">
+                    <div key={index} className="relative pl-8 md:pl-20 group">
                         {/* Timeline Dot */}
                         <div className="absolute -left-[5px] top-2 w-[9px] h-[9px] rounded-full bg-gray-800 border border-gray-600 group-hover:bg-brand-yellow group-hover:border-brand-yellow transition-colors duration-300 shadow-[0_0_0_4px_#050505]"></div>
                         
                         <FadeIn delay={index * 100} direction="right">
                             <span className="text-brand-yellow font-mono text-xl font-black tracking-tighter mb-2 block">{item.year}</span>
                             <h4 className="text-2xl font-bold text-white mb-3">{item.title}</h4>
-                            <p className="text-gray-400 text-base leading-relaxed bg-gray-900/50 p-6 rounded-xl border border-gray-800">{item.desc}</p>
+                            <p className="text-gray-400 text-sm md:text-base leading-relaxed bg-gray-900/50 p-6 rounded-xl border border-gray-800">{item.desc}</p>
                         </FadeIn>
                     </div>
                 ))}
